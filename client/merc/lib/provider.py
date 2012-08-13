@@ -47,7 +47,7 @@ _id | name | value
             if (splitargs.uri):
                 request['uri'] = splitargs.uri
 
-            print self.session.executeCommand("provider", "columns", request).getPaddedErrorOrData()
+            print self.session.makeRequest("provider", "columns", request).getPaddedErrorOrData()
 
         # FIXME: Choose specific exceptions to catch
         except Exception:
@@ -338,7 +338,7 @@ Multiprocess allowed: false
             # Compile stated arguments to send to executeCommand
             request = vars(splitargs)
 
-            print self.session.executeCommand("provider", "info", request).getPaddedErrorOrData()
+            print self.session.makeRequest("provider", "info", request).getPaddedErrorOrData()
 
         # FIXME: Choose specific exceptions to catch
         except Exception:

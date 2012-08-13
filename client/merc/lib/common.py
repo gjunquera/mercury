@@ -12,6 +12,7 @@ import types
 import md5
 import sys
 from xml.dom.minidom import parseString
+import Message_pb2
 
 # Mercury version
 mercury_version = "1.0"
@@ -197,6 +198,74 @@ class Session:
 
 
         return doc.toxml()
+    
+    #message Args {
+    #    optional string type = 1;
+    #    optional string values = 2;
+    #}
+    #
+    #message Request {
+    #    
+    #    required int32 section = 1;
+    #    required int32 function = 2;
+    #    optional BasicRequest args = 3;
+    #}
+
+    # section = section of program where command was executed from
+    # function = function to execute
+    # args_dict = a dict object that defines the arguments that come with the command
+    # None is sent for args_dict if there are no arguments
+    # Return a structured XML command
+    def makeRequest(self, section, function, args_dict):
+        try:
+            request = Message_pb2.Request()
+            request.section = section
+            request.function = function
+            
+            if (args_dict is not None):
+            # Create elements - argument[i] by iterating through arguments that got sent to this function
+                i = 1
+                for key, value in args_dict.iteritems():
+    
+                    # vars() creates keys with None value - this checks for a None and disregards
+                    if value is not None:
+    
+                        if isinstance(value, types.StringType):
+                            Arg = Message_pb2.Args()
+                            Arg.type = key
+                            Arg.values = base64.b64encode(value)
+                            args = request.args.add()
+                            args.append(Arg)
+    
+                        else:
+    
+                            for val in value:
+    
+                                Arg = Message_pb2.Args()
+                                Arg.type = key
+                                Arg.values = base64.b64encode(value)
+                                args = request.args.add()
+                                args.append(Arg)
+    
+                        i = i + 1
+            
+            return base64.b64encode(request.SerializeToString())
+        except Exception, e:
+            print e
+
+    def parseResponse(self, xmlinput):
+    
+            returnValue = Response()
+            xmlStr = base64.b64decode(xmlinput)
+            try:
+                response = Message_pb2.Response()
+                response.ParseFromString(xmlStr)
+                returnValue.data = response.data
+                returnValue.error = response.error
+            except Exception, e:
+                returnValue.error = "Malformed response: " + xmlStr
+            
+            return returnValue
 
 
     # Convert received XML into a Response() - very slow due to parseString
@@ -301,6 +370,39 @@ class Session:
             # Parse response from server
             # parsedResponse = self.UnXMLifyResponseRegex(responseBuffer) # Can use this as well but no noticeable performance gain
             parsedResponse = self.UnXMLifyResponse(responseBuffer)
+
+        except socket.error:
+            # Return that a network error occurred
+            parsedResponse.error = "**Network Error** Could not reach server"
+        except KeyboardInterrupt:
+            # Catch Control + C to make sure that Mercury is not exited
+            parsedResponse.error = "**Error** User aborted command"
+
+        return parsedResponse
+    
+    # Execute a command and get a Response()
+    def newExecuteCommand(self, section, function, args_dict):
+        """Send a command to the device and get a response"""
+
+        parsedResponse = Response()
+
+        try:
+
+            # Convert command to XML and send
+            self.sendData(self.makeRequest(section, function, args_dict) + "\n")
+
+            # Receive until the socket is closed
+            responseBuffer = ""
+            receivedData = self.receiveData()
+            while receivedData:
+                responseBuffer = responseBuffer + receivedData
+                if responseBuffer.lower().endswith('\n'):
+                    break
+                receivedData = self.receiveData()
+
+            # Parse response from server
+            # parsedResponse = self.UnXMLifyResponseRegex(responseBuffer) # Can use this as well but no noticeable performance gain
+            parsedResponse = self.parseResponse(responseBuffer)
 
         except socket.error:
             # Return that a network error occurred

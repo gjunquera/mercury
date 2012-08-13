@@ -4,6 +4,7 @@ package com.mwr.mercury;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 
+import com.mwr.mercury.Message.Request;
 import com.mwr.mercury.reflect.ReflectParser;
 
 import android.util.Log;
@@ -23,7 +24,6 @@ class SessionThread extends Thread
 	@Override
 	protected void finalize() throws Throwable
 	{
-		// TODO Auto-generated method stub
 		super.finalize();
 		Log.e("mercury", "Closing thread");
 	}
@@ -33,11 +33,11 @@ class SessionThread extends Thread
 	{
 		while (currentSession.connected)
 		{
-			String received = currentSession.receive();
-			
+			//String received = currentSession.receive();
+			Request received = currentSession.receive();
 			//Pass off command to be handled
-			if (received != null && received.length() > 0) //Check that it is not null
-				if(!parser.parse(received))
+			if (received != null) //Check that it is not null
+				//if(!parser.parse(received))
 					handleCommand(received);
 		}
 		Log.e("mercury", "Exiting thread");
@@ -45,23 +45,23 @@ class SessionThread extends Thread
   
   
 	//Redirect commands to be handled by different functions
-		public void handleCommand(String xmlInput)
+		public void handleCommand(Request request)
 		{
 			//Create an array of commands from xml request received
-			ArrayList<RequestWrapper> parsedCommands = new XML(xmlInput).getCommands();
+			//ArrayList<RequestWrapper> parsedCommands = new XML(xmlInput).getCommands();
 			
 			//Command has been found on server
 			boolean found = false;
 		
 			//Iterate through received commands
-			for (int i = 0; i < parsedCommands.size(); i++)
-			{
+//			for (int i = 0; i < parsedCommands.size(); i++)
+//			{
 				try
 				{
 					// Do some hard work to get the class name
 					StringBuilder className = new StringBuilder(
 							currentSession.applicationContext.getPackageName() + ".commands.");
-					String section = parsedCommands.get(i).section;
+					String section = request.getSection();
 					className.append(Character.toUpperCase(section.charAt(0)))
 					.append(section.substring(1).toLowerCase());
 					
@@ -73,11 +73,11 @@ class SessionThread extends Thread
 						for (Method method : methods)
 						{
 							// If method name equals function name, execute the command
-							if (method.getName().equalsIgnoreCase(parsedCommands.get(i).function)
+							if (method.getName().equalsIgnoreCase(request.getFunction())
 									&& null != method)
 							{
 								found = true;
-								method.invoke(null, parsedCommands.get(i).argsArray, currentSession);
+								method.invoke(null, request.getArgsList(), currentSession);
 								break;
 							}
 						}
@@ -87,7 +87,7 @@ class SessionThread extends Thread
 				{
 					currentSession.sendFullTransmission("", "Command not found on Mercury server");
 				}
-			}
+//			}
 			
 			//Default case if command not found
 			if (!found)

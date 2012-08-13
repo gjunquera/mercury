@@ -5,6 +5,12 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.ArrayList;
+
+import com.mwr.mercury.Message.Request;
+import com.mwr.mercury.Message.Request.Builder;
+import com.mwr.mercury.Message.Response;
+import com.mwr.mercury.Message.ResponseOrBuilder;
 
 import android.content.Context;
 import android.util.Base64;
@@ -27,7 +33,7 @@ public class Session
 		
 		try
 		{
-			//input = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()), 8192);
+			//input = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()), 8192);		
 			input = new BufferedBracketReader(new InputStreamReader(clientSocket.getInputStream()));
 			output = new PrintWriter(clientSocket.getOutputStream(), true);
 		}
@@ -37,7 +43,7 @@ public class Session
 	}
 	
 	//Read from session - return contents
-	public String receive()
+	public Request receive()
 	{
 		try
 		{
@@ -46,7 +52,8 @@ public class Session
 			
 			//Read from socket
 			//String content = input.readLine();
-			String content = readTransmission(input);
+			//String content = readTransmission(input);
+			Request content = readTransmission(input);
 					
 			//Maintain whether connection is still connected or not
 			if (content == null)
@@ -63,7 +70,7 @@ public class Session
 		}
 	}
 	
-	private String readTransmission(BufferedBracketReader in) throws IOException
+	private Request readTransmission(BufferedBracketReader in) throws IOException
 	{
 		//String out = "";
 		//StringBuilder sb = new StringBuilder(512);
@@ -75,13 +82,35 @@ public class Session
 			//Log.d("RECV", "before");
 			String r = in.readChunk();
 			//Log.d("RECV", "after");
-			if(r!=null) {
-				//Log.d("RECV", r);
-				out += r;
-				if(out.endsWith("</transmission>")) {
-					return out;
+			try
+			{
+				byte[] buffer = Base64.decode(r, Base64.DEFAULT);
+				Request request = Request.parseFrom(buffer);
+				request.getFunction();
+				request.getSection();
+				return request;
+			}
+			catch (Exception e)
+			{
+				if(r!=null) {
+					//Log.d("RECV", r);
+					out += r;
+					if(out.endsWith("</transmission>")) {
+						ArrayList<RequestWrapper> parsedCommands = new XML(out).getCommands();
+						Request request = Request.getDefaultInstance();
+						Builder builder = request.toBuilder();
+						for (RequestWrapper requestWrapper : parsedCommands)
+						{
+							builder.setSection(requestWrapper.section);
+							builder.setFunction(requestWrapper.function);
+						}
+						
+						return builder.build();
+					}
 				}
 			}
+			
+			
 			/*
 			sb.append((char)cur);
 			 
@@ -185,13 +214,20 @@ public class Session
 		/*
 		
 		Sends the following structure:
-		
+				
 		<transmission>
-			<response>
-				<data>response</data>
-				<error>error</error>
-			</response>
-		</transmission>
+	        <command>
+	            <section>provider</section>
+	            <function>query</function>
+	            <arguments>
+	                <selectionargs>ZWlzaA==</selectionargs>
+	                <selection>dzAwdHk=</selection>
+	                <projection>bG9sb2xsb2xvbG9sb2wgbG9sb2xvbG9s</projection>
+	                <URI>Y29udGVudDovL3Bldw==</URI>
+	                <sortorder>YXNj</sortorder>
+	            </arguments>
+	        </command>
+	    </transmission>
 		
 		*/
 		
@@ -211,6 +247,23 @@ public class Session
 		
 		endResponse();
 		endTransmission();
+	}
+	
+	// Send a full transmission without worrying about structure
+	// Should only be used for small responses < 50KB
+	public void newSendFullTransmission(String response, String error)
+	{		
+		Response resp = Response.getDefaultInstance();
+		Response.Builder builder = resp.toBuilder();
+		builder.setData(response);
+		if (error == null)
+			builder.setError("Null error given");
+		else if (error.length() > 0)
+			builder.setError(error);
+		resp = builder.build();
+		
+		send(Base64.encodeToString(resp.toByteArray(), Base64.DEFAULT), false);
+		//send(resp.toByteArray(), false);
 	}
   
   
