@@ -231,21 +231,18 @@ class Session:
                     if value is not None:
     
                         if isinstance(value, types.StringType):
-                            Arg = Message_pb2.Args()
-                            Arg.type = key
-                            Arg.values = base64.b64encode(value)
-                            args = request.args.add()
-                            args.append(Arg)
+                            arg = request.basicRequest.args.add()
+                            arg.type = key
+                            arg.values = value
+                        #TODO understand and fix the commented lines                            
+                        #else:
     
-                        else:
-    
-                            for val in value:
-    
-                                Arg = Message_pb2.Args()
-                                Arg.type = key
-                                Arg.values = base64.b64encode(value)
-                                args = request.args.add()
-                                args.append(Arg)
+                         #   for val in value:
+                                #TODO understand and fix it
+                                #basicReq = request.args.add()
+                                #arg = basicReq.args.add()
+                                #arg.type = key
+                                #arg.values = base64.b64encode(value)
     
                         i = i + 1
             
@@ -260,12 +257,13 @@ class Session:
             try:
                 response = Message_pb2.Response()
                 response.ParseFromString(xmlStr)
-                returnValue.data = response.data
-                returnValue.error = response.error
+                #returnValue.data = response.data
+                #returnValue.error = response.error
             except Exception, e:
                 returnValue.error = "Malformed response: " + xmlStr
             
-            return returnValue
+            #return returnValue
+            return response
 
 
     # Convert received XML into a Response() - very slow due to parseString

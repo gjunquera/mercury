@@ -3,7 +3,10 @@
 package com.mwr.mercury;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.List;
 
+import com.mwr.mercury.Message.Args;
+import com.mwr.mercury.Message.BasicRequest;
 import com.mwr.mercury.Message.Request;
 import com.mwr.mercury.reflect.ReflectParser;
 
@@ -49,7 +52,6 @@ class SessionThread extends Thread
 		{
 			//Create an array of commands from xml request received
 			//ArrayList<RequestWrapper> parsedCommands = new XML(xmlInput).getCommands();
-			
 			//Command has been found on server
 			boolean found = false;
 		
@@ -77,7 +79,11 @@ class SessionThread extends Thread
 									&& null != method)
 							{
 								found = true;
-								method.invoke(null, request.getArgsList(), currentSession);
+								BasicRequest basicReq = request.getBasicRequest();
+								List<Args> reqArgs = null;
+								if (basicReq != null) 
+									reqArgs = basicReq.getArgsList();
+								method.invoke(null, reqArgs, currentSession);
 								break;
 							}
 						}

@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import com.mwr.mercury.Message.Args;
+
 import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.ContentValues;
@@ -164,6 +166,22 @@ public class Common
 		return "";
 	}
 	
+	//Get parameter from a List<Args>
+	public static String getPb2ParamString(List<Args> argArray, String type) 
+	{
+		for (Args arg : argArray) 
+		{
+			String argType = arg.getType();
+			String value = arg.getValues();
+			if (type != null) 
+			{
+				if (type.equalsIgnoreCase(argType))
+					return value;
+			}
+		}
+		return "";
+	}
+
 	//Get parameter from a List<ArgumentWrapper> in List<String> format
 	public static List<String> getParamStringList(List<ArgumentWrapper> argWrapper, String type)
 	{

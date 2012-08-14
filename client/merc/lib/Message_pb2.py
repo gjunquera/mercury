@@ -10,30 +10,91 @@ from google.protobuf import descriptor_pb2
 
 DESCRIPTOR = descriptor.FileDescriptor(
   name='Message.proto',
-  package='',
-  serialized_pb='\n\rMessage.proto\"\'\n\x08Response\x12\x0c\n\x04\x64\x61ta\x18\x01 \x01(\t\x12\r\n\x05\x65rror\x18\x02 \x01(\t\"$\n\x04\x41rgs\x12\x0c\n\x04type\x18\x01 \x01(\t\x12\x0e\n\x06values\x18\x02 \x01(\t\"I\n\x07Request\x12\x0f\n\x07section\x18\x01 \x02(\t\x12\x10\n\x08\x66unction\x18\x02 \x02(\t\x12\x1b\n\x04\x61rgs\x18\x03 \x03(\x0b\x32\r.BasicRequest\"#\n\x0c\x42\x61sicRequest\x12\x13\n\x04\x61rgs\x18\x03 \x03(\x0b\x32\x05.Args\"\xc9\x07\n\x10ProviderResponse\x12*\n\x07\x63olumns\x18\x02 \x01(\x0b\x32\x19.ProviderResponse.Columns\x12*\n\x07\x66induri\x18\x03 \x01(\x0b\x32\x19.ProviderResponse.FindUri\x12&\n\x05query\x18\x04 \x01(\x0b\x32\x17.ProviderResponse.Query\x12(\n\x06update\x18\x05 \x01(\x0b\x32\x18.ProviderResponse.Update\x12(\n\x06\x64\x65lete\x18\x06 \x01(\x0b\x32\x18.ProviderResponse.Delete\x12(\n\x06insert\x18\x07 \x01(\x0b\x32\x18.ProviderResponse.Insert\x12$\n\x04info\x18\x08 \x01(\x0b\x32\x16.ProviderResponse.Info\x12$\n\x04read\x18\t \x01(\x0b\x32\x16.ProviderResponse.Read\x1a\x1b\n\nListString\x12\r\n\x05\x66ield\x18\x01 \x03(\t\x1a\x38\n\x07\x43olumns\x12-\n\x07\x63olumns\x18\x01 \x02(\x0b\x32\x1c.ProviderResponse.ListString\x1a\x17\n\x07\x46indUri\x12\x0c\n\x04uris\x18\x01 \x03(\t\x1a\x30\n\x05Query\x12\'\n\x06tables\x18\x01 \x03(\x0b\x32\x17.ProviderResponse.Table\x1a\x87\x01\n\x05Table\x12-\n\x07\x63olumns\x18\x01 \x02(\x0b\x32\x1c.ProviderResponse.ListString\x12*\n\x04rows\x18\x02 \x03(\x0b\x32\x1c.ProviderResponse.ListString\x12\x12\n\nnumColumns\x18\x03 \x01(\x05\x12\x0f\n\x07numRows\x18\x04 \x01(\x05\x1a\x1e\n\x06Update\x12\x14\n\x0crows_updated\x18\x01 \x01(\x05\x1a\x1e\n\x06\x44\x65lete\x12\x14\n\x0crows_deleted\x18\x01 \x01(\x05\x1a\x1a\n\x06Insert\x12\x10\n\x08response\x18\x01 \x01(\t\x1a\xca\x01\n\x04Info\x12\x11\n\tauthority\x18\x01 \x01(\t\x12\x13\n\x0bpackageName\x18\x02 \x01(\t\x12\x16\n\x0ereadPermission\x18\x03 \x01(\t\x12\x1d\n\x15uriPermissionPatterns\x18\x04 \x01(\t\x12\x17\n\x0fwritePermission\x18\x05 \x01(\t\x12\x17\n\x0fpathPermissions\x18\x06 \x03(\t\x12\x14\n\x0cmultiprocess\x18\x07 \x01(\x08\x12\x1b\n\x13grantUriPermissions\x18\x08 \x01(\x08\x1a\x16\n\x04Read\x12\x0e\n\x06stream\x18\x01 \x01(\tB\x11\n\x0f\x63om.mwr.mercury')
+  package='com.mwr.mercury',
+  serialized_pb='\n\rMessage.proto\x12\x0f\x63om.mwr.mercury\"d\n\x08Response\x12\x0c\n\x04\x64\x61ta\x18\x01 \x01(\t\x12\r\n\x05\x65rror\x18\x02 \x01(\t\x12;\n\x10providerResponse\x18\x03 \x01(\x0b\x32!.com.mwr.mercury.ProviderResponse\"$\n\x04\x41rgs\x12\x0c\n\x04type\x18\x01 \x01(\t\x12\x0e\n\x06values\x18\x02 \x01(\t\"a\n\x07Request\x12\x0f\n\x07section\x18\x01 \x01(\t\x12\x10\n\x08\x66unction\x18\x02 \x01(\t\x12\x33\n\x0c\x62\x61sicRequest\x18\x03 \x01(\x0b\x32\x1d.com.mwr.mercury.BasicRequest\"3\n\x0c\x42\x61sicRequest\x12#\n\x04\x61rgs\x18\x03 \x03(\x0b\x32\x15.com.mwr.mercury.Args\"\xe5\n\n\x10ProviderResponse\x12\x33\n\x08\x66unction\x18\x01 \x01(\x0e\x32!.com.mwr.mercury.ProviderFunction\x12:\n\x07\x63olumns\x18\x02 \x01(\x0b\x32).com.mwr.mercury.ProviderResponse.Columns\x12:\n\x07\x66induri\x18\x03 \x01(\x0b\x32).com.mwr.mercury.ProviderResponse.FindUri\x12\x36\n\x05query\x18\x04 \x01(\x0b\x32\'.com.mwr.mercury.ProviderResponse.Query\x12\x38\n\x06update\x18\x05 \x01(\x0b\x32(.com.mwr.mercury.ProviderResponse.Update\x12\x38\n\x06\x64\x65lete\x18\x06 \x01(\x0b\x32(.com.mwr.mercury.ProviderResponse.Delete\x12\x38\n\x06insert\x18\x07 \x01(\x0b\x32(.com.mwr.mercury.ProviderResponse.Insert\x12\x34\n\x04info\x18\x08 \x03(\x0b\x32&.com.mwr.mercury.ProviderResponse.Info\x12\x34\n\x04read\x18\t \x01(\x0b\x32&.com.mwr.mercury.ProviderResponse.Read\x1a\x1b\n\nListString\x12\r\n\x05\x66ield\x18\x01 \x03(\t\x1aH\n\x07\x43olumns\x12=\n\x07\x63olumns\x18\x01 \x02(\x0b\x32,.com.mwr.mercury.ProviderResponse.ListString\x1a\x17\n\x07\x46indUri\x12\x0c\n\x04uris\x18\x01 \x03(\t\x1a@\n\x05Query\x12\x37\n\x06tables\x18\x01 \x03(\x0b\x32\'.com.mwr.mercury.ProviderResponse.Table\x1a\xa7\x01\n\x05Table\x12=\n\x07\x63olumns\x18\x01 \x02(\x0b\x32,.com.mwr.mercury.ProviderResponse.ListString\x12:\n\x04rows\x18\x02 \x03(\x0b\x32,.com.mwr.mercury.ProviderResponse.ListString\x12\x12\n\nnumColumns\x18\x03 \x01(\x05\x12\x0f\n\x07numRows\x18\x04 \x01(\x05\x1a\x1e\n\x06Update\x12\x14\n\x0crows_updated\x18\x01 \x01(\x05\x1a\x1e\n\x06\x44\x65lete\x12\x14\n\x0crows_deleted\x18\x01 \x01(\x05\x1a\x1a\n\x06Insert\x12\x10\n\x08response\x18\x01 \x01(\t\x1a\xf1\x02\n\x04Info\x12\x11\n\tauthority\x18\x01 \x01(\t\x12\x13\n\x0bpackageName\x18\x02 \x01(\t\x12\x16\n\x0ereadPermission\x18\x03 \x01(\t\x12\x1d\n\x15uriPermissionPatterns\x18\x04 \x03(\t\x12\x17\n\x0fwritePermission\x18\x05 \x01(\t\x12Q\n\x0fpathPermissions\x18\x06 \x03(\x0b\x32\x38.com.mwr.mercury.ProviderResponse.Info.PatternPermission\x12\x14\n\x0cmultiprocess\x18\x07 \x01(\x08\x12\x1b\n\x13grantUriPermissions\x18\x08 \x01(\x08\x1ak\n\x11PatternPermission\x12\x17\n\x0fwritePermission\x18\x01 \x01(\t\x12\x16\n\x0ereadPermission\x18\x02 \x01(\t\x12\x12\n\nwriteNeeds\x18\x03 \x01(\t\x12\x11\n\treadNeeds\x18\x04 \x01(\t\x1a\x16\n\x04Read\x12\x0e\n\x06stream\x18\x01 \x01(\t*p\n\x10ProviderFunction\x12\x0b\n\x07\x43OLUMNS\x10\x00\x12\n\n\x06\x44\x45LETE\x10\x01\x12\x0c\n\x08\x46IND_URI\x10\x02\x12\x08\n\x04INFO\x10\x03\x12\n\n\x06INSERT\x10\x04\x12\t\n\x05QUERY\x10\x05\x12\x08\n\x04READ\x10\x06\x12\n\n\x06UPDATE\x10\x07')
 
+_PROVIDERFUNCTION = descriptor.EnumDescriptor(
+  name='ProviderFunction',
+  full_name='com.mwr.mercury.ProviderFunction',
+  filename=None,
+  file=DESCRIPTOR,
+  values=[
+    descriptor.EnumValueDescriptor(
+      name='COLUMNS', index=0, number=0,
+      options=None,
+      type=None),
+    descriptor.EnumValueDescriptor(
+      name='DELETE', index=1, number=1,
+      options=None,
+      type=None),
+    descriptor.EnumValueDescriptor(
+      name='FIND_URI', index=2, number=2,
+      options=None,
+      type=None),
+    descriptor.EnumValueDescriptor(
+      name='INFO', index=3, number=3,
+      options=None,
+      type=None),
+    descriptor.EnumValueDescriptor(
+      name='INSERT', index=4, number=4,
+      options=None,
+      type=None),
+    descriptor.EnumValueDescriptor(
+      name='QUERY', index=5, number=5,
+      options=None,
+      type=None),
+    descriptor.EnumValueDescriptor(
+      name='READ', index=6, number=6,
+      options=None,
+      type=None),
+    descriptor.EnumValueDescriptor(
+      name='UPDATE', index=7, number=7,
+      options=None,
+      type=None),
+  ],
+  containing_type=None,
+  options=None,
+  serialized_start=1710,
+  serialized_end=1822,
+)
+
+
+COLUMNS = 0
+DELETE = 1
+FIND_URI = 2
+INFO = 3
+INSERT = 4
+QUERY = 5
+READ = 6
+UPDATE = 7
 
 
 
 _RESPONSE = descriptor.Descriptor(
   name='Response',
-  full_name='Response',
+  full_name='com.mwr.mercury.Response',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   fields=[
     descriptor.FieldDescriptor(
-      name='data', full_name='Response.data', index=0,
+      name='data', full_name='com.mwr.mercury.Response.data', index=0,
       number=1, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=unicode("", "utf-8"),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     descriptor.FieldDescriptor(
-      name='error', full_name='Response.error', index=1,
+      name='error', full_name='com.mwr.mercury.Response.error', index=1,
       number=2, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=unicode("", "utf-8"),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    descriptor.FieldDescriptor(
+      name='providerResponse', full_name='com.mwr.mercury.Response.providerResponse', index=2,
+      number=3, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
@@ -46,27 +107,27 @@ _RESPONSE = descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=17,
-  serialized_end=56,
+  serialized_start=34,
+  serialized_end=134,
 )
 
 
 _ARGS = descriptor.Descriptor(
   name='Args',
-  full_name='Args',
+  full_name='com.mwr.mercury.Args',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   fields=[
     descriptor.FieldDescriptor(
-      name='type', full_name='Args.type', index=0,
+      name='type', full_name='com.mwr.mercury.Args.type', index=0,
       number=1, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=unicode("", "utf-8"),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     descriptor.FieldDescriptor(
-      name='values', full_name='Args.values', index=1,
+      name='values', full_name='com.mwr.mercury.Args.values', index=1,
       number=2, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=unicode("", "utf-8"),
       message_type=None, enum_type=None, containing_type=None,
@@ -81,36 +142,36 @@ _ARGS = descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=58,
-  serialized_end=94,
+  serialized_start=136,
+  serialized_end=172,
 )
 
 
 _REQUEST = descriptor.Descriptor(
   name='Request',
-  full_name='Request',
+  full_name='com.mwr.mercury.Request',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   fields=[
     descriptor.FieldDescriptor(
-      name='section', full_name='Request.section', index=0,
-      number=1, type=9, cpp_type=9, label=2,
+      name='section', full_name='com.mwr.mercury.Request.section', index=0,
+      number=1, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=unicode("", "utf-8"),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     descriptor.FieldDescriptor(
-      name='function', full_name='Request.function', index=1,
-      number=2, type=9, cpp_type=9, label=2,
+      name='function', full_name='com.mwr.mercury.Request.function', index=1,
+      number=2, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=unicode("", "utf-8"),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     descriptor.FieldDescriptor(
-      name='args', full_name='Request.args', index=2,
-      number=3, type=11, cpp_type=10, label=3,
-      has_default_value=False, default_value=[],
+      name='basicRequest', full_name='com.mwr.mercury.Request.basicRequest', index=2,
+      number=3, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
@@ -123,20 +184,20 @@ _REQUEST = descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=96,
-  serialized_end=169,
+  serialized_start=174,
+  serialized_end=271,
 )
 
 
 _BASICREQUEST = descriptor.Descriptor(
   name='BasicRequest',
-  full_name='BasicRequest',
+  full_name='com.mwr.mercury.BasicRequest',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   fields=[
     descriptor.FieldDescriptor(
-      name='args', full_name='BasicRequest.args', index=0,
+      name='args', full_name='com.mwr.mercury.BasicRequest.args', index=0,
       number=3, type=11, cpp_type=10, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
@@ -151,20 +212,20 @@ _BASICREQUEST = descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=171,
-  serialized_end=206,
+  serialized_start=273,
+  serialized_end=324,
 )
 
 
 _PROVIDERRESPONSE_LISTSTRING = descriptor.Descriptor(
   name='ListString',
-  full_name='ProviderResponse.ListString',
+  full_name='com.mwr.mercury.ProviderResponse.ListString',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   fields=[
     descriptor.FieldDescriptor(
-      name='field', full_name='ProviderResponse.ListString.field', index=0,
+      name='field', full_name='com.mwr.mercury.ProviderResponse.ListString.field', index=0,
       number=1, type=9, cpp_type=9, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
@@ -179,19 +240,19 @@ _PROVIDERRESPONSE_LISTSTRING = descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=559,
-  serialized_end=586,
+  serialized_start=858,
+  serialized_end=885,
 )
 
 _PROVIDERRESPONSE_COLUMNS = descriptor.Descriptor(
   name='Columns',
-  full_name='ProviderResponse.Columns',
+  full_name='com.mwr.mercury.ProviderResponse.Columns',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   fields=[
     descriptor.FieldDescriptor(
-      name='columns', full_name='ProviderResponse.Columns.columns', index=0,
+      name='columns', full_name='com.mwr.mercury.ProviderResponse.Columns.columns', index=0,
       number=1, type=11, cpp_type=10, label=2,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
@@ -206,19 +267,19 @@ _PROVIDERRESPONSE_COLUMNS = descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=588,
-  serialized_end=644,
+  serialized_start=887,
+  serialized_end=959,
 )
 
 _PROVIDERRESPONSE_FINDURI = descriptor.Descriptor(
   name='FindUri',
-  full_name='ProviderResponse.FindUri',
+  full_name='com.mwr.mercury.ProviderResponse.FindUri',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   fields=[
     descriptor.FieldDescriptor(
-      name='uris', full_name='ProviderResponse.FindUri.uris', index=0,
+      name='uris', full_name='com.mwr.mercury.ProviderResponse.FindUri.uris', index=0,
       number=1, type=9, cpp_type=9, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
@@ -233,19 +294,19 @@ _PROVIDERRESPONSE_FINDURI = descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=646,
-  serialized_end=669,
+  serialized_start=961,
+  serialized_end=984,
 )
 
 _PROVIDERRESPONSE_QUERY = descriptor.Descriptor(
   name='Query',
-  full_name='ProviderResponse.Query',
+  full_name='com.mwr.mercury.ProviderResponse.Query',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   fields=[
     descriptor.FieldDescriptor(
-      name='tables', full_name='ProviderResponse.Query.tables', index=0,
+      name='tables', full_name='com.mwr.mercury.ProviderResponse.Query.tables', index=0,
       number=1, type=11, cpp_type=10, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
@@ -260,40 +321,40 @@ _PROVIDERRESPONSE_QUERY = descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=671,
-  serialized_end=719,
+  serialized_start=986,
+  serialized_end=1050,
 )
 
 _PROVIDERRESPONSE_TABLE = descriptor.Descriptor(
   name='Table',
-  full_name='ProviderResponse.Table',
+  full_name='com.mwr.mercury.ProviderResponse.Table',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   fields=[
     descriptor.FieldDescriptor(
-      name='columns', full_name='ProviderResponse.Table.columns', index=0,
+      name='columns', full_name='com.mwr.mercury.ProviderResponse.Table.columns', index=0,
       number=1, type=11, cpp_type=10, label=2,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     descriptor.FieldDescriptor(
-      name='rows', full_name='ProviderResponse.Table.rows', index=1,
+      name='rows', full_name='com.mwr.mercury.ProviderResponse.Table.rows', index=1,
       number=2, type=11, cpp_type=10, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     descriptor.FieldDescriptor(
-      name='numColumns', full_name='ProviderResponse.Table.numColumns', index=2,
+      name='numColumns', full_name='com.mwr.mercury.ProviderResponse.Table.numColumns', index=2,
       number=3, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     descriptor.FieldDescriptor(
-      name='numRows', full_name='ProviderResponse.Table.numRows', index=3,
+      name='numRows', full_name='com.mwr.mercury.ProviderResponse.Table.numRows', index=3,
       number=4, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
@@ -308,19 +369,19 @@ _PROVIDERRESPONSE_TABLE = descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=722,
-  serialized_end=857,
+  serialized_start=1053,
+  serialized_end=1220,
 )
 
 _PROVIDERRESPONSE_UPDATE = descriptor.Descriptor(
   name='Update',
-  full_name='ProviderResponse.Update',
+  full_name='com.mwr.mercury.ProviderResponse.Update',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   fields=[
     descriptor.FieldDescriptor(
-      name='rows_updated', full_name='ProviderResponse.Update.rows_updated', index=0,
+      name='rows_updated', full_name='com.mwr.mercury.ProviderResponse.Update.rows_updated', index=0,
       number=1, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
@@ -335,19 +396,19 @@ _PROVIDERRESPONSE_UPDATE = descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=859,
-  serialized_end=889,
+  serialized_start=1222,
+  serialized_end=1252,
 )
 
 _PROVIDERRESPONSE_DELETE = descriptor.Descriptor(
   name='Delete',
-  full_name='ProviderResponse.Delete',
+  full_name='com.mwr.mercury.ProviderResponse.Delete',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   fields=[
     descriptor.FieldDescriptor(
-      name='rows_deleted', full_name='ProviderResponse.Delete.rows_deleted', index=0,
+      name='rows_deleted', full_name='com.mwr.mercury.ProviderResponse.Delete.rows_deleted', index=0,
       number=1, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
@@ -362,19 +423,19 @@ _PROVIDERRESPONSE_DELETE = descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=891,
-  serialized_end=921,
+  serialized_start=1254,
+  serialized_end=1284,
 )
 
 _PROVIDERRESPONSE_INSERT = descriptor.Descriptor(
   name='Insert',
-  full_name='ProviderResponse.Insert',
+  full_name='com.mwr.mercury.ProviderResponse.Insert',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   fields=[
     descriptor.FieldDescriptor(
-      name='response', full_name='ProviderResponse.Insert.response', index=0,
+      name='response', full_name='com.mwr.mercury.ProviderResponse.Insert.response', index=0,
       number=1, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=unicode("", "utf-8"),
       message_type=None, enum_type=None, containing_type=None,
@@ -389,68 +450,116 @@ _PROVIDERRESPONSE_INSERT = descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=923,
-  serialized_end=949,
+  serialized_start=1286,
+  serialized_end=1312,
 )
 
-_PROVIDERRESPONSE_INFO = descriptor.Descriptor(
-  name='Info',
-  full_name='ProviderResponse.Info',
+_PROVIDERRESPONSE_INFO_PATTERNPERMISSION = descriptor.Descriptor(
+  name='PatternPermission',
+  full_name='com.mwr.mercury.ProviderResponse.Info.PatternPermission',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   fields=[
     descriptor.FieldDescriptor(
-      name='authority', full_name='ProviderResponse.Info.authority', index=0,
+      name='writePermission', full_name='com.mwr.mercury.ProviderResponse.Info.PatternPermission.writePermission', index=0,
       number=1, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=unicode("", "utf-8"),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     descriptor.FieldDescriptor(
-      name='packageName', full_name='ProviderResponse.Info.packageName', index=1,
+      name='readPermission', full_name='com.mwr.mercury.ProviderResponse.Info.PatternPermission.readPermission', index=1,
       number=2, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=unicode("", "utf-8"),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     descriptor.FieldDescriptor(
-      name='readPermission', full_name='ProviderResponse.Info.readPermission', index=2,
+      name='writeNeeds', full_name='com.mwr.mercury.ProviderResponse.Info.PatternPermission.writeNeeds', index=2,
       number=3, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=unicode("", "utf-8"),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     descriptor.FieldDescriptor(
-      name='uriPermissionPatterns', full_name='ProviderResponse.Info.uriPermissionPatterns', index=3,
+      name='readNeeds', full_name='com.mwr.mercury.ProviderResponse.Info.PatternPermission.readNeeds', index=3,
       number=4, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=unicode("", "utf-8"),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  serialized_start=1577,
+  serialized_end=1684,
+)
+
+_PROVIDERRESPONSE_INFO = descriptor.Descriptor(
+  name='Info',
+  full_name='com.mwr.mercury.ProviderResponse.Info',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
     descriptor.FieldDescriptor(
-      name='writePermission', full_name='ProviderResponse.Info.writePermission', index=4,
+      name='authority', full_name='com.mwr.mercury.ProviderResponse.Info.authority', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=unicode("", "utf-8"),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    descriptor.FieldDescriptor(
+      name='packageName', full_name='com.mwr.mercury.ProviderResponse.Info.packageName', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=unicode("", "utf-8"),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    descriptor.FieldDescriptor(
+      name='readPermission', full_name='com.mwr.mercury.ProviderResponse.Info.readPermission', index=2,
+      number=3, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=unicode("", "utf-8"),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    descriptor.FieldDescriptor(
+      name='uriPermissionPatterns', full_name='com.mwr.mercury.ProviderResponse.Info.uriPermissionPatterns', index=3,
+      number=4, type=9, cpp_type=9, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    descriptor.FieldDescriptor(
+      name='writePermission', full_name='com.mwr.mercury.ProviderResponse.Info.writePermission', index=4,
       number=5, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=unicode("", "utf-8"),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     descriptor.FieldDescriptor(
-      name='pathPermissions', full_name='ProviderResponse.Info.pathPermissions', index=5,
-      number=6, type=9, cpp_type=9, label=3,
+      name='pathPermissions', full_name='com.mwr.mercury.ProviderResponse.Info.pathPermissions', index=5,
+      number=6, type=11, cpp_type=10, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     descriptor.FieldDescriptor(
-      name='multiprocess', full_name='ProviderResponse.Info.multiprocess', index=6,
+      name='multiprocess', full_name='com.mwr.mercury.ProviderResponse.Info.multiprocess', index=6,
       number=7, type=8, cpp_type=7, label=1,
       has_default_value=False, default_value=False,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     descriptor.FieldDescriptor(
-      name='grantUriPermissions', full_name='ProviderResponse.Info.grantUriPermissions', index=7,
+      name='grantUriPermissions', full_name='com.mwr.mercury.ProviderResponse.Info.grantUriPermissions', index=7,
       number=8, type=8, cpp_type=7, label=1,
       has_default_value=False, default_value=False,
       message_type=None, enum_type=None, containing_type=None,
@@ -459,25 +568,25 @@ _PROVIDERRESPONSE_INFO = descriptor.Descriptor(
   ],
   extensions=[
   ],
-  nested_types=[],
+  nested_types=[_PROVIDERRESPONSE_INFO_PATTERNPERMISSION, ],
   enum_types=[
   ],
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=952,
-  serialized_end=1154,
+  serialized_start=1315,
+  serialized_end=1684,
 )
 
 _PROVIDERRESPONSE_READ = descriptor.Descriptor(
   name='Read',
-  full_name='ProviderResponse.Read',
+  full_name='com.mwr.mercury.ProviderResponse.Read',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   fields=[
     descriptor.FieldDescriptor(
-      name='stream', full_name='ProviderResponse.Read.stream', index=0,
+      name='stream', full_name='com.mwr.mercury.ProviderResponse.Read.stream', index=0,
       number=1, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=unicode("", "utf-8"),
       message_type=None, enum_type=None, containing_type=None,
@@ -492,68 +601,75 @@ _PROVIDERRESPONSE_READ = descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=1156,
-  serialized_end=1178,
+  serialized_start=1686,
+  serialized_end=1708,
 )
 
 _PROVIDERRESPONSE = descriptor.Descriptor(
   name='ProviderResponse',
-  full_name='ProviderResponse',
+  full_name='com.mwr.mercury.ProviderResponse',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   fields=[
     descriptor.FieldDescriptor(
-      name='columns', full_name='ProviderResponse.columns', index=0,
+      name='function', full_name='com.mwr.mercury.ProviderResponse.function', index=0,
+      number=1, type=14, cpp_type=8, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    descriptor.FieldDescriptor(
+      name='columns', full_name='com.mwr.mercury.ProviderResponse.columns', index=1,
       number=2, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     descriptor.FieldDescriptor(
-      name='finduri', full_name='ProviderResponse.finduri', index=1,
+      name='finduri', full_name='com.mwr.mercury.ProviderResponse.finduri', index=2,
       number=3, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     descriptor.FieldDescriptor(
-      name='query', full_name='ProviderResponse.query', index=2,
+      name='query', full_name='com.mwr.mercury.ProviderResponse.query', index=3,
       number=4, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     descriptor.FieldDescriptor(
-      name='update', full_name='ProviderResponse.update', index=3,
+      name='update', full_name='com.mwr.mercury.ProviderResponse.update', index=4,
       number=5, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     descriptor.FieldDescriptor(
-      name='delete', full_name='ProviderResponse.delete', index=4,
+      name='delete', full_name='com.mwr.mercury.ProviderResponse.delete', index=5,
       number=6, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     descriptor.FieldDescriptor(
-      name='insert', full_name='ProviderResponse.insert', index=5,
+      name='insert', full_name='com.mwr.mercury.ProviderResponse.insert', index=6,
       number=7, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     descriptor.FieldDescriptor(
-      name='info', full_name='ProviderResponse.info', index=6,
-      number=8, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
+      name='info', full_name='com.mwr.mercury.ProviderResponse.info', index=7,
+      number=8, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     descriptor.FieldDescriptor(
-      name='read', full_name='ProviderResponse.read', index=7,
+      name='read', full_name='com.mwr.mercury.ProviderResponse.read', index=8,
       number=9, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
@@ -568,11 +684,12 @@ _PROVIDERRESPONSE = descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=209,
-  serialized_end=1178,
+  serialized_start=327,
+  serialized_end=1708,
 )
 
-_REQUEST.fields_by_name['args'].message_type = _BASICREQUEST
+_RESPONSE.fields_by_name['providerResponse'].message_type = _PROVIDERRESPONSE
+_REQUEST.fields_by_name['basicRequest'].message_type = _BASICREQUEST
 _BASICREQUEST.fields_by_name['args'].message_type = _ARGS
 _PROVIDERRESPONSE_LISTSTRING.containing_type = _PROVIDERRESPONSE;
 _PROVIDERRESPONSE_COLUMNS.fields_by_name['columns'].message_type = _PROVIDERRESPONSE_LISTSTRING
@@ -586,8 +703,11 @@ _PROVIDERRESPONSE_TABLE.containing_type = _PROVIDERRESPONSE;
 _PROVIDERRESPONSE_UPDATE.containing_type = _PROVIDERRESPONSE;
 _PROVIDERRESPONSE_DELETE.containing_type = _PROVIDERRESPONSE;
 _PROVIDERRESPONSE_INSERT.containing_type = _PROVIDERRESPONSE;
+_PROVIDERRESPONSE_INFO_PATTERNPERMISSION.containing_type = _PROVIDERRESPONSE_INFO;
+_PROVIDERRESPONSE_INFO.fields_by_name['pathPermissions'].message_type = _PROVIDERRESPONSE_INFO_PATTERNPERMISSION
 _PROVIDERRESPONSE_INFO.containing_type = _PROVIDERRESPONSE;
 _PROVIDERRESPONSE_READ.containing_type = _PROVIDERRESPONSE;
+_PROVIDERRESPONSE.fields_by_name['function'].enum_type = _PROVIDERFUNCTION
 _PROVIDERRESPONSE.fields_by_name['columns'].message_type = _PROVIDERRESPONSE_COLUMNS
 _PROVIDERRESPONSE.fields_by_name['finduri'].message_type = _PROVIDERRESPONSE_FINDURI
 _PROVIDERRESPONSE.fields_by_name['query'].message_type = _PROVIDERRESPONSE_QUERY
@@ -606,25 +726,25 @@ class Response(message.Message):
   __metaclass__ = reflection.GeneratedProtocolMessageType
   DESCRIPTOR = _RESPONSE
   
-  # @@protoc_insertion_point(class_scope:Response)
+  # @@protoc_insertion_point(class_scope:com.mwr.mercury.Response)
 
 class Args(message.Message):
   __metaclass__ = reflection.GeneratedProtocolMessageType
   DESCRIPTOR = _ARGS
   
-  # @@protoc_insertion_point(class_scope:Args)
+  # @@protoc_insertion_point(class_scope:com.mwr.mercury.Args)
 
 class Request(message.Message):
   __metaclass__ = reflection.GeneratedProtocolMessageType
   DESCRIPTOR = _REQUEST
   
-  # @@protoc_insertion_point(class_scope:Request)
+  # @@protoc_insertion_point(class_scope:com.mwr.mercury.Request)
 
 class BasicRequest(message.Message):
   __metaclass__ = reflection.GeneratedProtocolMessageType
   DESCRIPTOR = _BASICREQUEST
   
-  # @@protoc_insertion_point(class_scope:BasicRequest)
+  # @@protoc_insertion_point(class_scope:com.mwr.mercury.BasicRequest)
 
 class ProviderResponse(message.Message):
   __metaclass__ = reflection.GeneratedProtocolMessageType
@@ -633,63 +753,69 @@ class ProviderResponse(message.Message):
     __metaclass__ = reflection.GeneratedProtocolMessageType
     DESCRIPTOR = _PROVIDERRESPONSE_LISTSTRING
     
-    # @@protoc_insertion_point(class_scope:ProviderResponse.ListString)
+    # @@protoc_insertion_point(class_scope:com.mwr.mercury.ProviderResponse.ListString)
   
   class Columns(message.Message):
     __metaclass__ = reflection.GeneratedProtocolMessageType
     DESCRIPTOR = _PROVIDERRESPONSE_COLUMNS
     
-    # @@protoc_insertion_point(class_scope:ProviderResponse.Columns)
+    # @@protoc_insertion_point(class_scope:com.mwr.mercury.ProviderResponse.Columns)
   
   class FindUri(message.Message):
     __metaclass__ = reflection.GeneratedProtocolMessageType
     DESCRIPTOR = _PROVIDERRESPONSE_FINDURI
     
-    # @@protoc_insertion_point(class_scope:ProviderResponse.FindUri)
+    # @@protoc_insertion_point(class_scope:com.mwr.mercury.ProviderResponse.FindUri)
   
   class Query(message.Message):
     __metaclass__ = reflection.GeneratedProtocolMessageType
     DESCRIPTOR = _PROVIDERRESPONSE_QUERY
     
-    # @@protoc_insertion_point(class_scope:ProviderResponse.Query)
+    # @@protoc_insertion_point(class_scope:com.mwr.mercury.ProviderResponse.Query)
   
   class Table(message.Message):
     __metaclass__ = reflection.GeneratedProtocolMessageType
     DESCRIPTOR = _PROVIDERRESPONSE_TABLE
     
-    # @@protoc_insertion_point(class_scope:ProviderResponse.Table)
+    # @@protoc_insertion_point(class_scope:com.mwr.mercury.ProviderResponse.Table)
   
   class Update(message.Message):
     __metaclass__ = reflection.GeneratedProtocolMessageType
     DESCRIPTOR = _PROVIDERRESPONSE_UPDATE
     
-    # @@protoc_insertion_point(class_scope:ProviderResponse.Update)
+    # @@protoc_insertion_point(class_scope:com.mwr.mercury.ProviderResponse.Update)
   
   class Delete(message.Message):
     __metaclass__ = reflection.GeneratedProtocolMessageType
     DESCRIPTOR = _PROVIDERRESPONSE_DELETE
     
-    # @@protoc_insertion_point(class_scope:ProviderResponse.Delete)
+    # @@protoc_insertion_point(class_scope:com.mwr.mercury.ProviderResponse.Delete)
   
   class Insert(message.Message):
     __metaclass__ = reflection.GeneratedProtocolMessageType
     DESCRIPTOR = _PROVIDERRESPONSE_INSERT
     
-    # @@protoc_insertion_point(class_scope:ProviderResponse.Insert)
+    # @@protoc_insertion_point(class_scope:com.mwr.mercury.ProviderResponse.Insert)
   
   class Info(message.Message):
     __metaclass__ = reflection.GeneratedProtocolMessageType
+    
+    class PatternPermission(message.Message):
+      __metaclass__ = reflection.GeneratedProtocolMessageType
+      DESCRIPTOR = _PROVIDERRESPONSE_INFO_PATTERNPERMISSION
+      
+      # @@protoc_insertion_point(class_scope:com.mwr.mercury.ProviderResponse.Info.PatternPermission)
     DESCRIPTOR = _PROVIDERRESPONSE_INFO
     
-    # @@protoc_insertion_point(class_scope:ProviderResponse.Info)
+    # @@protoc_insertion_point(class_scope:com.mwr.mercury.ProviderResponse.Info)
   
   class Read(message.Message):
     __metaclass__ = reflection.GeneratedProtocolMessageType
     DESCRIPTOR = _PROVIDERRESPONSE_READ
     
-    # @@protoc_insertion_point(class_scope:ProviderResponse.Read)
+    # @@protoc_insertion_point(class_scope:com.mwr.mercury.ProviderResponse.Read)
   DESCRIPTOR = _PROVIDERRESPONSE
   
-  # @@protoc_insertion_point(class_scope:ProviderResponse)
+  # @@protoc_insertion_point(class_scope:com.mwr.mercury.ProviderResponse)
 
 # @@protoc_insertion_point(module_scope)

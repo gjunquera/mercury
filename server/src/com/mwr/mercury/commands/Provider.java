@@ -4,6 +4,9 @@ package com.mwr.mercury.commands;
 
 import com.mwr.mercury.ArgumentWrapper;
 import com.mwr.mercury.Common;
+import com.mwr.mercury.Message.Args;
+import com.mwr.mercury.Message.ProviderResponse;
+import com.mwr.mercury.Message.Response;
 import com.mwr.mercury.Session;
 
 import android.content.ContentResolver;
@@ -23,23 +26,19 @@ import java.util.List;
 
 public class Provider
 {
-	public static void info(List<ArgumentWrapper> argsArray,
-			Session currentSession)
+	public static void info(List<Args> argsArray, Session currentSession)
 	{
-		// Assign filter and permissions if they came in the arguments
-		String filter = Common.getParamString(argsArray, "filter");
-		String permissions = Common.getParamString(argsArray, "permissions");
-
-		currentSession.startTransmission();
-		currentSession.startResponse();
-		currentSession.startData();
-
+		//TODO implement a method on Common class to do it
+		String filter = Common.getPb2ParamString(argsArray, "filter");
+		String permissions = Common.getPb2ParamString(argsArray, "permissions");
+		
 		// Get all providers and iterate through them
 		List<ProviderInfo> providers = currentSession.applicationContext
 				.getPackageManager().queryContentProviders(null,
 						PackageManager.GET_URI_PERMISSION_PATTERNS,
 						PackageManager.GET_URI_PERMISSION_PATTERNS);
 
+		ProviderResponse.Builder provBuilder = ProviderResponse.newBuilder();
 		// Iterate through content providers
 		for (int i = 0; i < providers.size(); i++)
 		{
@@ -52,39 +51,6 @@ public class Provider
 			PathPermission[] providerPathPermissions = providers.get(i).pathPermissions;
 			boolean providerMultiprocess = providers.get(i).multiprocess;
 			boolean grantUriPermissions = providers.get(i).grantUriPermissions;
-
-			String pathpermissions = "";
-
-			// Path permissions
-			if (providerPathPermissions != null)
-				for (int j = 0; j < providerPathPermissions.length; j++)
-				{
-					if (providerPathPermissions[j].getReadPermission() != null)
-						pathpermissions += "Path Permission - Read: "
-								+ providerPathPermissions[j].getPath()
-								+ " needs "
-								+ providerPathPermissions[j]
-										.getReadPermission() + "\n";
-
-					if (providerPathPermissions[j].getWritePermission() != null)
-						pathpermissions += "Path Permission - Write: "
-								+ providerPathPermissions[j].getPath()
-								+ " needs "
-								+ providerPathPermissions[j]
-										.getWritePermission() + "\n";
-				}
-
-			String uriPermissions = "";
-
-			// URI Permission Patterns
-			if (uriPermissionPatterns != null)
-				for (int k = 0; k < uriPermissionPatterns.length; k++)
-				{
-					if (uriPermissionPatterns[k].getPath() != null)
-						uriPermissions += "URI Permission Pattern: "
-								+ uriPermissionPatterns[k].getPath() + "\n";
-
-				}
 
 			boolean relevantFilter = false;
 			boolean relevantPermissions = false;
@@ -133,32 +99,49 @@ public class Provider
 					|| (!bothFiltersPresent && (relevantFilter || relevantPermissions)) || (!bothFiltersPresent && noFilters))
 					&& providers.get(i).exported)
 			{
-				currentSession.send("Package name: " + providerPackage + "\n",
-						true);
-				currentSession.send("Authority: " + providerAuthority + "\n",
-						true);
-				currentSession.send("Required Permission - Read: "
-						+ providerReadPermission + "\n", true);
-				currentSession.send("Required Permission - Write: "
-						+ providerWritePermission + "\n", true);
-				currentSession.send(
-						(pathpermissions.length() > 0) ? pathpermissions : "",
-						true);
-				currentSession.send(
-						(uriPermissions.length() > 0) ? uriPermissions : "",
-						true);
-				currentSession.send("Grant Uri Permissions: "
-						+ grantUriPermissions + "\n", true);
-				currentSession.send("Multiprocess allowed: "
-						+ providerMultiprocess + "\n\n", true);
+				ProviderResponse.Info.Builder infoBuilder = ProviderResponse.Info.newBuilder();
+				
+				// URI Permission Patterns
+				if (uriPermissionPatterns != null)
+					for (int j = 0; j < providerPathPermissions.length; j++)
+					{
+						String path = providerPathPermissions[j].getPath(); 
+						if (path != null) {
+							infoBuilder.addUriPermissionPatterns(path);
+						}
+					}
+				
+				// Path permissions
+				if (providerPathPermissions != null) 
+					for (int j = 0; j < providerPathPermissions.length; j++)
+					{
+						ProviderResponse.Info.PatternPermission.Builder patternBuilder = 
+							ProviderResponse.Info.PatternPermission.newBuilder();
+						if (providerPathPermissions[j].getReadPermission() != null)
+							patternBuilder.setReadPermission(providerPathPermissions[j].getPath()).
+										setReadNeeds(providerPathPermissions[j].getReadPermission());
+
+						if (providerPathPermissions[j].getWritePermission() != null)
+							patternBuilder.setWritePermission(providerPathPermissions[j].getPath()).
+										setWriteNeeds(providerPathPermissions[j].getWritePermission());
+						infoBuilder.addPathPermissions(patternBuilder.build());
+					}
+				
+				infoBuilder.setAuthority(providerAuthority);
+				infoBuilder.setPackageName(providerPackage);
+				infoBuilder.setReadPermission(providerReadPermission);
+				infoBuilder.setWritePermission(providerWritePermission);
+				infoBuilder.setGrantUriPermissions(grantUriPermissions);
+				infoBuilder.setMultiprocess(providerMultiprocess);
+				
+				provBuilder.addInfo(infoBuilder.build());
+				
 			}
-
 		}
-
-		currentSession.endData();
-		currentSession.noError();
-		currentSession.endResponse();
-		currentSession.endTransmission();
+		
+		Response resp = Response.newBuilder().setProviderResponse(provBuilder.build()).build();
+		currentSession.send(Base64.encodeToString(resp.toByteArray(), Base64.DEFAULT), false);
+		
 	}
 
 	public static void columns(List<ArgumentWrapper> argsArray,

@@ -338,10 +338,24 @@ Multiprocess allowed: false
             # Compile stated arguments to send to executeCommand
             request = vars(splitargs)
 
-            print self.session.makeRequest("provider", "info", request).getPaddedErrorOrData()
-
+            #print self.session.makeRequest("provider", "info", request)#.getPaddedErrorOrData()
+            resp = self.session.newExecuteCommand("provider", "info", request)
+            for info in resp.providerResponse.info:
+                print "PackageName: " + info.packageName
+                print "Authority: " + info.authority
+                print "Required Permission - Read: " + info.readPermission
+                print "Required Permission - Write: " + info.writePermission
+                print "Grant Uri Permissions: " + str(info.grantUriPermissions)
+                print "Multiprocess allowed: " + str(info.multiprocess)
+                for uri in info.uriPermissionPatterns:
+                    print "URI Permission Pattern: " + uri
+                for pathPermission in  info.pathPermissions:
+                    if len(pathPermission.readPermission) > 0:
+                        print "Path Permission - Read: " + pathPermission.readPermission + " needs " + pathPermission.readNeeds
+                    if len(pathPermission.writePermission) > 0:
+                        print "Path Permission - Write: " + pathPermission.writePermission + " needs " + pathPermission.writeNeeds
         # FIXME: Choose specific exceptions to catch
-        except Exception:
+        except Exception as e:
             pass
 
 
