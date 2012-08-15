@@ -167,16 +167,18 @@ public class Common
 	}
 	
 	//Get parameter from a List<Args>
-	public static String getPb2ParamString(List<Args> argArray, String type) 
+	public static String getSingleParamString(List<Args> argArray, String type) 
 	{
 		for (Args arg : argArray) 
 		{
-			String argType = arg.getType();
-			String value = arg.getValues();
+			String argType = arg.getName();
+			List<String> values = arg.getValuesList();
 			if (type != null) 
 			{
 				if (type.equalsIgnoreCase(argType))
-					return value;
+					if (values.get(0) != null) {
+						return values.get(0);
+					}
 			}
 		}
 		return "";

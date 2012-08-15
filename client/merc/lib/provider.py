@@ -47,10 +47,17 @@ _id | name | value
             if (splitargs.uri):
                 request['uri'] = splitargs.uri
 
-            print self.session.makeRequest("provider", "columns", request).getPaddedErrorOrData()
-
+            #print self.session.makeRequest("provider", "columns", request).getPaddedErrorOrData()
+            resp = self.session.newExecuteCommand("provider", "columns", request)
+            msg = "| "
+            if resp.error == "Success":
+                for column in resp.providerResponse.columns.column:
+                    msg += column + " | "
+            else:
+                msg += resp.error
+            print msg
         # FIXME: Choose specific exceptions to catch
-        except Exception:
+        except Exception as e:
             pass
 
     def do_query(self, args):
@@ -114,7 +121,8 @@ _id | name | value
             # Compile stated arguments to send to executeCommand
             request = vars(splitargs)
 
-            print self.session.executeCommand("provider", "query", request).getPaddedErrorOrData()
+            #print self.session.executeCommand("provider", "query", request).getPaddedErrorOrData()
+            self.session.makeRequest("provider", "query", request)
 
         # FIXME: Choose specific exceptions to catch
         except Exception:
@@ -354,6 +362,7 @@ Multiprocess allowed: false
                         print "Path Permission - Read: " + pathPermission.readPermission + " needs " + pathPermission.readNeeds
                     if len(pathPermission.writePermission) > 0:
                         print "Path Permission - Write: " + pathPermission.writePermission + " needs " + pathPermission.writeNeeds
+                print "\n"
         # FIXME: Choose specific exceptions to catch
         except Exception as e:
             pass

@@ -11,7 +11,7 @@ from google.protobuf import descriptor_pb2
 DESCRIPTOR = descriptor.FileDescriptor(
   name='Message.proto',
   package='com.mwr.mercury',
-  serialized_pb='\n\rMessage.proto\x12\x0f\x63om.mwr.mercury\"d\n\x08Response\x12\x0c\n\x04\x64\x61ta\x18\x01 \x01(\t\x12\r\n\x05\x65rror\x18\x02 \x01(\t\x12;\n\x10providerResponse\x18\x03 \x01(\x0b\x32!.com.mwr.mercury.ProviderResponse\"$\n\x04\x41rgs\x12\x0c\n\x04type\x18\x01 \x01(\t\x12\x0e\n\x06values\x18\x02 \x01(\t\"a\n\x07Request\x12\x0f\n\x07section\x18\x01 \x01(\t\x12\x10\n\x08\x66unction\x18\x02 \x01(\t\x12\x33\n\x0c\x62\x61sicRequest\x18\x03 \x01(\x0b\x32\x1d.com.mwr.mercury.BasicRequest\"3\n\x0c\x42\x61sicRequest\x12#\n\x04\x61rgs\x18\x03 \x03(\x0b\x32\x15.com.mwr.mercury.Args\"\xe5\n\n\x10ProviderResponse\x12\x33\n\x08\x66unction\x18\x01 \x01(\x0e\x32!.com.mwr.mercury.ProviderFunction\x12:\n\x07\x63olumns\x18\x02 \x01(\x0b\x32).com.mwr.mercury.ProviderResponse.Columns\x12:\n\x07\x66induri\x18\x03 \x01(\x0b\x32).com.mwr.mercury.ProviderResponse.FindUri\x12\x36\n\x05query\x18\x04 \x01(\x0b\x32\'.com.mwr.mercury.ProviderResponse.Query\x12\x38\n\x06update\x18\x05 \x01(\x0b\x32(.com.mwr.mercury.ProviderResponse.Update\x12\x38\n\x06\x64\x65lete\x18\x06 \x01(\x0b\x32(.com.mwr.mercury.ProviderResponse.Delete\x12\x38\n\x06insert\x18\x07 \x01(\x0b\x32(.com.mwr.mercury.ProviderResponse.Insert\x12\x34\n\x04info\x18\x08 \x03(\x0b\x32&.com.mwr.mercury.ProviderResponse.Info\x12\x34\n\x04read\x18\t \x01(\x0b\x32&.com.mwr.mercury.ProviderResponse.Read\x1a\x1b\n\nListString\x12\r\n\x05\x66ield\x18\x01 \x03(\t\x1aH\n\x07\x43olumns\x12=\n\x07\x63olumns\x18\x01 \x02(\x0b\x32,.com.mwr.mercury.ProviderResponse.ListString\x1a\x17\n\x07\x46indUri\x12\x0c\n\x04uris\x18\x01 \x03(\t\x1a@\n\x05Query\x12\x37\n\x06tables\x18\x01 \x03(\x0b\x32\'.com.mwr.mercury.ProviderResponse.Table\x1a\xa7\x01\n\x05Table\x12=\n\x07\x63olumns\x18\x01 \x02(\x0b\x32,.com.mwr.mercury.ProviderResponse.ListString\x12:\n\x04rows\x18\x02 \x03(\x0b\x32,.com.mwr.mercury.ProviderResponse.ListString\x12\x12\n\nnumColumns\x18\x03 \x01(\x05\x12\x0f\n\x07numRows\x18\x04 \x01(\x05\x1a\x1e\n\x06Update\x12\x14\n\x0crows_updated\x18\x01 \x01(\x05\x1a\x1e\n\x06\x44\x65lete\x12\x14\n\x0crows_deleted\x18\x01 \x01(\x05\x1a\x1a\n\x06Insert\x12\x10\n\x08response\x18\x01 \x01(\t\x1a\xf1\x02\n\x04Info\x12\x11\n\tauthority\x18\x01 \x01(\t\x12\x13\n\x0bpackageName\x18\x02 \x01(\t\x12\x16\n\x0ereadPermission\x18\x03 \x01(\t\x12\x1d\n\x15uriPermissionPatterns\x18\x04 \x03(\t\x12\x17\n\x0fwritePermission\x18\x05 \x01(\t\x12Q\n\x0fpathPermissions\x18\x06 \x03(\x0b\x32\x38.com.mwr.mercury.ProviderResponse.Info.PatternPermission\x12\x14\n\x0cmultiprocess\x18\x07 \x01(\x08\x12\x1b\n\x13grantUriPermissions\x18\x08 \x01(\x08\x1ak\n\x11PatternPermission\x12\x17\n\x0fwritePermission\x18\x01 \x01(\t\x12\x16\n\x0ereadPermission\x18\x02 \x01(\t\x12\x12\n\nwriteNeeds\x18\x03 \x01(\t\x12\x11\n\treadNeeds\x18\x04 \x01(\t\x1a\x16\n\x04Read\x12\x0e\n\x06stream\x18\x01 \x01(\t*p\n\x10ProviderFunction\x12\x0b\n\x07\x43OLUMNS\x10\x00\x12\n\n\x06\x44\x45LETE\x10\x01\x12\x0c\n\x08\x46IND_URI\x10\x02\x12\x08\n\x04INFO\x10\x03\x12\n\n\x06INSERT\x10\x04\x12\t\n\x05QUERY\x10\x05\x12\x08\n\x04READ\x10\x06\x12\n\n\x06UPDATE\x10\x07')
+  serialized_pb='\n\rMessage.proto\x12\x0f\x63om.mwr.mercury\"d\n\x08Response\x12\x0c\n\x04\x64\x61ta\x18\x01 \x01(\t\x12\r\n\x05\x65rror\x18\x02 \x01(\t\x12;\n\x10providerResponse\x18\x03 \x01(\x0b\x32!.com.mwr.mercury.ProviderResponse\"$\n\x04\x41rgs\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x0e\n\x06values\x18\x02 \x03(\t\"a\n\x07Request\x12\x0f\n\x07section\x18\x01 \x01(\t\x12\x10\n\x08\x66unction\x18\x02 \x01(\t\x12\x33\n\x0c\x62\x61sicRequest\x18\x03 \x01(\x0b\x32\x1d.com.mwr.mercury.BasicRequest\"3\n\x0c\x42\x61sicRequest\x12#\n\x04\x61rgs\x18\x03 \x03(\x0b\x32\x15.com.mwr.mercury.Args\"\xb8\n\n\x10ProviderResponse\x12\x33\n\x08\x66unction\x18\x01 \x01(\x0e\x32!.com.mwr.mercury.ProviderFunction\x12:\n\x07\x63olumns\x18\x02 \x01(\x0b\x32).com.mwr.mercury.ProviderResponse.Columns\x12:\n\x07\x66induri\x18\x03 \x01(\x0b\x32).com.mwr.mercury.ProviderResponse.FindUri\x12\x36\n\x05query\x18\x04 \x01(\x0b\x32\'.com.mwr.mercury.ProviderResponse.Query\x12\x38\n\x06update\x18\x05 \x01(\x0b\x32(.com.mwr.mercury.ProviderResponse.Update\x12\x38\n\x06\x64\x65lete\x18\x06 \x01(\x0b\x32(.com.mwr.mercury.ProviderResponse.Delete\x12\x38\n\x06insert\x18\x07 \x01(\x0b\x32(.com.mwr.mercury.ProviderResponse.Insert\x12\x34\n\x04info\x18\x08 \x03(\x0b\x32&.com.mwr.mercury.ProviderResponse.Info\x12\x34\n\x04read\x18\t \x01(\x0b\x32&.com.mwr.mercury.ProviderResponse.Read\x1a\x1d\n\nListString\x12\x0f\n\x07\x65lement\x18\x01 \x03(\t\x1a\x19\n\x07\x43olumns\x12\x0e\n\x06\x63olumn\x18\x01 \x03(\t\x1a\x17\n\x07\x46indUri\x12\x0c\n\x04uris\x18\x01 \x03(\t\x1a@\n\x05Query\x12\x37\n\x06tables\x18\x01 \x03(\x0b\x32\'.com.mwr.mercury.ProviderResponse.Table\x1a\xa7\x01\n\x05Table\x12=\n\x07\x63olumns\x18\x01 \x02(\x0b\x32,.com.mwr.mercury.ProviderResponse.ListString\x12:\n\x04rows\x18\x02 \x03(\x0b\x32,.com.mwr.mercury.ProviderResponse.ListString\x12\x12\n\nnumColumns\x18\x03 \x01(\x05\x12\x0f\n\x07numRows\x18\x04 \x01(\x05\x1a\x1e\n\x06Update\x12\x14\n\x0crows_updated\x18\x01 \x01(\x05\x1a\x1e\n\x06\x44\x65lete\x12\x14\n\x0crows_deleted\x18\x01 \x01(\x05\x1a\x1a\n\x06Insert\x12\x10\n\x08response\x18\x01 \x01(\t\x1a\xf1\x02\n\x04Info\x12\x11\n\tauthority\x18\x01 \x01(\t\x12\x13\n\x0bpackageName\x18\x02 \x01(\t\x12\x16\n\x0ereadPermission\x18\x03 \x01(\t\x12\x1d\n\x15uriPermissionPatterns\x18\x04 \x03(\t\x12\x17\n\x0fwritePermission\x18\x05 \x01(\t\x12Q\n\x0fpathPermissions\x18\x06 \x03(\x0b\x32\x38.com.mwr.mercury.ProviderResponse.Info.PatternPermission\x12\x14\n\x0cmultiprocess\x18\x07 \x01(\x08\x12\x1b\n\x13grantUriPermissions\x18\x08 \x01(\x08\x1ak\n\x11PatternPermission\x12\x17\n\x0fwritePermission\x18\x01 \x01(\t\x12\x16\n\x0ereadPermission\x18\x02 \x01(\t\x12\x12\n\nwriteNeeds\x18\x03 \x01(\t\x12\x11\n\treadNeeds\x18\x04 \x01(\t\x1a\x16\n\x04Read\x12\x0e\n\x06stream\x18\x01 \x01(\t*p\n\x10ProviderFunction\x12\x0b\n\x07\x43OLUMNS\x10\x00\x12\n\n\x06\x44\x45LETE\x10\x01\x12\x0c\n\x08\x46IND_URI\x10\x02\x12\x08\n\x04INFO\x10\x03\x12\n\n\x06INSERT\x10\x04\x12\t\n\x05QUERY\x10\x05\x12\x08\n\x04READ\x10\x06\x12\n\n\x06UPDATE\x10\x07')
 
 _PROVIDERFUNCTION = descriptor.EnumDescriptor(
   name='ProviderFunction',
@@ -54,8 +54,8 @@ _PROVIDERFUNCTION = descriptor.EnumDescriptor(
   ],
   containing_type=None,
   options=None,
-  serialized_start=1710,
-  serialized_end=1822,
+  serialized_start=1665,
+  serialized_end=1777,
 )
 
 
@@ -120,7 +120,7 @@ _ARGS = descriptor.Descriptor(
   containing_type=None,
   fields=[
     descriptor.FieldDescriptor(
-      name='type', full_name='com.mwr.mercury.Args.type', index=0,
+      name='name', full_name='com.mwr.mercury.Args.name', index=0,
       number=1, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=unicode("", "utf-8"),
       message_type=None, enum_type=None, containing_type=None,
@@ -128,8 +128,8 @@ _ARGS = descriptor.Descriptor(
       options=None),
     descriptor.FieldDescriptor(
       name='values', full_name='com.mwr.mercury.Args.values', index=1,
-      number=2, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=unicode("", "utf-8"),
+      number=2, type=9, cpp_type=9, label=3,
+      has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
@@ -225,7 +225,7 @@ _PROVIDERRESPONSE_LISTSTRING = descriptor.Descriptor(
   containing_type=None,
   fields=[
     descriptor.FieldDescriptor(
-      name='field', full_name='com.mwr.mercury.ProviderResponse.ListString.field', index=0,
+      name='element', full_name='com.mwr.mercury.ProviderResponse.ListString.element', index=0,
       number=1, type=9, cpp_type=9, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
@@ -241,7 +241,7 @@ _PROVIDERRESPONSE_LISTSTRING = descriptor.Descriptor(
   is_extendable=False,
   extension_ranges=[],
   serialized_start=858,
-  serialized_end=885,
+  serialized_end=887,
 )
 
 _PROVIDERRESPONSE_COLUMNS = descriptor.Descriptor(
@@ -252,9 +252,9 @@ _PROVIDERRESPONSE_COLUMNS = descriptor.Descriptor(
   containing_type=None,
   fields=[
     descriptor.FieldDescriptor(
-      name='columns', full_name='com.mwr.mercury.ProviderResponse.Columns.columns', index=0,
-      number=1, type=11, cpp_type=10, label=2,
-      has_default_value=False, default_value=None,
+      name='column', full_name='com.mwr.mercury.ProviderResponse.Columns.column', index=0,
+      number=1, type=9, cpp_type=9, label=3,
+      has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
@@ -267,8 +267,8 @@ _PROVIDERRESPONSE_COLUMNS = descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=887,
-  serialized_end=959,
+  serialized_start=889,
+  serialized_end=914,
 )
 
 _PROVIDERRESPONSE_FINDURI = descriptor.Descriptor(
@@ -294,8 +294,8 @@ _PROVIDERRESPONSE_FINDURI = descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=961,
-  serialized_end=984,
+  serialized_start=916,
+  serialized_end=939,
 )
 
 _PROVIDERRESPONSE_QUERY = descriptor.Descriptor(
@@ -321,8 +321,8 @@ _PROVIDERRESPONSE_QUERY = descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=986,
-  serialized_end=1050,
+  serialized_start=941,
+  serialized_end=1005,
 )
 
 _PROVIDERRESPONSE_TABLE = descriptor.Descriptor(
@@ -369,8 +369,8 @@ _PROVIDERRESPONSE_TABLE = descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=1053,
-  serialized_end=1220,
+  serialized_start=1008,
+  serialized_end=1175,
 )
 
 _PROVIDERRESPONSE_UPDATE = descriptor.Descriptor(
@@ -396,8 +396,8 @@ _PROVIDERRESPONSE_UPDATE = descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=1222,
-  serialized_end=1252,
+  serialized_start=1177,
+  serialized_end=1207,
 )
 
 _PROVIDERRESPONSE_DELETE = descriptor.Descriptor(
@@ -423,8 +423,8 @@ _PROVIDERRESPONSE_DELETE = descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=1254,
-  serialized_end=1284,
+  serialized_start=1209,
+  serialized_end=1239,
 )
 
 _PROVIDERRESPONSE_INSERT = descriptor.Descriptor(
@@ -450,8 +450,8 @@ _PROVIDERRESPONSE_INSERT = descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=1286,
-  serialized_end=1312,
+  serialized_start=1241,
+  serialized_end=1267,
 )
 
 _PROVIDERRESPONSE_INFO_PATTERNPERMISSION = descriptor.Descriptor(
@@ -498,8 +498,8 @@ _PROVIDERRESPONSE_INFO_PATTERNPERMISSION = descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=1577,
-  serialized_end=1684,
+  serialized_start=1532,
+  serialized_end=1639,
 )
 
 _PROVIDERRESPONSE_INFO = descriptor.Descriptor(
@@ -574,8 +574,8 @@ _PROVIDERRESPONSE_INFO = descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=1315,
-  serialized_end=1684,
+  serialized_start=1270,
+  serialized_end=1639,
 )
 
 _PROVIDERRESPONSE_READ = descriptor.Descriptor(
@@ -601,8 +601,8 @@ _PROVIDERRESPONSE_READ = descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=1686,
-  serialized_end=1708,
+  serialized_start=1641,
+  serialized_end=1663,
 )
 
 _PROVIDERRESPONSE = descriptor.Descriptor(
@@ -685,14 +685,13 @@ _PROVIDERRESPONSE = descriptor.Descriptor(
   is_extendable=False,
   extension_ranges=[],
   serialized_start=327,
-  serialized_end=1708,
+  serialized_end=1663,
 )
 
 _RESPONSE.fields_by_name['providerResponse'].message_type = _PROVIDERRESPONSE
 _REQUEST.fields_by_name['basicRequest'].message_type = _BASICREQUEST
 _BASICREQUEST.fields_by_name['args'].message_type = _ARGS
 _PROVIDERRESPONSE_LISTSTRING.containing_type = _PROVIDERRESPONSE;
-_PROVIDERRESPONSE_COLUMNS.fields_by_name['columns'].message_type = _PROVIDERRESPONSE_LISTSTRING
 _PROVIDERRESPONSE_COLUMNS.containing_type = _PROVIDERRESPONSE;
 _PROVIDERRESPONSE_FINDURI.containing_type = _PROVIDERRESPONSE;
 _PROVIDERRESPONSE_QUERY.fields_by_name['tables'].message_type = _PROVIDERRESPONSE_TABLE

@@ -28,9 +28,8 @@ public class Provider
 {
 	public static void info(List<Args> argsArray, Session currentSession)
 	{
-		//TODO implement a method on Common class to do it
-		String filter = Common.getPb2ParamString(argsArray, "filter");
-		String permissions = Common.getPb2ParamString(argsArray, "permissions");
+		String filter = Common.getSingleParamString(argsArray, "filter");
+		String permissions = Common.getSingleParamString(argsArray, "permissions");
 		
 		// Get all providers and iterate through them
 		List<ProviderInfo> providers = currentSession.applicationContext
@@ -146,33 +145,33 @@ public class Provider
 		
 	}
 
-	public static void columns(List<ArgumentWrapper> argsArray,
+	public static void columns(List<Args> argsArray,
 			Session currentSession)
 	{
 		// Get list of columns
 		ArrayList<String> columns = Common.getColumns(
 				currentSession.applicationContext.getContentResolver(),
-				new String(Common.getParam(argsArray, "uri")), null);
+				Common.getSingleParamString(argsArray, "uri"), null);
 
-		// If there are no columns, then the URI is invalid
+		Response.Builder respBuilder = Response.newBuilder();
+
 		if (columns.size() == 0)
-			currentSession.sendFullTransmission("",
-					"Invalid content URI specified");
+			respBuilder.setError("Invalid content URI specified");
 		else
 		{
-			String columnsStr = "";
-
+			ProviderResponse.Builder provBuilder = ProviderResponse.newBuilder();
+			ProviderResponse.Columns.Builder columnBuilder = ProviderResponse.Columns.newBuilder(); 
 			// Iterate through columns
 			for (int i = 0; i < columns.size(); i++)
 			{
-				if (i != columns.size() - 1)
-					columnsStr += columns.get(i) + " | ";
-				else
-					columnsStr += columns.get(i);
+				columnBuilder.addColumn(columns.get(i));
 			}
-
-			currentSession.sendFullTransmission(columnsStr, "");
+			
+			provBuilder.setColumns(columnBuilder.build());
+			respBuilder.setError("Success").setProviderResponse(provBuilder.build());
 		}
+		Response resp = respBuilder.build();
+		currentSession.send(Base64.encodeToString(resp.toByteArray(), Base64.DEFAULT), false);
 	}
 
 	public static void query(List<ArgumentWrapper> argsArray,

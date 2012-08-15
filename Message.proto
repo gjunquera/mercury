@@ -1,19 +1,23 @@
 package com.mwr.mercury;
 
-// General response, returns the data to be printed in mercury
 message Response {
+//Basic Fileds
 	optional string data = 1;
 	optional string error = 2;
+//Specific fields	
 	optional ProviderResponse providerResponse = 3;
+//	optional ActivityResponse activityResponse = 4;
+//	optional ServiceResponse serviceResponse = 5;
+//  (...)
+//  add other response types
 }
 
 message Args {
-	optional string type = 1;
-	optional string values = 2;
+	optional string name = 1;
+	repeated string values = 2;
 }
 
 message Request {
-	
 	optional string section = 1;
 	optional string function = 2;
 	optional BasicRequest basicRequest = 3;
@@ -22,6 +26,14 @@ message Request {
 message BasicRequest {
 	repeated Args args = 3;
 }
+
+//TODO
+//message ActivityResponse {
+//}
+
+//TODO
+//message ServiceResponse {
+//}
 
 enum ProviderFunction {
 	COLUMNS = 0;
@@ -38,11 +50,11 @@ enum ProviderFunction {
 message ProviderResponse {
 	
 	message ListString {
-		repeated string field = 1;	
+		repeated string element = 1;	
 	}
 
 	message Columns {
-		required ListString columns = 1;
+		repeated string column = 1;
 	}
   
 	message FindUri {

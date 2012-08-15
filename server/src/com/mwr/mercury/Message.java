@@ -722,13 +722,14 @@ public final class Message {
   public interface ArgsOrBuilder
       extends com.google.protobuf.MessageOrBuilder {
     
-    // optional string type = 1;
-    boolean hasType();
-    String getType();
+    // optional string name = 1;
+    boolean hasName();
+    String getName();
     
-    // optional string values = 2;
-    boolean hasValues();
-    String getValues();
+    // repeated string values = 2;
+    java.util.List<String> getValuesList();
+    int getValuesCount();
+    String getValues(int index);
   }
   public static final class Args extends
       com.google.protobuf.GeneratedMessage
@@ -759,14 +760,14 @@ public final class Message {
     }
     
     private int bitField0_;
-    // optional string type = 1;
-    public static final int TYPE_FIELD_NUMBER = 1;
-    private java.lang.Object type_;
-    public boolean hasType() {
+    // optional string name = 1;
+    public static final int NAME_FIELD_NUMBER = 1;
+    private java.lang.Object name_;
+    public boolean hasName() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
-    public String getType() {
-      java.lang.Object ref = type_;
+    public String getName() {
+      java.lang.Object ref = name_;
       if (ref instanceof String) {
         return (String) ref;
       } else {
@@ -774,58 +775,40 @@ public final class Message {
             (com.google.protobuf.ByteString) ref;
         String s = bs.toStringUtf8();
         if (com.google.protobuf.Internal.isValidUtf8(bs)) {
-          type_ = s;
+          name_ = s;
         }
         return s;
       }
     }
-    private com.google.protobuf.ByteString getTypeBytes() {
-      java.lang.Object ref = type_;
+    private com.google.protobuf.ByteString getNameBytes() {
+      java.lang.Object ref = name_;
       if (ref instanceof String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8((String) ref);
-        type_ = b;
+        name_ = b;
         return b;
       } else {
         return (com.google.protobuf.ByteString) ref;
       }
     }
     
-    // optional string values = 2;
+    // repeated string values = 2;
     public static final int VALUES_FIELD_NUMBER = 2;
-    private java.lang.Object values_;
-    public boolean hasValues() {
-      return ((bitField0_ & 0x00000002) == 0x00000002);
+    private com.google.protobuf.LazyStringList values_;
+    public java.util.List<String>
+        getValuesList() {
+      return values_;
     }
-    public String getValues() {
-      java.lang.Object ref = values_;
-      if (ref instanceof String) {
-        return (String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        String s = bs.toStringUtf8();
-        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
-          values_ = s;
-        }
-        return s;
-      }
+    public int getValuesCount() {
+      return values_.size();
     }
-    private com.google.protobuf.ByteString getValuesBytes() {
-      java.lang.Object ref = values_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8((String) ref);
-        values_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
+    public String getValues(int index) {
+      return values_.get(index);
     }
     
     private void initFields() {
-      type_ = "";
-      values_ = "";
+      name_ = "";
+      values_ = com.google.protobuf.LazyStringArrayList.EMPTY;
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -840,10 +823,10 @@ public final class Message {
                         throws java.io.IOException {
       getSerializedSize();
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        output.writeBytes(1, getTypeBytes());
+        output.writeBytes(1, getNameBytes());
       }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        output.writeBytes(2, getValuesBytes());
+      for (int i = 0; i < values_.size(); i++) {
+        output.writeBytes(2, values_.getByteString(i));
       }
       getUnknownFields().writeTo(output);
     }
@@ -856,11 +839,16 @@ public final class Message {
       size = 0;
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(1, getTypeBytes());
+          .computeBytesSize(1, getNameBytes());
       }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(2, getValuesBytes());
+      {
+        int dataSize = 0;
+        for (int i = 0; i < values_.size(); i++) {
+          dataSize += com.google.protobuf.CodedOutputStream
+            .computeBytesSizeNoTag(values_.getByteString(i));
+        }
+        size += dataSize;
+        size += 1 * getValuesList().size();
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -986,9 +974,9 @@ public final class Message {
       
       public Builder clear() {
         super.clear();
-        type_ = "";
+        name_ = "";
         bitField0_ = (bitField0_ & ~0x00000001);
-        values_ = "";
+        values_ = com.google.protobuf.LazyStringArrayList.EMPTY;
         bitField0_ = (bitField0_ & ~0x00000002);
         return this;
       }
@@ -1031,9 +1019,11 @@ public final class Message {
         if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
           to_bitField0_ |= 0x00000001;
         }
-        result.type_ = type_;
-        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
-          to_bitField0_ |= 0x00000002;
+        result.name_ = name_;
+        if (((bitField0_ & 0x00000002) == 0x00000002)) {
+          values_ = new com.google.protobuf.UnmodifiableLazyStringList(
+              values_);
+          bitField0_ = (bitField0_ & ~0x00000002);
         }
         result.values_ = values_;
         result.bitField0_ = to_bitField0_;
@@ -1052,11 +1042,18 @@ public final class Message {
       
       public Builder mergeFrom(com.mwr.mercury.Message.Args other) {
         if (other == com.mwr.mercury.Message.Args.getDefaultInstance()) return this;
-        if (other.hasType()) {
-          setType(other.getType());
+        if (other.hasName()) {
+          setName(other.getName());
         }
-        if (other.hasValues()) {
-          setValues(other.getValues());
+        if (!other.values_.isEmpty()) {
+          if (values_.isEmpty()) {
+            values_ = other.values_;
+            bitField0_ = (bitField0_ & ~0x00000002);
+          } else {
+            ensureValuesIsMutable();
+            values_.addAll(other.values_);
+          }
+          onChanged();
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
@@ -1091,12 +1088,12 @@ public final class Message {
             }
             case 10: {
               bitField0_ |= 0x00000001;
-              type_ = input.readBytes();
+              name_ = input.readBytes();
               break;
             }
             case 18: {
-              bitField0_ |= 0x00000002;
-              values_ = input.readBytes();
+              ensureValuesIsMutable();
+              values_.add(input.readBytes());
               break;
             }
           }
@@ -1105,75 +1102,95 @@ public final class Message {
       
       private int bitField0_;
       
-      // optional string type = 1;
-      private java.lang.Object type_ = "";
-      public boolean hasType() {
+      // optional string name = 1;
+      private java.lang.Object name_ = "";
+      public boolean hasName() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
-      public String getType() {
-        java.lang.Object ref = type_;
+      public String getName() {
+        java.lang.Object ref = name_;
         if (!(ref instanceof String)) {
           String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
-          type_ = s;
+          name_ = s;
           return s;
         } else {
           return (String) ref;
         }
       }
-      public Builder setType(String value) {
+      public Builder setName(String value) {
         if (value == null) {
     throw new NullPointerException();
   }
   bitField0_ |= 0x00000001;
-        type_ = value;
+        name_ = value;
         onChanged();
         return this;
       }
-      public Builder clearType() {
+      public Builder clearName() {
         bitField0_ = (bitField0_ & ~0x00000001);
-        type_ = getDefaultInstance().getType();
+        name_ = getDefaultInstance().getName();
         onChanged();
         return this;
       }
-      void setType(com.google.protobuf.ByteString value) {
+      void setName(com.google.protobuf.ByteString value) {
         bitField0_ |= 0x00000001;
-        type_ = value;
+        name_ = value;
         onChanged();
       }
       
-      // optional string values = 2;
-      private java.lang.Object values_ = "";
-      public boolean hasValues() {
-        return ((bitField0_ & 0x00000002) == 0x00000002);
+      // repeated string values = 2;
+      private com.google.protobuf.LazyStringList values_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+      private void ensureValuesIsMutable() {
+        if (!((bitField0_ & 0x00000002) == 0x00000002)) {
+          values_ = new com.google.protobuf.LazyStringArrayList(values_);
+          bitField0_ |= 0x00000002;
+         }
       }
-      public String getValues() {
-        java.lang.Object ref = values_;
-        if (!(ref instanceof String)) {
-          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
-          values_ = s;
-          return s;
-        } else {
-          return (String) ref;
-        }
+      public java.util.List<String>
+          getValuesList() {
+        return java.util.Collections.unmodifiableList(values_);
       }
-      public Builder setValues(String value) {
+      public int getValuesCount() {
+        return values_.size();
+      }
+      public String getValues(int index) {
+        return values_.get(index);
+      }
+      public Builder setValues(
+          int index, String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000002;
-        values_ = value;
+  ensureValuesIsMutable();
+        values_.set(index, value);
+        onChanged();
+        return this;
+      }
+      public Builder addValues(String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureValuesIsMutable();
+        values_.add(value);
+        onChanged();
+        return this;
+      }
+      public Builder addAllValues(
+          java.lang.Iterable<String> values) {
+        ensureValuesIsMutable();
+        super.addAll(values, values_);
         onChanged();
         return this;
       }
       public Builder clearValues() {
+        values_ = com.google.protobuf.LazyStringArrayList.EMPTY;
         bitField0_ = (bitField0_ & ~0x00000002);
-        values_ = getDefaultInstance().getValues();
         onChanged();
         return this;
       }
-      void setValues(com.google.protobuf.ByteString value) {
-        bitField0_ |= 0x00000002;
-        values_ = value;
+      void addValues(com.google.protobuf.ByteString value) {
+        ensureValuesIsMutable();
+        values_.add(value);
         onChanged();
       }
       
@@ -2434,10 +2451,10 @@ public final class Message {
     public interface ListStringOrBuilder
         extends com.google.protobuf.MessageOrBuilder {
       
-      // repeated string field = 1;
-      java.util.List<String> getFieldList();
-      int getFieldCount();
-      String getField(int index);
+      // repeated string element = 1;
+      java.util.List<String> getElementList();
+      int getElementCount();
+      String getElement(int index);
     }
     public static final class ListString extends
         com.google.protobuf.GeneratedMessage
@@ -2467,22 +2484,22 @@ public final class Message {
         return com.mwr.mercury.Message.internal_static_com_mwr_mercury_ProviderResponse_ListString_fieldAccessorTable;
       }
       
-      // repeated string field = 1;
-      public static final int FIELD_FIELD_NUMBER = 1;
-      private com.google.protobuf.LazyStringList field_;
+      // repeated string element = 1;
+      public static final int ELEMENT_FIELD_NUMBER = 1;
+      private com.google.protobuf.LazyStringList element_;
       public java.util.List<String>
-          getFieldList() {
-        return field_;
+          getElementList() {
+        return element_;
       }
-      public int getFieldCount() {
-        return field_.size();
+      public int getElementCount() {
+        return element_.size();
       }
-      public String getField(int index) {
-        return field_.get(index);
+      public String getElement(int index) {
+        return element_.get(index);
       }
       
       private void initFields() {
-        field_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+        element_ = com.google.protobuf.LazyStringArrayList.EMPTY;
       }
       private byte memoizedIsInitialized = -1;
       public final boolean isInitialized() {
@@ -2496,8 +2513,8 @@ public final class Message {
       public void writeTo(com.google.protobuf.CodedOutputStream output)
                           throws java.io.IOException {
         getSerializedSize();
-        for (int i = 0; i < field_.size(); i++) {
-          output.writeBytes(1, field_.getByteString(i));
+        for (int i = 0; i < element_.size(); i++) {
+          output.writeBytes(1, element_.getByteString(i));
         }
         getUnknownFields().writeTo(output);
       }
@@ -2510,12 +2527,12 @@ public final class Message {
         size = 0;
         {
           int dataSize = 0;
-          for (int i = 0; i < field_.size(); i++) {
+          for (int i = 0; i < element_.size(); i++) {
             dataSize += com.google.protobuf.CodedOutputStream
-              .computeBytesSizeNoTag(field_.getByteString(i));
+              .computeBytesSizeNoTag(element_.getByteString(i));
           }
           size += dataSize;
-          size += 1 * getFieldList().size();
+          size += 1 * getElementList().size();
         }
         size += getUnknownFields().getSerializedSize();
         memoizedSerializedSize = size;
@@ -2641,7 +2658,7 @@ public final class Message {
         
         public Builder clear() {
           super.clear();
-          field_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+          element_ = com.google.protobuf.LazyStringArrayList.EMPTY;
           bitField0_ = (bitField0_ & ~0x00000001);
           return this;
         }
@@ -2681,11 +2698,11 @@ public final class Message {
           com.mwr.mercury.Message.ProviderResponse.ListString result = new com.mwr.mercury.Message.ProviderResponse.ListString(this);
           int from_bitField0_ = bitField0_;
           if (((bitField0_ & 0x00000001) == 0x00000001)) {
-            field_ = new com.google.protobuf.UnmodifiableLazyStringList(
-                field_);
+            element_ = new com.google.protobuf.UnmodifiableLazyStringList(
+                element_);
             bitField0_ = (bitField0_ & ~0x00000001);
           }
-          result.field_ = field_;
+          result.element_ = element_;
           onBuilt();
           return result;
         }
@@ -2701,13 +2718,13 @@ public final class Message {
         
         public Builder mergeFrom(com.mwr.mercury.Message.ProviderResponse.ListString other) {
           if (other == com.mwr.mercury.Message.ProviderResponse.ListString.getDefaultInstance()) return this;
-          if (!other.field_.isEmpty()) {
-            if (field_.isEmpty()) {
-              field_ = other.field_;
+          if (!other.element_.isEmpty()) {
+            if (element_.isEmpty()) {
+              element_ = other.element_;
               bitField0_ = (bitField0_ & ~0x00000001);
             } else {
-              ensureFieldIsMutable();
-              field_.addAll(other.field_);
+              ensureElementIsMutable();
+              element_.addAll(other.element_);
             }
             onChanged();
           }
@@ -2743,8 +2760,8 @@ public final class Message {
                 break;
               }
               case 10: {
-                ensureFieldIsMutable();
-                field_.add(input.readBytes());
+                ensureElementIsMutable();
+                element_.add(input.readBytes());
                 break;
               }
             }
@@ -2753,59 +2770,59 @@ public final class Message {
         
         private int bitField0_;
         
-        // repeated string field = 1;
-        private com.google.protobuf.LazyStringList field_ = com.google.protobuf.LazyStringArrayList.EMPTY;
-        private void ensureFieldIsMutable() {
+        // repeated string element = 1;
+        private com.google.protobuf.LazyStringList element_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+        private void ensureElementIsMutable() {
           if (!((bitField0_ & 0x00000001) == 0x00000001)) {
-            field_ = new com.google.protobuf.LazyStringArrayList(field_);
+            element_ = new com.google.protobuf.LazyStringArrayList(element_);
             bitField0_ |= 0x00000001;
            }
         }
         public java.util.List<String>
-            getFieldList() {
-          return java.util.Collections.unmodifiableList(field_);
+            getElementList() {
+          return java.util.Collections.unmodifiableList(element_);
         }
-        public int getFieldCount() {
-          return field_.size();
+        public int getElementCount() {
+          return element_.size();
         }
-        public String getField(int index) {
-          return field_.get(index);
+        public String getElement(int index) {
+          return element_.get(index);
         }
-        public Builder setField(
+        public Builder setElement(
             int index, String value) {
           if (value == null) {
     throw new NullPointerException();
   }
-  ensureFieldIsMutable();
-          field_.set(index, value);
+  ensureElementIsMutable();
+          element_.set(index, value);
           onChanged();
           return this;
         }
-        public Builder addField(String value) {
+        public Builder addElement(String value) {
           if (value == null) {
     throw new NullPointerException();
   }
-  ensureFieldIsMutable();
-          field_.add(value);
+  ensureElementIsMutable();
+          element_.add(value);
           onChanged();
           return this;
         }
-        public Builder addAllField(
+        public Builder addAllElement(
             java.lang.Iterable<String> values) {
-          ensureFieldIsMutable();
-          super.addAll(values, field_);
+          ensureElementIsMutable();
+          super.addAll(values, element_);
           onChanged();
           return this;
         }
-        public Builder clearField() {
-          field_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+        public Builder clearElement() {
+          element_ = com.google.protobuf.LazyStringArrayList.EMPTY;
           bitField0_ = (bitField0_ & ~0x00000001);
           onChanged();
           return this;
         }
-        void addField(com.google.protobuf.ByteString value) {
-          ensureFieldIsMutable();
-          field_.add(value);
+        void addElement(com.google.protobuf.ByteString value) {
+          ensureElementIsMutable();
+          element_.add(value);
           onChanged();
         }
         
@@ -2823,10 +2840,10 @@ public final class Message {
     public interface ColumnsOrBuilder
         extends com.google.protobuf.MessageOrBuilder {
       
-      // required .com.mwr.mercury.ProviderResponse.ListString columns = 1;
-      boolean hasColumns();
-      com.mwr.mercury.Message.ProviderResponse.ListString getColumns();
-      com.mwr.mercury.Message.ProviderResponse.ListStringOrBuilder getColumnsOrBuilder();
+      // repeated string column = 1;
+      java.util.List<String> getColumnList();
+      int getColumnCount();
+      String getColumn(int index);
     }
     public static final class Columns extends
         com.google.protobuf.GeneratedMessage
@@ -2856,32 +2873,28 @@ public final class Message {
         return com.mwr.mercury.Message.internal_static_com_mwr_mercury_ProviderResponse_Columns_fieldAccessorTable;
       }
       
-      private int bitField0_;
-      // required .com.mwr.mercury.ProviderResponse.ListString columns = 1;
-      public static final int COLUMNS_FIELD_NUMBER = 1;
-      private com.mwr.mercury.Message.ProviderResponse.ListString columns_;
-      public boolean hasColumns() {
-        return ((bitField0_ & 0x00000001) == 0x00000001);
+      // repeated string column = 1;
+      public static final int COLUMN_FIELD_NUMBER = 1;
+      private com.google.protobuf.LazyStringList column_;
+      public java.util.List<String>
+          getColumnList() {
+        return column_;
       }
-      public com.mwr.mercury.Message.ProviderResponse.ListString getColumns() {
-        return columns_;
+      public int getColumnCount() {
+        return column_.size();
       }
-      public com.mwr.mercury.Message.ProviderResponse.ListStringOrBuilder getColumnsOrBuilder() {
-        return columns_;
+      public String getColumn(int index) {
+        return column_.get(index);
       }
       
       private void initFields() {
-        columns_ = com.mwr.mercury.Message.ProviderResponse.ListString.getDefaultInstance();
+        column_ = com.google.protobuf.LazyStringArrayList.EMPTY;
       }
       private byte memoizedIsInitialized = -1;
       public final boolean isInitialized() {
         byte isInitialized = memoizedIsInitialized;
         if (isInitialized != -1) return isInitialized == 1;
         
-        if (!hasColumns()) {
-          memoizedIsInitialized = 0;
-          return false;
-        }
         memoizedIsInitialized = 1;
         return true;
       }
@@ -2889,8 +2902,8 @@ public final class Message {
       public void writeTo(com.google.protobuf.CodedOutputStream output)
                           throws java.io.IOException {
         getSerializedSize();
-        if (((bitField0_ & 0x00000001) == 0x00000001)) {
-          output.writeMessage(1, columns_);
+        for (int i = 0; i < column_.size(); i++) {
+          output.writeBytes(1, column_.getByteString(i));
         }
         getUnknownFields().writeTo(output);
       }
@@ -2901,9 +2914,14 @@ public final class Message {
         if (size != -1) return size;
       
         size = 0;
-        if (((bitField0_ & 0x00000001) == 0x00000001)) {
-          size += com.google.protobuf.CodedOutputStream
-            .computeMessageSize(1, columns_);
+        {
+          int dataSize = 0;
+          for (int i = 0; i < column_.size(); i++) {
+            dataSize += com.google.protobuf.CodedOutputStream
+              .computeBytesSizeNoTag(column_.getByteString(i));
+          }
+          size += dataSize;
+          size += 1 * getColumnList().size();
         }
         size += getUnknownFields().getSerializedSize();
         memoizedSerializedSize = size;
@@ -3021,7 +3039,6 @@ public final class Message {
         }
         private void maybeForceBuilderInitialization() {
           if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
-            getColumnsFieldBuilder();
           }
         }
         private static Builder create() {
@@ -3030,11 +3047,7 @@ public final class Message {
         
         public Builder clear() {
           super.clear();
-          if (columnsBuilder_ == null) {
-            columns_ = com.mwr.mercury.Message.ProviderResponse.ListString.getDefaultInstance();
-          } else {
-            columnsBuilder_.clear();
-          }
+          column_ = com.google.protobuf.LazyStringArrayList.EMPTY;
           bitField0_ = (bitField0_ & ~0x00000001);
           return this;
         }
@@ -3073,16 +3086,12 @@ public final class Message {
         public com.mwr.mercury.Message.ProviderResponse.Columns buildPartial() {
           com.mwr.mercury.Message.ProviderResponse.Columns result = new com.mwr.mercury.Message.ProviderResponse.Columns(this);
           int from_bitField0_ = bitField0_;
-          int to_bitField0_ = 0;
-          if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
-            to_bitField0_ |= 0x00000001;
+          if (((bitField0_ & 0x00000001) == 0x00000001)) {
+            column_ = new com.google.protobuf.UnmodifiableLazyStringList(
+                column_);
+            bitField0_ = (bitField0_ & ~0x00000001);
           }
-          if (columnsBuilder_ == null) {
-            result.columns_ = columns_;
-          } else {
-            result.columns_ = columnsBuilder_.build();
-          }
-          result.bitField0_ = to_bitField0_;
+          result.column_ = column_;
           onBuilt();
           return result;
         }
@@ -3098,18 +3107,21 @@ public final class Message {
         
         public Builder mergeFrom(com.mwr.mercury.Message.ProviderResponse.Columns other) {
           if (other == com.mwr.mercury.Message.ProviderResponse.Columns.getDefaultInstance()) return this;
-          if (other.hasColumns()) {
-            mergeColumns(other.getColumns());
+          if (!other.column_.isEmpty()) {
+            if (column_.isEmpty()) {
+              column_ = other.column_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+            } else {
+              ensureColumnIsMutable();
+              column_.addAll(other.column_);
+            }
+            onChanged();
           }
           this.mergeUnknownFields(other.getUnknownFields());
           return this;
         }
         
         public final boolean isInitialized() {
-          if (!hasColumns()) {
-            
-            return false;
-          }
           return true;
         }
         
@@ -3137,12 +3149,8 @@ public final class Message {
                 break;
               }
               case 10: {
-                com.mwr.mercury.Message.ProviderResponse.ListString.Builder subBuilder = com.mwr.mercury.Message.ProviderResponse.ListString.newBuilder();
-                if (hasColumns()) {
-                  subBuilder.mergeFrom(getColumns());
-                }
-                input.readMessage(subBuilder, extensionRegistry);
-                setColumns(subBuilder.buildPartial());
+                ensureColumnIsMutable();
+                column_.add(input.readBytes());
                 break;
               }
             }
@@ -3151,94 +3159,60 @@ public final class Message {
         
         private int bitField0_;
         
-        // required .com.mwr.mercury.ProviderResponse.ListString columns = 1;
-        private com.mwr.mercury.Message.ProviderResponse.ListString columns_ = com.mwr.mercury.Message.ProviderResponse.ListString.getDefaultInstance();
-        private com.google.protobuf.SingleFieldBuilder<
-            com.mwr.mercury.Message.ProviderResponse.ListString, com.mwr.mercury.Message.ProviderResponse.ListString.Builder, com.mwr.mercury.Message.ProviderResponse.ListStringOrBuilder> columnsBuilder_;
-        public boolean hasColumns() {
-          return ((bitField0_ & 0x00000001) == 0x00000001);
+        // repeated string column = 1;
+        private com.google.protobuf.LazyStringList column_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+        private void ensureColumnIsMutable() {
+          if (!((bitField0_ & 0x00000001) == 0x00000001)) {
+            column_ = new com.google.protobuf.LazyStringArrayList(column_);
+            bitField0_ |= 0x00000001;
+           }
         }
-        public com.mwr.mercury.Message.ProviderResponse.ListString getColumns() {
-          if (columnsBuilder_ == null) {
-            return columns_;
-          } else {
-            return columnsBuilder_.getMessage();
-          }
+        public java.util.List<String>
+            getColumnList() {
+          return java.util.Collections.unmodifiableList(column_);
         }
-        public Builder setColumns(com.mwr.mercury.Message.ProviderResponse.ListString value) {
-          if (columnsBuilder_ == null) {
-            if (value == null) {
-              throw new NullPointerException();
-            }
-            columns_ = value;
-            onChanged();
-          } else {
-            columnsBuilder_.setMessage(value);
-          }
-          bitField0_ |= 0x00000001;
-          return this;
+        public int getColumnCount() {
+          return column_.size();
         }
-        public Builder setColumns(
-            com.mwr.mercury.Message.ProviderResponse.ListString.Builder builderForValue) {
-          if (columnsBuilder_ == null) {
-            columns_ = builderForValue.build();
-            onChanged();
-          } else {
-            columnsBuilder_.setMessage(builderForValue.build());
-          }
-          bitField0_ |= 0x00000001;
-          return this;
+        public String getColumn(int index) {
+          return column_.get(index);
         }
-        public Builder mergeColumns(com.mwr.mercury.Message.ProviderResponse.ListString value) {
-          if (columnsBuilder_ == null) {
-            if (((bitField0_ & 0x00000001) == 0x00000001) &&
-                columns_ != com.mwr.mercury.Message.ProviderResponse.ListString.getDefaultInstance()) {
-              columns_ =
-                com.mwr.mercury.Message.ProviderResponse.ListString.newBuilder(columns_).mergeFrom(value).buildPartial();
-            } else {
-              columns_ = value;
-            }
-            onChanged();
-          } else {
-            columnsBuilder_.mergeFrom(value);
-          }
-          bitField0_ |= 0x00000001;
-          return this;
-        }
-        public Builder clearColumns() {
-          if (columnsBuilder_ == null) {
-            columns_ = com.mwr.mercury.Message.ProviderResponse.ListString.getDefaultInstance();
-            onChanged();
-          } else {
-            columnsBuilder_.clear();
-          }
-          bitField0_ = (bitField0_ & ~0x00000001);
-          return this;
-        }
-        public com.mwr.mercury.Message.ProviderResponse.ListString.Builder getColumnsBuilder() {
-          bitField0_ |= 0x00000001;
+        public Builder setColumn(
+            int index, String value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureColumnIsMutable();
+          column_.set(index, value);
           onChanged();
-          return getColumnsFieldBuilder().getBuilder();
+          return this;
         }
-        public com.mwr.mercury.Message.ProviderResponse.ListStringOrBuilder getColumnsOrBuilder() {
-          if (columnsBuilder_ != null) {
-            return columnsBuilder_.getMessageOrBuilder();
-          } else {
-            return columns_;
-          }
+        public Builder addColumn(String value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureColumnIsMutable();
+          column_.add(value);
+          onChanged();
+          return this;
         }
-        private com.google.protobuf.SingleFieldBuilder<
-            com.mwr.mercury.Message.ProviderResponse.ListString, com.mwr.mercury.Message.ProviderResponse.ListString.Builder, com.mwr.mercury.Message.ProviderResponse.ListStringOrBuilder> 
-            getColumnsFieldBuilder() {
-          if (columnsBuilder_ == null) {
-            columnsBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-                com.mwr.mercury.Message.ProviderResponse.ListString, com.mwr.mercury.Message.ProviderResponse.ListString.Builder, com.mwr.mercury.Message.ProviderResponse.ListStringOrBuilder>(
-                    columns_,
-                    getParentForChildren(),
-                    isClean());
-            columns_ = null;
-          }
-          return columnsBuilder_;
+        public Builder addAllColumn(
+            java.lang.Iterable<String> values) {
+          ensureColumnIsMutable();
+          super.addAll(values, column_);
+          onChanged();
+          return this;
+        }
+        public Builder clearColumn() {
+          column_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+          bitField0_ = (bitField0_ & ~0x00000001);
+          onChanged();
+          return this;
+        }
+        void addColumn(com.google.protobuf.ByteString value) {
+          ensureColumnIsMutable();
+          column_.add(value);
+          onChanged();
         }
         
         // @@protoc_insertion_point(builder_scope:com.mwr.mercury.ProviderResponse.Columns)
@@ -8400,12 +8374,6 @@ public final class Message {
       byte isInitialized = memoizedIsInitialized;
       if (isInitialized != -1) return isInitialized == 1;
       
-      if (hasColumns()) {
-        if (!getColumns().isInitialized()) {
-          memoizedIsInitialized = 0;
-          return false;
-        }
-      }
       if (hasQuery()) {
         if (!getQuery().isInitialized()) {
           memoizedIsInitialized = 0;
@@ -8851,12 +8819,6 @@ public final class Message {
       }
       
       public final boolean isInitialized() {
-        if (hasColumns()) {
-          if (!getColumns().isInitialized()) {
-            
-            return false;
-          }
-        }
         if (hasQuery()) {
           if (!getQuery().isInitialized()) {
             
@@ -9918,12 +9880,12 @@ public final class Message {
       "\n\rMessage.proto\022\017com.mwr.mercury\"d\n\010Resp" +
       "onse\022\014\n\004data\030\001 \001(\t\022\r\n\005error\030\002 \001(\t\022;\n\020pro" +
       "viderResponse\030\003 \001(\0132!.com.mwr.mercury.Pr" +
-      "oviderResponse\"$\n\004Args\022\014\n\004type\030\001 \001(\t\022\016\n\006" +
-      "values\030\002 \001(\t\"a\n\007Request\022\017\n\007section\030\001 \001(\t" +
+      "oviderResponse\"$\n\004Args\022\014\n\004name\030\001 \001(\t\022\016\n\006" +
+      "values\030\002 \003(\t\"a\n\007Request\022\017\n\007section\030\001 \001(\t" +
       "\022\020\n\010function\030\002 \001(\t\0223\n\014basicRequest\030\003 \001(\013" +
       "2\035.com.mwr.mercury.BasicRequest\"3\n\014Basic" +
       "Request\022#\n\004args\030\003 \003(\0132\025.com.mwr.mercury." +
-      "Args\"\345\n\n\020ProviderResponse\0223\n\010function\030\001 " +
+      "Args\"\270\n\n\020ProviderResponse\0223\n\010function\030\001 " +
       "\001(\0162!.com.mwr.mercury.ProviderFunction\022:",
       "\n\007columns\030\002 \001(\0132).com.mwr.mercury.Provid" +
       "erResponse.Columns\022:\n\007finduri\030\003 \001(\0132).co" +
@@ -9936,31 +9898,30 @@ public final class Message {
       "cury.ProviderResponse.Insert\0224\n\004info\030\010 \003" +
       "(\0132&.com.mwr.mercury.ProviderResponse.In",
       "fo\0224\n\004read\030\t \001(\0132&.com.mwr.mercury.Provi" +
-      "derResponse.Read\032\033\n\nListString\022\r\n\005field\030" +
-      "\001 \003(\t\032H\n\007Columns\022=\n\007columns\030\001 \002(\0132,.com." +
-      "mwr.mercury.ProviderResponse.ListString\032" +
-      "\027\n\007FindUri\022\014\n\004uris\030\001 \003(\t\032@\n\005Query\0227\n\006tab" +
-      "les\030\001 \003(\0132\'.com.mwr.mercury.ProviderResp" +
-      "onse.Table\032\247\001\n\005Table\022=\n\007columns\030\001 \002(\0132,." +
-      "com.mwr.mercury.ProviderResponse.ListStr" +
-      "ing\022:\n\004rows\030\002 \003(\0132,.com.mwr.mercury.Prov" +
-      "iderResponse.ListString\022\022\n\nnumColumns\030\003 ",
-      "\001(\005\022\017\n\007numRows\030\004 \001(\005\032\036\n\006Update\022\024\n\014rows_u" +
-      "pdated\030\001 \001(\005\032\036\n\006Delete\022\024\n\014rows_deleted\030\001" +
-      " \001(\005\032\032\n\006Insert\022\020\n\010response\030\001 \001(\t\032\361\002\n\004Inf" +
-      "o\022\021\n\tauthority\030\001 \001(\t\022\023\n\013packageName\030\002 \001(" +
-      "\t\022\026\n\016readPermission\030\003 \001(\t\022\035\n\025uriPermissi" +
-      "onPatterns\030\004 \003(\t\022\027\n\017writePermission\030\005 \001(" +
-      "\t\022Q\n\017pathPermissions\030\006 \003(\01328.com.mwr.mer" +
-      "cury.ProviderResponse.Info.PatternPermis" +
-      "sion\022\024\n\014multiprocess\030\007 \001(\010\022\033\n\023grantUriPe" +
-      "rmissions\030\010 \001(\010\032k\n\021PatternPermission\022\027\n\017",
-      "writePermission\030\001 \001(\t\022\026\n\016readPermission\030" +
-      "\002 \001(\t\022\022\n\nwriteNeeds\030\003 \001(\t\022\021\n\treadNeeds\030\004" +
-      " \001(\t\032\026\n\004Read\022\016\n\006stream\030\001 \001(\t*p\n\020Provider" +
-      "Function\022\013\n\007COLUMNS\020\000\022\n\n\006DELETE\020\001\022\014\n\010FIN" +
-      "D_URI\020\002\022\010\n\004INFO\020\003\022\n\n\006INSERT\020\004\022\t\n\005QUERY\020\005" +
-      "\022\010\n\004READ\020\006\022\n\n\006UPDATE\020\007"
+      "derResponse.Read\032\035\n\nListString\022\017\n\007elemen" +
+      "t\030\001 \003(\t\032\031\n\007Columns\022\016\n\006column\030\001 \003(\t\032\027\n\007Fi" +
+      "ndUri\022\014\n\004uris\030\001 \003(\t\032@\n\005Query\0227\n\006tables\030\001" +
+      " \003(\0132\'.com.mwr.mercury.ProviderResponse." +
+      "Table\032\247\001\n\005Table\022=\n\007columns\030\001 \002(\0132,.com.m" +
+      "wr.mercury.ProviderResponse.ListString\022:" +
+      "\n\004rows\030\002 \003(\0132,.com.mwr.mercury.ProviderR" +
+      "esponse.ListString\022\022\n\nnumColumns\030\003 \001(\005\022\017" +
+      "\n\007numRows\030\004 \001(\005\032\036\n\006Update\022\024\n\014rows_update",
+      "d\030\001 \001(\005\032\036\n\006Delete\022\024\n\014rows_deleted\030\001 \001(\005\032" +
+      "\032\n\006Insert\022\020\n\010response\030\001 \001(\t\032\361\002\n\004Info\022\021\n\t" +
+      "authority\030\001 \001(\t\022\023\n\013packageName\030\002 \001(\t\022\026\n\016" +
+      "readPermission\030\003 \001(\t\022\035\n\025uriPermissionPat" +
+      "terns\030\004 \003(\t\022\027\n\017writePermission\030\005 \001(\t\022Q\n\017" +
+      "pathPermissions\030\006 \003(\01328.com.mwr.mercury." +
+      "ProviderResponse.Info.PatternPermission\022" +
+      "\024\n\014multiprocess\030\007 \001(\010\022\033\n\023grantUriPermiss" +
+      "ions\030\010 \001(\010\032k\n\021PatternPermission\022\027\n\017write" +
+      "Permission\030\001 \001(\t\022\026\n\016readPermission\030\002 \001(\t",
+      "\022\022\n\nwriteNeeds\030\003 \001(\t\022\021\n\treadNeeds\030\004 \001(\t\032" +
+      "\026\n\004Read\022\016\n\006stream\030\001 \001(\t*p\n\020ProviderFunct" +
+      "ion\022\013\n\007COLUMNS\020\000\022\n\n\006DELETE\020\001\022\014\n\010FIND_URI" +
+      "\020\002\022\010\n\004INFO\020\003\022\n\n\006INSERT\020\004\022\t\n\005QUERY\020\005\022\010\n\004R" +
+      "EAD\020\006\022\n\n\006UPDATE\020\007"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -9980,7 +9941,7 @@ public final class Message {
           internal_static_com_mwr_mercury_Args_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_mwr_mercury_Args_descriptor,
-              new java.lang.String[] { "Type", "Values", },
+              new java.lang.String[] { "Name", "Values", },
               com.mwr.mercury.Message.Args.class,
               com.mwr.mercury.Message.Args.Builder.class);
           internal_static_com_mwr_mercury_Request_descriptor =
@@ -10012,7 +9973,7 @@ public final class Message {
           internal_static_com_mwr_mercury_ProviderResponse_ListString_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_mwr_mercury_ProviderResponse_ListString_descriptor,
-              new java.lang.String[] { "Field", },
+              new java.lang.String[] { "Element", },
               com.mwr.mercury.Message.ProviderResponse.ListString.class,
               com.mwr.mercury.Message.ProviderResponse.ListString.Builder.class);
           internal_static_com_mwr_mercury_ProviderResponse_Columns_descriptor =
@@ -10020,7 +9981,7 @@ public final class Message {
           internal_static_com_mwr_mercury_ProviderResponse_Columns_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_mwr_mercury_ProviderResponse_Columns_descriptor,
-              new java.lang.String[] { "Columns", },
+              new java.lang.String[] { "Column", },
               com.mwr.mercury.Message.ProviderResponse.Columns.class,
               com.mwr.mercury.Message.ProviderResponse.Columns.Builder.class);
           internal_static_com_mwr_mercury_ProviderResponse_FindUri_descriptor =

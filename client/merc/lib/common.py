@@ -229,21 +229,15 @@ class Session:
     
                     # vars() creates keys with None value - this checks for a None and disregards
                     if value is not None:
-    
+                        
+                        arg = request.basicRequest.args.add()
+                        arg.name = key
+                        
                         if isinstance(value, types.StringType):
-                            arg = request.basicRequest.args.add()
-                            arg.type = key
-                            arg.values = value
-                        #TODO understand and fix the commented lines                            
-                        #else:
-    
-                         #   for val in value:
-                                #TODO understand and fix it
-                                #basicReq = request.args.add()
-                                #arg = basicReq.args.add()
-                                #arg.type = key
-                                #arg.values = base64.b64encode(value)
-    
+                            arg.values.append(value)
+                        else:
+                            for val in value:
+                                arg.values.append(val)
                         i = i + 1
             
             return base64.b64encode(request.SerializeToString())
