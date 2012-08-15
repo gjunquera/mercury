@@ -1,8 +1,10 @@
-option java_package = "com.mwr.mercury";
+package com.mwr.mercury;
+
 // General response, returns the data to be printed in mercury
 message Response {
 	optional string data = 1;
 	optional string error = 2;
+	optional ProviderResponse providerResponse = 3;
 }
 
 message Args {
@@ -12,32 +14,43 @@ message Args {
 
 message Request {
 	
-	required string section = 1;
-	required string function = 2;
-	repeated BasicRequest args = 3;
+	optional string section = 1;
+	optional string function = 2;
+	optional BasicRequest basicRequest = 3;
 }
 
 message BasicRequest {
 	repeated Args args = 3;
 }
 
+enum ProviderFunction {
+	COLUMNS = 0;
+	DELETE = 1;
+	FIND_URI = 2;
+	INFO = 3;
+	INSERT = 4;
+	QUERY = 5;
+	READ = 6;
+	UPDATE = 7;
+}
+
 // Specific provider response, return provider specific data
 message ProviderResponse {
-		
+	
 	message ListString {
-    	repeated string field = 1;	
+		repeated string field = 1;	
 	}
 
 	message Columns {
-    	required ListString columns = 1;
+		required ListString columns = 1;
 	}
   
 	message FindUri {
-    	repeated string uris = 1;
+		repeated string uris = 1;
 	}
 
 	message Query {
-    	repeated Table tables = 1;
+		repeated Table tables = 1;
 	}
 	
 	message Table {
@@ -60,12 +73,20 @@ message ProviderResponse {
 	}
 	
 	message Info {
+	
+		message PatternPermission {
+			optional string writePermission = 1;
+			optional string readPermission = 2;
+			optional string writeNeeds = 3;
+			optional string readNeeds = 4;
+		}
+	
 		optional string authority = 1;
 		optional string packageName = 2;
 		optional string readPermission = 3;
-		optional string uriPermissionPatterns = 4;
+		repeated string uriPermissionPatterns = 4;
 		optional string	writePermission = 5;
-		repeated string pathPermissions = 6;
+		repeated PatternPermission pathPermissions = 6;
 		optional bool multiprocess = 7;
 		optional bool grantUriPermissions = 8;
 	}
@@ -74,15 +95,13 @@ message ProviderResponse {
 		optional string stream = 1; 
 	}
 	
+	optional ProviderFunction function = 1; 
 	optional Columns columns = 2;
 	optional FindUri finduri = 3;
 	optional Query query = 4;
 	optional Update update = 5;
 	optional Delete delete = 6;
 	optional Insert insert = 7;
-	optional Info info = 8;
+	repeated Info info = 8;
 	optional Read read = 9;
-	
 }
-	
-
