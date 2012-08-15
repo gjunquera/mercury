@@ -103,9 +103,9 @@ public class Provider
 				
 				// URI Permission Patterns
 				if (uriPermissionPatterns != null)
-					for (int j = 0; j < providerPathPermissions.length; j++)
+					for (int j = 0; j < uriPermissionPatterns.length; j++)
 					{
-						String path = providerPathPermissions[j].getPath(); 
+						String path = uriPermissionPatterns[j].getPath(); 
 						if (path != null) {
 							infoBuilder.addUriPermissionPatterns(path);
 						}
@@ -129,8 +129,10 @@ public class Provider
 				
 				infoBuilder.setAuthority(providerAuthority);
 				infoBuilder.setPackageName(providerPackage);
-				infoBuilder.setReadPermission(providerReadPermission);
-				infoBuilder.setWritePermission(providerWritePermission);
+				if (providerReadPermission != null)
+					infoBuilder.setReadPermission(providerReadPermission);
+				if (providerWritePermission != null)
+					infoBuilder.setWritePermission(providerWritePermission);
 				infoBuilder.setGrantUriPermissions(grantUriPermissions);
 				infoBuilder.setMultiprocess(providerMultiprocess);
 				
