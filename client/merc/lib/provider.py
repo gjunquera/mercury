@@ -48,13 +48,14 @@ _id | name | value
                 request['uri'] = splitargs.uri
 
             #print self.session.makeRequest("provider", "columns", request).getPaddedErrorOrData()
-            resp = self.session.newExecuteCommand("provider", "columns", request)
+            response = self.session.newExecuteCommand("provider", "columns", request)
             msg = "| "
-            if resp.error == "Success":
-                for column in resp.providerResponse.columns.column:
-                    msg += column + " | "
+            if response.error == "Success":
+                for pair in response.structured_data:
+                    for column in pair.value:
+                        msg += str(column) + " | "
             else:
-                msg += resp.error
+                msg += response.error
             print msg
         # FIXME: Choose specific exceptions to catch
         except Exception as e:

@@ -193,6 +193,7 @@ public class Provider
 			{
 				pairBuilder.addValue(ByteString.copyFrom(columns.get(i).getBytes()));
 			}
+			respBuilder.addStructuredData(pairBuilder);
 			respBuilder.setError(ByteString.copyFrom("Success".getBytes()));
 		}
 		

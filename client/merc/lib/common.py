@@ -231,13 +231,13 @@ class Session:
                     if value is not None:
                         
                         arg = request.args.add()
-                        arg.name = key
+                        arg.key = key
                         
                         if isinstance(value, types.StringType):
-                            arg.values.append(value)
+                            arg.value.append(value)
                         else:
                             for val in value:
-                                arg.values.append(val)
+                                arg.value.append(val)
                         i = i + 1
             
             return base64.b64encode(request.SerializeToString())
