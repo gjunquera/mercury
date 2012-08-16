@@ -7,6 +7,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
 
+import com.google.protobuf.ByteString;
 import com.mwr.mercury.Message.Request;
 import com.mwr.mercury.Message.Request.Builder;
 import com.mwr.mercury.Message.Response;
@@ -255,11 +256,12 @@ public class Session
 	{		
 		Response resp = Response.getDefaultInstance();
 		Response.Builder builder = resp.toBuilder();
-		builder.setData(response);
+		ByteString bsResp = ByteString.copyFrom(response.getBytes());
+		builder.setData(bsResp);
 		if (error == null)
-			builder.setError("Null error given");
+			builder.setError(ByteString.copyFrom("Null error given".getBytes()));
 		else if (error.length() > 0)
-			builder.setError(error);
+			builder.setError(ByteString.copyFrom(error.getBytes()));
 		resp = builder.build();
 		
 		send(Base64.encodeToString(resp.toByteArray(), Base64.DEFAULT), false);

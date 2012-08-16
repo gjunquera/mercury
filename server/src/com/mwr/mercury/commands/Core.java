@@ -12,14 +12,14 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import com.mwr.mercury.*;
-import com.mwr.mercury.Message.Args;
+import com.mwr.mercury.Message.KVPair;
 
 import android.util.Base64;
 
 public class Core
 {
 	//core.ping() - returns "pong"
-	public static void ping(List<Args> argsArray, Session currentSession){
+	public static void ping(List<KVPair> argsArray, Session currentSession){
 		currentSession.newSendFullTransmission("pong", "");
 	}
 	

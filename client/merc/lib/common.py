@@ -230,7 +230,7 @@ class Session:
                     # vars() creates keys with None value - this checks for a None and disregards
                     if value is not None:
                         
-                        arg = request.basicRequest.args.add()
+                        arg = request.args.add()
                         arg.name = key
                         
                         if isinstance(value, types.StringType):
@@ -245,16 +245,16 @@ class Session:
             print e
 
     def parseResponse(self, xmlinput):
-    
+
+            #TODO change this line    
             returnValue = Response()
-            xmlStr = base64.b64decode(xmlinput)
+            protoStr = base64.b64decode(xmlinput)
             try:
                 response = Message_pb2.Response()
-                response.ParseFromString(xmlStr)
-                #returnValue.data = response.data
-                #returnValue.error = response.error
-            except Exception, e:
-                returnValue.error = "Malformed response: " + xmlStr
+                response.ParseFromString(protoStr)
+            except Exception:
+                #TODO change this return 
+                returnValue.error = "Malformed response"
             
             #return returnValue
             return response

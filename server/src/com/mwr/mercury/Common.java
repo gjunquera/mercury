@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import com.mwr.mercury.Message.Args;
+import com.mwr.mercury.Message.KVPair;
 
 import android.content.ComponentName;
 import android.content.ContentResolver;
@@ -166,19 +166,20 @@ public class Common
 		return "";
 	}
 	
+	//TODO change this method name
 	//Get parameter from a List<Args>
-	public static String getSingleParamString(List<Args> argArray, String type) 
+	public static String getParamString2(List<KVPair> pairsArray, String key) 
 	{
-		for (Args arg : argArray) 
+		if (key == null || pairsArray == null) 
+			return "";
+		
+		for (KVPair pair : pairsArray) 
 		{
-			String argType = arg.getName();
-			List<String> values = arg.getValuesList();
-			if (type != null) 
+			String pairKey = pair.getKey();
+			if (pairKey != null) 
 			{
-				if (type.equalsIgnoreCase(argType))
-					if (values.get(0) != null) {
-						return values.get(0);
-					}
+				if (pairKey.equalsIgnoreCase(key))
+					return new String(pair.getValueList().get(0).toByteArray());
 			}
 		}
 		return "";

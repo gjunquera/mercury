@@ -2,10 +2,11 @@
 
 package com.mwr.mercury.commands;
 
+import com.google.protobuf.ByteString;
 import com.mwr.mercury.ArgumentWrapper;
 import com.mwr.mercury.Common;
-import com.mwr.mercury.Message.Args;
-import com.mwr.mercury.Message.ProviderResponse;
+import com.mwr.mercury.Message.KVPair;
+import com.mwr.mercury.Message.Request;
 import com.mwr.mercury.Message.Response;
 import com.mwr.mercury.Session;
 
@@ -26,10 +27,11 @@ import java.util.List;
 
 public class Provider
 {
-	public static void info(List<Args> argsArray, Session currentSession)
+	/*
+	public static void info(List<KVPair> argsArray, Session currentSession)
 	{
-		String filter = Common.getSingleParamString(argsArray, "filter");
-		String permissions = Common.getSingleParamString(argsArray, "permissions");
+		String filter = Common.getParamString2(argsArray, "filter");
+		String permissions = Common.getParamString2(argsArray, "permissions");
 		
 		// Get all providers and iterate through them
 		List<ProviderInfo> providers = currentSession.applicationContext
@@ -37,7 +39,7 @@ public class Provider
 						PackageManager.GET_URI_PERMISSION_PATTERNS,
 						PackageManager.GET_URI_PERMISSION_PATTERNS);
 
-		ProviderResponse.Builder provBuilder = ProviderResponse.newBuilder();
+		Request.Builder reqBuilder = Request.newBuilder();
 		// Iterate through content providers
 		for (int i = 0; i < providers.size(); i++)
 		{
@@ -98,15 +100,17 @@ public class Provider
 					|| (!bothFiltersPresent && (relevantFilter || relevantPermissions)) || (!bothFiltersPresent && noFilters))
 					&& providers.get(i).exported)
 			{
-				ProviderResponse.Info.Builder infoBuilder = ProviderResponse.Info.newBuilder();
 				
 				// URI Permission Patterns
 				if (uriPermissionPatterns != null)
 					for (int j = 0; j < uriPermissionPatterns.length; j++)
 					{
-						String path = uriPermissionPatterns[j].getPath(); 
+						String path = uriPermissionPatterns[j].getPath();
+						ByteString bsPath = ByteString.copyFrom(path.getBytes());
 						if (path != null) {
-							infoBuilder.addUriPermissionPatterns(path);
+							reqBuilder.addArgs(KVPair.newBuilder()
+											.setKey("uriPermissionPattern")
+											.setValue(bsPath));
 						}
 					}
 				
@@ -114,29 +118,50 @@ public class Provider
 				if (providerPathPermissions != null) 
 					for (int j = 0; j < providerPathPermissions.length; j++)
 					{
-						ProviderResponse.Info.PatternPermission.Builder patternBuilder = 
-							ProviderResponse.Info.PatternPermission.newBuilder();
 						if (providerPathPermissions[j].getReadPermission() != null)
-							patternBuilder.setReadPermission(providerPathPermissions[j].getPath()).
-										setReadNeeds(providerPathPermissions[j].getReadPermission());
+						{
+							String value = providerPathPermissions[j].getPath() + "-" + 
+										   providerPathPermissions[j].getReadPermission();
+							ByteString bsValue = ByteString.copyFrom(value.getBytes());
+							reqBuilder.addArgs(KVPair.newBuilder()
+									.setKey("pathReadPermission")
+									.setValue(bsValue));
+						}
 
 						if (providerPathPermissions[j].getWritePermission() != null)
-							patternBuilder.setWritePermission(providerPathPermissions[j].getPath()).
-										setWriteNeeds(providerPathPermissions[j].getWritePermission());
-						infoBuilder.addPathPermissions(patternBuilder.build());
+						{
+							String value = providerPathPermissions[j].getPath() + "-" + 
+							   			   providerPathPermissions[j].getWritePermission();
+							ByteString bsValue = ByteString.copyFrom(value.getBytes());
+							reqBuilder.addArgs(KVPair.newBuilder()
+									.setKey("pathWritePermission")
+									.setValue(bsValue));
+						}
 					}
 				
-				infoBuilder.setAuthority(providerAuthority);
-				infoBuilder.setPackageName(providerPackage);
-				if (providerReadPermission != null)
-					infoBuilder.setReadPermission(providerReadPermission);
+				if (providerReadPermission != null) 
+				{
+					ByteString bsValue = ByteString.copyFrom(providerReadPermission.getBytes());
+					reqBuilder.addArgs(KVPair.newBuilder()
+							.setKey("readPermission")
+							.setValue(bsValue));
+				}
 				if (providerWritePermission != null)
-					infoBuilder.setWritePermission(providerWritePermission);
-				infoBuilder.setGrantUriPermissions(grantUriPermissions);
-				infoBuilder.setMultiprocess(providerMultiprocess);
-				
-				provBuilder.addInfo(infoBuilder.build());
-				
+				{
+					ByteString bsValue = ByteString.copyFrom(providerWritePermission.getBytes());
+					reqBuilder.addArgs(KVPair.newBuilder()
+							.setKey("writePermission")
+							.setValue(bsValue));
+				}
+				reqBuilder.addArgs(KVPair.newBuilder()
+						.setKey("grantUriPermission")
+						.setValue(ByteString.copyFrom(new Boolean(grantUriPermissions).toString().getBytes())));
+				reqBuilder.addArgs(KVPair.newBuilder()
+						.setKey("multiprocess")
+						.setValue(ByteString.copyFrom(new Boolean(providerMultiprocess).toString().getBytes())));
+				reqBuilder.setMultiprocess(new Boolean(grantUriPermissions).toString().getBytes());
+				reqBuilder.build().toByteString();
+				provBuilder.addInfo(infoBuilder.build());			
 			}
 		}
 		
@@ -144,32 +169,33 @@ public class Provider
 		currentSession.send(Base64.encodeToString(resp.toByteArray(), Base64.DEFAULT), false);
 		
 	}
-
-	public static void columns(List<Args> argsArray,
+*/
+	public static void columns(List<KVPair> argsArray,
 			Session currentSession)
 	{
 		// Get list of columns
 		ArrayList<String> columns = Common.getColumns(
 				currentSession.applicationContext.getContentResolver(),
-				Common.getSingleParamString(argsArray, "uri"), null);
+				Common.getParamString2(argsArray, "uri"), null);
 
 		Response.Builder respBuilder = Response.newBuilder();
 
 		if (columns.size() == 0)
-			respBuilder.setError("Invalid content URI specified");
+		{
+			ByteString bs = ByteString.copyFrom("Invalid content URI specified".getBytes());
+			respBuilder.setError(bs);
+		}
 		else
 		{
-			ProviderResponse.Builder provBuilder = ProviderResponse.newBuilder();
-			ProviderResponse.Columns.Builder columnBuilder = ProviderResponse.Columns.newBuilder(); 
+			KVPair.Builder pairBuilder = KVPair.newBuilder();
 			// Iterate through columns
 			for (int i = 0; i < columns.size(); i++)
 			{
-				columnBuilder.addColumn(columns.get(i));
+				pairBuilder.addValue(ByteString.copyFrom(columns.get(i).getBytes()));
 			}
-			
-			provBuilder.setColumns(columnBuilder.build());
-			respBuilder.setError("Success").setProviderResponse(provBuilder.build());
+			respBuilder.setError(ByteString.copyFrom("Success".getBytes()));
 		}
+		
 		Response resp = respBuilder.build();
 		currentSession.send(Base64.encodeToString(resp.toByteArray(), Base64.DEFAULT), false);
 	}

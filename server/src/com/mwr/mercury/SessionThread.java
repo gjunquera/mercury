@@ -5,8 +5,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mwr.mercury.Message.Args;
-import com.mwr.mercury.Message.BasicRequest;
+import com.mwr.mercury.Message.KVPair;
 import com.mwr.mercury.Message.Request;
 import com.mwr.mercury.reflect.ReflectParser;
 
@@ -79,10 +78,7 @@ class SessionThread extends Thread
 									&& null != method)
 							{
 								found = true;
-								BasicRequest basicReq = request.getBasicRequest();
-								List<Args> reqArgs = null;
-								if (basicReq != null) 
-									reqArgs = basicReq.getArgsList();
+								List<KVPair> reqArgs = request.getArgsList();
 								method.invoke(null, reqArgs, currentSession);
 								break;
 							}
