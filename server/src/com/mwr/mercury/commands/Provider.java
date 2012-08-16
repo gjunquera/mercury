@@ -193,12 +193,12 @@ public class Provider
 			{
 				pairBuilder.addValue(ByteString.copyFrom(columns.get(i).getBytes()));
 			}
+			pairBuilder.setKey("columns");
 			respBuilder.addStructuredData(pairBuilder);
 			respBuilder.setError(ByteString.copyFrom("Success".getBytes()));
 		}
 		
-		Response resp = respBuilder.build();
-		currentSession.send(Base64.encodeToString(resp.toByteArray(), Base64.DEFAULT), false);
+		currentSession.send(Base64.encodeToString(respBuilder.build().toByteArray(), Base64.DEFAULT), false);
 	}
 
 	public static void query(List<ArgumentWrapper> argsArray,
@@ -336,9 +336,10 @@ public class Provider
 		currentSession.endTransmission();
 	}
 
-	public static void read(List<ArgumentWrapper> argsArray,
+	public static void read(List<KVPair> argsArray,
 			Session currentSession)
 	{
+		/*
 		// Start transmission
 		currentSession.startTransmission();
 		currentSession.startResponse();
@@ -380,6 +381,7 @@ public class Provider
 			currentSession.endResponse();
 			currentSession.endTransmission();
 		}
+		*/
 	}
 
 	public static void insert(List<ArgumentWrapper> argsArray,
