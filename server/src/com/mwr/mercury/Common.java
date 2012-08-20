@@ -141,6 +141,7 @@ public class Common
 	}
 	
 	//Get parameter from a List<ArgumentWrapper> in byte[] format
+	//TODO remove this method
 	public static byte[] getParam(List<ArgumentWrapper> argWrapper, String type)
 	{
 		
@@ -153,39 +154,46 @@ public class Common
 		return null;
 	}
 	
-	//Get parameter from a List<ArgumentWrapper> in String format
-	public static String getParamString(List<ArgumentWrapper> argWrapper, String type)
+	//Get parameter from a List<ArgumentWrapper> in byte[] format
+	//TODO change this method name
+	public static byte[] getParam2(List<KVPair> pairsArray, String key)
 	{
 		
-		for (int i = 0; i < argWrapper.size(); i++)
-		{
-			if (argWrapper.get(i).type.toUpperCase().equals(type.toUpperCase()))
-				return new String(argWrapper.get(i).value);
-		}
+		if (key == null || pairsArray == null) 
+			return null;
 		
-		return "";
+		for (KVPair pair : pairsArray) 
+		{
+			String pairKey = pair.getKey();
+			if (pairKey != null) 
+				if (pairKey.equalsIgnoreCase(key))
+					return pair.getValueList().get(0).toByteArray();
+		}
+		return null;
+	}
+	
+	//Get parameter from a List<ArgumentWrapper> in String format
+	//TODO remove this method
+	public static String getParamString(List<ArgumentWrapper> argWrapper, String type)
+	{
+		byte[] param = getParam(argWrapper, type); 
+		if (getParam(argWrapper, type) == null)
+			return "";
+		else return new String(param);
 	}
 	
 	//TODO change this method name
 	//Get parameter from a List<Args>
 	public static String getParamString2(List<KVPair> pairsArray, String key) 
 	{
-		if (key == null || pairsArray == null) 
+		byte[] param = getParam2(pairsArray, key);
+		if (param == null) 
 			return "";
-		
-		for (KVPair pair : pairsArray) 
-		{
-			String pairKey = pair.getKey();
-			if (pairKey != null) 
-			{
-				if (pairKey.equalsIgnoreCase(key))
-					return new String(pair.getValueList().get(0).toByteArray());
-			}
-		}
-		return "";
+		else return new String(param);
 	}
 
 	//Get parameter from a List<ArgumentWrapper> in List<String> format
+	//TODO remove this method
 	public static List<String> getParamStringList(List<ArgumentWrapper> argWrapper, String type)
 	{
 		List<String> returnValues = new ArrayList<String>();
@@ -194,6 +202,28 @@ public class Common
 		{
 			if (argWrapper.get(i).type.toUpperCase().equals(type.toUpperCase()))
 				returnValues.add(new String(argWrapper.get(i).value));
+		}
+		
+		return returnValues;
+	}
+	
+	//Get parameter from a List<ArgumentWrapper> in List<String> format
+	//TODO change this method name
+	public static List<String> getParamStringList2(List<KVPair> pairsArray, String key)
+	{
+		List<String> returnValues = new ArrayList<String>();
+		
+		if (key == null || pairsArray == null) 
+			return returnValues;
+		
+		for (int i = 0; i < pairsArray.size(); i++) 
+		{
+			KVPair pair = pairsArray.get(i);
+			String pairKey = pair.getKey();
+			if (pairKey != null) 
+				if (pairKey.equalsIgnoreCase(key))
+					for (int j = 0; j < pair.getValueList().size(); j++)
+						returnValues.add(new String(pair.getValue(j).toByteArray()));
 		}
 		
 		return returnValues;

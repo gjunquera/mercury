@@ -4,6 +4,7 @@
 #
 
 import shlex
+import Message_pb2
 from interface import BaseCmd, BaseArgumentParser
 
 class Provider(BaseCmd):
@@ -50,7 +51,7 @@ _id | name | value
             #print self.session.makeRequest("provider", "columns", request).getPaddedErrorOrData()
             response = self.session.newExecuteCommand("provider", "columns", request)
             msg = "| "
-            if response.error == "Success":
+            if response.error == "SUCCESS":
                 for pair in response.structured_data:
                     for column in pair.value:
                         msg += str(column) + " | "
@@ -123,7 +124,13 @@ _id | name | value
             request = vars(splitargs)
 
             #print self.session.executeCommand("provider", "query", request).getPaddedErrorOrData()
-            self.session.makeRequest("provider", "query", request)
+            response = self.session.newExecuteCommand("provider", "query", request)
+            if str(response.error) == "SUCCESS":
+                for pair in response.structured_data:
+                    msg = "| "
+                    for value in pair.value:
+                        msg += str(value) + " | "
+                    print msg + "\n"
 
         # FIXME: Choose specific exceptions to catch
         except Exception:
@@ -155,7 +162,8 @@ No files supported by provider at content://settings/secure/../../../../../../..
             # Compile stated arguments to send to executeCommand
             request = vars(splitargs)
             
-            print self.session.executeCommand("provider", "read", request).getPaddedErrorOrData()
+            response = self.session.newExecuteCommand("provider", "read", request).getPaddedErrorOrData()
+            print str(response.data)
 
         # FIXME: Choose specific exceptions to catch
         except Exception:
@@ -199,7 +207,9 @@ content://com.vulnerable.im/messages/3
             # Compile stated arguments to send to executeCommand
             request = vars(splitargs)
 
-            print self.session.executeCommand("provider", "insert", request).getPaddedErrorOrData()
+            #print self.session.executeCommand("provider", "insert", request).getPaddedErrorOrData()
+            response = self.session.newExecuteCommand("provider", "insert", request)
+            print str(response.data)
 
         # FIXME: Choose specific exceptions to catch
         except Exception:
@@ -224,7 +234,14 @@ usage: delete Uri [--where <where>] [--selectionArgs <arg> [<arg> ...]]
             # Compile stated arguments to send to executeCommand
             request = vars(splitargs)
 
-            print self.session.executeCommand("provider", "delete", request).getPaddedErrorOrData()
+            # print self.session.executeCommand("provider", "delete", request).getPaddedErrorOrData()
+            response = self.session.newExecuteCommand("provider", "delete", request)
+           
+            for pair in response.structured_data:
+                for pair in response.structured_data:
+                    if pair.key == "rows_deleted":
+                        for value in pair.value:
+                            print str(value) + " rows have been deleted."
 
         # FIXME: Choose specific exceptions to catch
         except Exception:
@@ -271,7 +288,12 @@ Example - updating an item in a content provider
             # Compile stated arguments to send to executeCommand
             request = vars(splitargs)
 
-            print self.session.executeCommand("provider", "update", request).getPaddedErrorOrData()
+            response = self.session.newExecuteCommand("provider", "update", request)
+           
+            for pair in response.structured_data:
+                if pair.key == "rows_updated":
+                    for value in pair.value:
+                        print str(value) + " rows have been updated." 
 
         # FIXME: Choose specific exceptions to catch
         except Exception:
@@ -349,7 +371,9 @@ Multiprocess allowed: false
 
             #print self.session.makeRequest("provider", "info", request)#.getPaddedErrorOrData()
             resp = self.session.newExecuteCommand("provider", "info", request)
-            for info in resp.providerResponse.info:
+            providerResp = Message_pb2.ProviderResponse()
+            providerResp.ParseFromString(str(resp.data))
+            for info in providerResp.info:
                 print "PackageName: " + info.packageName
                 print "Authority: " + info.authority
                 print "Required Permission - Read: " + info.readPermission
@@ -416,11 +440,19 @@ content://com.google.settings/partner
 
                     else:
 
-                        strings = self.session.executeCommand("provider", "finduri", {'path':'/data/data/com.mwr.mercury/classes.dex'}).data
+                        #strings = self.session.executeCommand("provider", "finduri", {'path':'/data/data/com.mwr.mercury/classes.dex'}).data
+                        response = self.session.newExecuteCommand("provider", "finduri", {'path':'/data/data/com.mwr.mercury/classes.dex'}).data
                         
-                        for string in strings.split():
-                            if (("CONTENT://" in string.upper()) and ("CONTENT://" != string.upper())):
-                                print string[string.upper().find("CONTENT"):]
+                        if str(response.error) == "SUCCESS":
+                            for pair in response.structured_data:
+                                if pair.key == "uri":
+                                    value = str(pair.value)
+                                    if (("CONTENT://" in value.upper()) and ("CONTENT://" != value.upper())):
+                                        print value[value.upper().find("CONTENT"):]
+                        
+#                        for string in strings.split():
+#                            if (("CONTENT://" in string.upper()) and ("CONTENT://" != string.upper())):
+#                                print string[string.upper().find("CONTENT"):]
 
                         # Delete classes.dex
                         self.session.executeCommand("core", "delete", {'path':'/data/data/com.mwr.mercury/classes.dex'})

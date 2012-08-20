@@ -1936,6 +1936,2369 @@ public final class Message {
     // @@protoc_insertion_point(class_scope:com.mwr.mercury.KVPair)
   }
   
+  public interface ProviderResponseOrBuilder
+      extends com.google.protobuf.MessageOrBuilder {
+    
+    // repeated .com.mwr.mercury.ProviderResponse.Info info = 1;
+    java.util.List<com.mwr.mercury.Message.ProviderResponse.Info> 
+        getInfoList();
+    com.mwr.mercury.Message.ProviderResponse.Info getInfo(int index);
+    int getInfoCount();
+    java.util.List<? extends com.mwr.mercury.Message.ProviderResponse.InfoOrBuilder> 
+        getInfoOrBuilderList();
+    com.mwr.mercury.Message.ProviderResponse.InfoOrBuilder getInfoOrBuilder(
+        int index);
+  }
+  public static final class ProviderResponse extends
+      com.google.protobuf.GeneratedMessage
+      implements ProviderResponseOrBuilder {
+    // Use ProviderResponse.newBuilder() to construct.
+    private ProviderResponse(Builder builder) {
+      super(builder);
+    }
+    private ProviderResponse(boolean noInit) {}
+    
+    private static final ProviderResponse defaultInstance;
+    public static ProviderResponse getDefaultInstance() {
+      return defaultInstance;
+    }
+    
+    public ProviderResponse getDefaultInstanceForType() {
+      return defaultInstance;
+    }
+    
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.mwr.mercury.Message.internal_static_com_mwr_mercury_ProviderResponse_descriptor;
+    }
+    
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.mwr.mercury.Message.internal_static_com_mwr_mercury_ProviderResponse_fieldAccessorTable;
+    }
+    
+    public interface InfoOrBuilder
+        extends com.google.protobuf.MessageOrBuilder {
+      
+      // optional string authority = 1;
+      boolean hasAuthority();
+      String getAuthority();
+      
+      // optional string packageName = 2;
+      boolean hasPackageName();
+      String getPackageName();
+      
+      // optional string readPermission = 3;
+      boolean hasReadPermission();
+      String getReadPermission();
+      
+      // repeated string uriPermissionPatterns = 4;
+      java.util.List<String> getUriPermissionPatternsList();
+      int getUriPermissionPatternsCount();
+      String getUriPermissionPatterns(int index);
+      
+      // optional string writePermission = 5;
+      boolean hasWritePermission();
+      String getWritePermission();
+      
+      // repeated .com.mwr.mercury.ProviderResponse.Info.PatternPermission pathPermissions = 6;
+      java.util.List<com.mwr.mercury.Message.ProviderResponse.Info.PatternPermission> 
+          getPathPermissionsList();
+      com.mwr.mercury.Message.ProviderResponse.Info.PatternPermission getPathPermissions(int index);
+      int getPathPermissionsCount();
+      java.util.List<? extends com.mwr.mercury.Message.ProviderResponse.Info.PatternPermissionOrBuilder> 
+          getPathPermissionsOrBuilderList();
+      com.mwr.mercury.Message.ProviderResponse.Info.PatternPermissionOrBuilder getPathPermissionsOrBuilder(
+          int index);
+      
+      // optional bool multiprocess = 7;
+      boolean hasMultiprocess();
+      boolean getMultiprocess();
+      
+      // optional bool grantUriPermissions = 8;
+      boolean hasGrantUriPermissions();
+      boolean getGrantUriPermissions();
+    }
+    public static final class Info extends
+        com.google.protobuf.GeneratedMessage
+        implements InfoOrBuilder {
+      // Use Info.newBuilder() to construct.
+      private Info(Builder builder) {
+        super(builder);
+      }
+      private Info(boolean noInit) {}
+      
+      private static final Info defaultInstance;
+      public static Info getDefaultInstance() {
+        return defaultInstance;
+      }
+      
+      public Info getDefaultInstanceForType() {
+        return defaultInstance;
+      }
+      
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.mwr.mercury.Message.internal_static_com_mwr_mercury_ProviderResponse_Info_descriptor;
+      }
+      
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.mwr.mercury.Message.internal_static_com_mwr_mercury_ProviderResponse_Info_fieldAccessorTable;
+      }
+      
+      public interface PatternPermissionOrBuilder
+          extends com.google.protobuf.MessageOrBuilder {
+        
+        // optional string writePermission = 1;
+        boolean hasWritePermission();
+        String getWritePermission();
+        
+        // optional string readPermission = 2;
+        boolean hasReadPermission();
+        String getReadPermission();
+        
+        // optional string writeNeeds = 3;
+        boolean hasWriteNeeds();
+        String getWriteNeeds();
+        
+        // optional string readNeeds = 4;
+        boolean hasReadNeeds();
+        String getReadNeeds();
+      }
+      public static final class PatternPermission extends
+          com.google.protobuf.GeneratedMessage
+          implements PatternPermissionOrBuilder {
+        // Use PatternPermission.newBuilder() to construct.
+        private PatternPermission(Builder builder) {
+          super(builder);
+        }
+        private PatternPermission(boolean noInit) {}
+        
+        private static final PatternPermission defaultInstance;
+        public static PatternPermission getDefaultInstance() {
+          return defaultInstance;
+        }
+        
+        public PatternPermission getDefaultInstanceForType() {
+          return defaultInstance;
+        }
+        
+        public static final com.google.protobuf.Descriptors.Descriptor
+            getDescriptor() {
+          return com.mwr.mercury.Message.internal_static_com_mwr_mercury_ProviderResponse_Info_PatternPermission_descriptor;
+        }
+        
+        protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+            internalGetFieldAccessorTable() {
+          return com.mwr.mercury.Message.internal_static_com_mwr_mercury_ProviderResponse_Info_PatternPermission_fieldAccessorTable;
+        }
+        
+        private int bitField0_;
+        // optional string writePermission = 1;
+        public static final int WRITEPERMISSION_FIELD_NUMBER = 1;
+        private java.lang.Object writePermission_;
+        public boolean hasWritePermission() {
+          return ((bitField0_ & 0x00000001) == 0x00000001);
+        }
+        public String getWritePermission() {
+          java.lang.Object ref = writePermission_;
+          if (ref instanceof String) {
+            return (String) ref;
+          } else {
+            com.google.protobuf.ByteString bs = 
+                (com.google.protobuf.ByteString) ref;
+            String s = bs.toStringUtf8();
+            if (com.google.protobuf.Internal.isValidUtf8(bs)) {
+              writePermission_ = s;
+            }
+            return s;
+          }
+        }
+        private com.google.protobuf.ByteString getWritePermissionBytes() {
+          java.lang.Object ref = writePermission_;
+          if (ref instanceof String) {
+            com.google.protobuf.ByteString b = 
+                com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+            writePermission_ = b;
+            return b;
+          } else {
+            return (com.google.protobuf.ByteString) ref;
+          }
+        }
+        
+        // optional string readPermission = 2;
+        public static final int READPERMISSION_FIELD_NUMBER = 2;
+        private java.lang.Object readPermission_;
+        public boolean hasReadPermission() {
+          return ((bitField0_ & 0x00000002) == 0x00000002);
+        }
+        public String getReadPermission() {
+          java.lang.Object ref = readPermission_;
+          if (ref instanceof String) {
+            return (String) ref;
+          } else {
+            com.google.protobuf.ByteString bs = 
+                (com.google.protobuf.ByteString) ref;
+            String s = bs.toStringUtf8();
+            if (com.google.protobuf.Internal.isValidUtf8(bs)) {
+              readPermission_ = s;
+            }
+            return s;
+          }
+        }
+        private com.google.protobuf.ByteString getReadPermissionBytes() {
+          java.lang.Object ref = readPermission_;
+          if (ref instanceof String) {
+            com.google.protobuf.ByteString b = 
+                com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+            readPermission_ = b;
+            return b;
+          } else {
+            return (com.google.protobuf.ByteString) ref;
+          }
+        }
+        
+        // optional string writeNeeds = 3;
+        public static final int WRITENEEDS_FIELD_NUMBER = 3;
+        private java.lang.Object writeNeeds_;
+        public boolean hasWriteNeeds() {
+          return ((bitField0_ & 0x00000004) == 0x00000004);
+        }
+        public String getWriteNeeds() {
+          java.lang.Object ref = writeNeeds_;
+          if (ref instanceof String) {
+            return (String) ref;
+          } else {
+            com.google.protobuf.ByteString bs = 
+                (com.google.protobuf.ByteString) ref;
+            String s = bs.toStringUtf8();
+            if (com.google.protobuf.Internal.isValidUtf8(bs)) {
+              writeNeeds_ = s;
+            }
+            return s;
+          }
+        }
+        private com.google.protobuf.ByteString getWriteNeedsBytes() {
+          java.lang.Object ref = writeNeeds_;
+          if (ref instanceof String) {
+            com.google.protobuf.ByteString b = 
+                com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+            writeNeeds_ = b;
+            return b;
+          } else {
+            return (com.google.protobuf.ByteString) ref;
+          }
+        }
+        
+        // optional string readNeeds = 4;
+        public static final int READNEEDS_FIELD_NUMBER = 4;
+        private java.lang.Object readNeeds_;
+        public boolean hasReadNeeds() {
+          return ((bitField0_ & 0x00000008) == 0x00000008);
+        }
+        public String getReadNeeds() {
+          java.lang.Object ref = readNeeds_;
+          if (ref instanceof String) {
+            return (String) ref;
+          } else {
+            com.google.protobuf.ByteString bs = 
+                (com.google.protobuf.ByteString) ref;
+            String s = bs.toStringUtf8();
+            if (com.google.protobuf.Internal.isValidUtf8(bs)) {
+              readNeeds_ = s;
+            }
+            return s;
+          }
+        }
+        private com.google.protobuf.ByteString getReadNeedsBytes() {
+          java.lang.Object ref = readNeeds_;
+          if (ref instanceof String) {
+            com.google.protobuf.ByteString b = 
+                com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+            readNeeds_ = b;
+            return b;
+          } else {
+            return (com.google.protobuf.ByteString) ref;
+          }
+        }
+        
+        private void initFields() {
+          writePermission_ = "";
+          readPermission_ = "";
+          writeNeeds_ = "";
+          readNeeds_ = "";
+        }
+        private byte memoizedIsInitialized = -1;
+        public final boolean isInitialized() {
+          byte isInitialized = memoizedIsInitialized;
+          if (isInitialized != -1) return isInitialized == 1;
+          
+          memoizedIsInitialized = 1;
+          return true;
+        }
+        
+        public void writeTo(com.google.protobuf.CodedOutputStream output)
+                            throws java.io.IOException {
+          getSerializedSize();
+          if (((bitField0_ & 0x00000001) == 0x00000001)) {
+            output.writeBytes(1, getWritePermissionBytes());
+          }
+          if (((bitField0_ & 0x00000002) == 0x00000002)) {
+            output.writeBytes(2, getReadPermissionBytes());
+          }
+          if (((bitField0_ & 0x00000004) == 0x00000004)) {
+            output.writeBytes(3, getWriteNeedsBytes());
+          }
+          if (((bitField0_ & 0x00000008) == 0x00000008)) {
+            output.writeBytes(4, getReadNeedsBytes());
+          }
+          getUnknownFields().writeTo(output);
+        }
+        
+        private int memoizedSerializedSize = -1;
+        public int getSerializedSize() {
+          int size = memoizedSerializedSize;
+          if (size != -1) return size;
+        
+          size = 0;
+          if (((bitField0_ & 0x00000001) == 0x00000001)) {
+            size += com.google.protobuf.CodedOutputStream
+              .computeBytesSize(1, getWritePermissionBytes());
+          }
+          if (((bitField0_ & 0x00000002) == 0x00000002)) {
+            size += com.google.protobuf.CodedOutputStream
+              .computeBytesSize(2, getReadPermissionBytes());
+          }
+          if (((bitField0_ & 0x00000004) == 0x00000004)) {
+            size += com.google.protobuf.CodedOutputStream
+              .computeBytesSize(3, getWriteNeedsBytes());
+          }
+          if (((bitField0_ & 0x00000008) == 0x00000008)) {
+            size += com.google.protobuf.CodedOutputStream
+              .computeBytesSize(4, getReadNeedsBytes());
+          }
+          size += getUnknownFields().getSerializedSize();
+          memoizedSerializedSize = size;
+          return size;
+        }
+        
+        private static final long serialVersionUID = 0L;
+        @java.lang.Override
+        protected java.lang.Object writeReplace()
+            throws java.io.ObjectStreamException {
+          return super.writeReplace();
+        }
+        
+        public static com.mwr.mercury.Message.ProviderResponse.Info.PatternPermission parseFrom(
+            com.google.protobuf.ByteString data)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          return newBuilder().mergeFrom(data).buildParsed();
+        }
+        public static com.mwr.mercury.Message.ProviderResponse.Info.PatternPermission parseFrom(
+            com.google.protobuf.ByteString data,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          return newBuilder().mergeFrom(data, extensionRegistry)
+                   .buildParsed();
+        }
+        public static com.mwr.mercury.Message.ProviderResponse.Info.PatternPermission parseFrom(byte[] data)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          return newBuilder().mergeFrom(data).buildParsed();
+        }
+        public static com.mwr.mercury.Message.ProviderResponse.Info.PatternPermission parseFrom(
+            byte[] data,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          return newBuilder().mergeFrom(data, extensionRegistry)
+                   .buildParsed();
+        }
+        public static com.mwr.mercury.Message.ProviderResponse.Info.PatternPermission parseFrom(java.io.InputStream input)
+            throws java.io.IOException {
+          return newBuilder().mergeFrom(input).buildParsed();
+        }
+        public static com.mwr.mercury.Message.ProviderResponse.Info.PatternPermission parseFrom(
+            java.io.InputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+          return newBuilder().mergeFrom(input, extensionRegistry)
+                   .buildParsed();
+        }
+        public static com.mwr.mercury.Message.ProviderResponse.Info.PatternPermission parseDelimitedFrom(java.io.InputStream input)
+            throws java.io.IOException {
+          Builder builder = newBuilder();
+          if (builder.mergeDelimitedFrom(input)) {
+            return builder.buildParsed();
+          } else {
+            return null;
+          }
+        }
+        public static com.mwr.mercury.Message.ProviderResponse.Info.PatternPermission parseDelimitedFrom(
+            java.io.InputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+          Builder builder = newBuilder();
+          if (builder.mergeDelimitedFrom(input, extensionRegistry)) {
+            return builder.buildParsed();
+          } else {
+            return null;
+          }
+        }
+        public static com.mwr.mercury.Message.ProviderResponse.Info.PatternPermission parseFrom(
+            com.google.protobuf.CodedInputStream input)
+            throws java.io.IOException {
+          return newBuilder().mergeFrom(input).buildParsed();
+        }
+        public static com.mwr.mercury.Message.ProviderResponse.Info.PatternPermission parseFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+          return newBuilder().mergeFrom(input, extensionRegistry)
+                   .buildParsed();
+        }
+        
+        public static Builder newBuilder() { return Builder.create(); }
+        public Builder newBuilderForType() { return newBuilder(); }
+        public static Builder newBuilder(com.mwr.mercury.Message.ProviderResponse.Info.PatternPermission prototype) {
+          return newBuilder().mergeFrom(prototype);
+        }
+        public Builder toBuilder() { return newBuilder(this); }
+        
+        @java.lang.Override
+        protected Builder newBuilderForType(
+            com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+          Builder builder = new Builder(parent);
+          return builder;
+        }
+        public static final class Builder extends
+            com.google.protobuf.GeneratedMessage.Builder<Builder>
+           implements com.mwr.mercury.Message.ProviderResponse.Info.PatternPermissionOrBuilder {
+          public static final com.google.protobuf.Descriptors.Descriptor
+              getDescriptor() {
+            return com.mwr.mercury.Message.internal_static_com_mwr_mercury_ProviderResponse_Info_PatternPermission_descriptor;
+          }
+          
+          protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+              internalGetFieldAccessorTable() {
+            return com.mwr.mercury.Message.internal_static_com_mwr_mercury_ProviderResponse_Info_PatternPermission_fieldAccessorTable;
+          }
+          
+          // Construct using com.mwr.mercury.Message.ProviderResponse.Info.PatternPermission.newBuilder()
+          private Builder() {
+            maybeForceBuilderInitialization();
+          }
+          
+          private Builder(BuilderParent parent) {
+            super(parent);
+            maybeForceBuilderInitialization();
+          }
+          private void maybeForceBuilderInitialization() {
+            if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+            }
+          }
+          private static Builder create() {
+            return new Builder();
+          }
+          
+          public Builder clear() {
+            super.clear();
+            writePermission_ = "";
+            bitField0_ = (bitField0_ & ~0x00000001);
+            readPermission_ = "";
+            bitField0_ = (bitField0_ & ~0x00000002);
+            writeNeeds_ = "";
+            bitField0_ = (bitField0_ & ~0x00000004);
+            readNeeds_ = "";
+            bitField0_ = (bitField0_ & ~0x00000008);
+            return this;
+          }
+          
+          public Builder clone() {
+            return create().mergeFrom(buildPartial());
+          }
+          
+          public com.google.protobuf.Descriptors.Descriptor
+              getDescriptorForType() {
+            return com.mwr.mercury.Message.ProviderResponse.Info.PatternPermission.getDescriptor();
+          }
+          
+          public com.mwr.mercury.Message.ProviderResponse.Info.PatternPermission getDefaultInstanceForType() {
+            return com.mwr.mercury.Message.ProviderResponse.Info.PatternPermission.getDefaultInstance();
+          }
+          
+          public com.mwr.mercury.Message.ProviderResponse.Info.PatternPermission build() {
+            com.mwr.mercury.Message.ProviderResponse.Info.PatternPermission result = buildPartial();
+            if (!result.isInitialized()) {
+              throw newUninitializedMessageException(result);
+            }
+            return result;
+          }
+          
+          private com.mwr.mercury.Message.ProviderResponse.Info.PatternPermission buildParsed()
+              throws com.google.protobuf.InvalidProtocolBufferException {
+            com.mwr.mercury.Message.ProviderResponse.Info.PatternPermission result = buildPartial();
+            if (!result.isInitialized()) {
+              throw newUninitializedMessageException(
+                result).asInvalidProtocolBufferException();
+            }
+            return result;
+          }
+          
+          public com.mwr.mercury.Message.ProviderResponse.Info.PatternPermission buildPartial() {
+            com.mwr.mercury.Message.ProviderResponse.Info.PatternPermission result = new com.mwr.mercury.Message.ProviderResponse.Info.PatternPermission(this);
+            int from_bitField0_ = bitField0_;
+            int to_bitField0_ = 0;
+            if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+              to_bitField0_ |= 0x00000001;
+            }
+            result.writePermission_ = writePermission_;
+            if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+              to_bitField0_ |= 0x00000002;
+            }
+            result.readPermission_ = readPermission_;
+            if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+              to_bitField0_ |= 0x00000004;
+            }
+            result.writeNeeds_ = writeNeeds_;
+            if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
+              to_bitField0_ |= 0x00000008;
+            }
+            result.readNeeds_ = readNeeds_;
+            result.bitField0_ = to_bitField0_;
+            onBuilt();
+            return result;
+          }
+          
+          public Builder mergeFrom(com.google.protobuf.Message other) {
+            if (other instanceof com.mwr.mercury.Message.ProviderResponse.Info.PatternPermission) {
+              return mergeFrom((com.mwr.mercury.Message.ProviderResponse.Info.PatternPermission)other);
+            } else {
+              super.mergeFrom(other);
+              return this;
+            }
+          }
+          
+          public Builder mergeFrom(com.mwr.mercury.Message.ProviderResponse.Info.PatternPermission other) {
+            if (other == com.mwr.mercury.Message.ProviderResponse.Info.PatternPermission.getDefaultInstance()) return this;
+            if (other.hasWritePermission()) {
+              setWritePermission(other.getWritePermission());
+            }
+            if (other.hasReadPermission()) {
+              setReadPermission(other.getReadPermission());
+            }
+            if (other.hasWriteNeeds()) {
+              setWriteNeeds(other.getWriteNeeds());
+            }
+            if (other.hasReadNeeds()) {
+              setReadNeeds(other.getReadNeeds());
+            }
+            this.mergeUnknownFields(other.getUnknownFields());
+            return this;
+          }
+          
+          public final boolean isInitialized() {
+            return true;
+          }
+          
+          public Builder mergeFrom(
+              com.google.protobuf.CodedInputStream input,
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+              throws java.io.IOException {
+            com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+              com.google.protobuf.UnknownFieldSet.newBuilder(
+                this.getUnknownFields());
+            while (true) {
+              int tag = input.readTag();
+              switch (tag) {
+                case 0:
+                  this.setUnknownFields(unknownFields.build());
+                  onChanged();
+                  return this;
+                default: {
+                  if (!parseUnknownField(input, unknownFields,
+                                         extensionRegistry, tag)) {
+                    this.setUnknownFields(unknownFields.build());
+                    onChanged();
+                    return this;
+                  }
+                  break;
+                }
+                case 10: {
+                  bitField0_ |= 0x00000001;
+                  writePermission_ = input.readBytes();
+                  break;
+                }
+                case 18: {
+                  bitField0_ |= 0x00000002;
+                  readPermission_ = input.readBytes();
+                  break;
+                }
+                case 26: {
+                  bitField0_ |= 0x00000004;
+                  writeNeeds_ = input.readBytes();
+                  break;
+                }
+                case 34: {
+                  bitField0_ |= 0x00000008;
+                  readNeeds_ = input.readBytes();
+                  break;
+                }
+              }
+            }
+          }
+          
+          private int bitField0_;
+          
+          // optional string writePermission = 1;
+          private java.lang.Object writePermission_ = "";
+          public boolean hasWritePermission() {
+            return ((bitField0_ & 0x00000001) == 0x00000001);
+          }
+          public String getWritePermission() {
+            java.lang.Object ref = writePermission_;
+            if (!(ref instanceof String)) {
+              String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+              writePermission_ = s;
+              return s;
+            } else {
+              return (String) ref;
+            }
+          }
+          public Builder setWritePermission(String value) {
+            if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000001;
+            writePermission_ = value;
+            onChanged();
+            return this;
+          }
+          public Builder clearWritePermission() {
+            bitField0_ = (bitField0_ & ~0x00000001);
+            writePermission_ = getDefaultInstance().getWritePermission();
+            onChanged();
+            return this;
+          }
+          void setWritePermission(com.google.protobuf.ByteString value) {
+            bitField0_ |= 0x00000001;
+            writePermission_ = value;
+            onChanged();
+          }
+          
+          // optional string readPermission = 2;
+          private java.lang.Object readPermission_ = "";
+          public boolean hasReadPermission() {
+            return ((bitField0_ & 0x00000002) == 0x00000002);
+          }
+          public String getReadPermission() {
+            java.lang.Object ref = readPermission_;
+            if (!(ref instanceof String)) {
+              String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+              readPermission_ = s;
+              return s;
+            } else {
+              return (String) ref;
+            }
+          }
+          public Builder setReadPermission(String value) {
+            if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000002;
+            readPermission_ = value;
+            onChanged();
+            return this;
+          }
+          public Builder clearReadPermission() {
+            bitField0_ = (bitField0_ & ~0x00000002);
+            readPermission_ = getDefaultInstance().getReadPermission();
+            onChanged();
+            return this;
+          }
+          void setReadPermission(com.google.protobuf.ByteString value) {
+            bitField0_ |= 0x00000002;
+            readPermission_ = value;
+            onChanged();
+          }
+          
+          // optional string writeNeeds = 3;
+          private java.lang.Object writeNeeds_ = "";
+          public boolean hasWriteNeeds() {
+            return ((bitField0_ & 0x00000004) == 0x00000004);
+          }
+          public String getWriteNeeds() {
+            java.lang.Object ref = writeNeeds_;
+            if (!(ref instanceof String)) {
+              String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+              writeNeeds_ = s;
+              return s;
+            } else {
+              return (String) ref;
+            }
+          }
+          public Builder setWriteNeeds(String value) {
+            if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000004;
+            writeNeeds_ = value;
+            onChanged();
+            return this;
+          }
+          public Builder clearWriteNeeds() {
+            bitField0_ = (bitField0_ & ~0x00000004);
+            writeNeeds_ = getDefaultInstance().getWriteNeeds();
+            onChanged();
+            return this;
+          }
+          void setWriteNeeds(com.google.protobuf.ByteString value) {
+            bitField0_ |= 0x00000004;
+            writeNeeds_ = value;
+            onChanged();
+          }
+          
+          // optional string readNeeds = 4;
+          private java.lang.Object readNeeds_ = "";
+          public boolean hasReadNeeds() {
+            return ((bitField0_ & 0x00000008) == 0x00000008);
+          }
+          public String getReadNeeds() {
+            java.lang.Object ref = readNeeds_;
+            if (!(ref instanceof String)) {
+              String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+              readNeeds_ = s;
+              return s;
+            } else {
+              return (String) ref;
+            }
+          }
+          public Builder setReadNeeds(String value) {
+            if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000008;
+            readNeeds_ = value;
+            onChanged();
+            return this;
+          }
+          public Builder clearReadNeeds() {
+            bitField0_ = (bitField0_ & ~0x00000008);
+            readNeeds_ = getDefaultInstance().getReadNeeds();
+            onChanged();
+            return this;
+          }
+          void setReadNeeds(com.google.protobuf.ByteString value) {
+            bitField0_ |= 0x00000008;
+            readNeeds_ = value;
+            onChanged();
+          }
+          
+          // @@protoc_insertion_point(builder_scope:com.mwr.mercury.ProviderResponse.Info.PatternPermission)
+        }
+        
+        static {
+          defaultInstance = new PatternPermission(true);
+          defaultInstance.initFields();
+        }
+        
+        // @@protoc_insertion_point(class_scope:com.mwr.mercury.ProviderResponse.Info.PatternPermission)
+      }
+      
+      private int bitField0_;
+      // optional string authority = 1;
+      public static final int AUTHORITY_FIELD_NUMBER = 1;
+      private java.lang.Object authority_;
+      public boolean hasAuthority() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      public String getAuthority() {
+        java.lang.Object ref = authority_;
+        if (ref instanceof String) {
+          return (String) ref;
+        } else {
+          com.google.protobuf.ByteString bs = 
+              (com.google.protobuf.ByteString) ref;
+          String s = bs.toStringUtf8();
+          if (com.google.protobuf.Internal.isValidUtf8(bs)) {
+            authority_ = s;
+          }
+          return s;
+        }
+      }
+      private com.google.protobuf.ByteString getAuthorityBytes() {
+        java.lang.Object ref = authority_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+          authority_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      
+      // optional string packageName = 2;
+      public static final int PACKAGENAME_FIELD_NUMBER = 2;
+      private java.lang.Object packageName_;
+      public boolean hasPackageName() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      public String getPackageName() {
+        java.lang.Object ref = packageName_;
+        if (ref instanceof String) {
+          return (String) ref;
+        } else {
+          com.google.protobuf.ByteString bs = 
+              (com.google.protobuf.ByteString) ref;
+          String s = bs.toStringUtf8();
+          if (com.google.protobuf.Internal.isValidUtf8(bs)) {
+            packageName_ = s;
+          }
+          return s;
+        }
+      }
+      private com.google.protobuf.ByteString getPackageNameBytes() {
+        java.lang.Object ref = packageName_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+          packageName_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      
+      // optional string readPermission = 3;
+      public static final int READPERMISSION_FIELD_NUMBER = 3;
+      private java.lang.Object readPermission_;
+      public boolean hasReadPermission() {
+        return ((bitField0_ & 0x00000004) == 0x00000004);
+      }
+      public String getReadPermission() {
+        java.lang.Object ref = readPermission_;
+        if (ref instanceof String) {
+          return (String) ref;
+        } else {
+          com.google.protobuf.ByteString bs = 
+              (com.google.protobuf.ByteString) ref;
+          String s = bs.toStringUtf8();
+          if (com.google.protobuf.Internal.isValidUtf8(bs)) {
+            readPermission_ = s;
+          }
+          return s;
+        }
+      }
+      private com.google.protobuf.ByteString getReadPermissionBytes() {
+        java.lang.Object ref = readPermission_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+          readPermission_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      
+      // repeated string uriPermissionPatterns = 4;
+      public static final int URIPERMISSIONPATTERNS_FIELD_NUMBER = 4;
+      private com.google.protobuf.LazyStringList uriPermissionPatterns_;
+      public java.util.List<String>
+          getUriPermissionPatternsList() {
+        return uriPermissionPatterns_;
+      }
+      public int getUriPermissionPatternsCount() {
+        return uriPermissionPatterns_.size();
+      }
+      public String getUriPermissionPatterns(int index) {
+        return uriPermissionPatterns_.get(index);
+      }
+      
+      // optional string writePermission = 5;
+      public static final int WRITEPERMISSION_FIELD_NUMBER = 5;
+      private java.lang.Object writePermission_;
+      public boolean hasWritePermission() {
+        return ((bitField0_ & 0x00000008) == 0x00000008);
+      }
+      public String getWritePermission() {
+        java.lang.Object ref = writePermission_;
+        if (ref instanceof String) {
+          return (String) ref;
+        } else {
+          com.google.protobuf.ByteString bs = 
+              (com.google.protobuf.ByteString) ref;
+          String s = bs.toStringUtf8();
+          if (com.google.protobuf.Internal.isValidUtf8(bs)) {
+            writePermission_ = s;
+          }
+          return s;
+        }
+      }
+      private com.google.protobuf.ByteString getWritePermissionBytes() {
+        java.lang.Object ref = writePermission_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+          writePermission_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      
+      // repeated .com.mwr.mercury.ProviderResponse.Info.PatternPermission pathPermissions = 6;
+      public static final int PATHPERMISSIONS_FIELD_NUMBER = 6;
+      private java.util.List<com.mwr.mercury.Message.ProviderResponse.Info.PatternPermission> pathPermissions_;
+      public java.util.List<com.mwr.mercury.Message.ProviderResponse.Info.PatternPermission> getPathPermissionsList() {
+        return pathPermissions_;
+      }
+      public java.util.List<? extends com.mwr.mercury.Message.ProviderResponse.Info.PatternPermissionOrBuilder> 
+          getPathPermissionsOrBuilderList() {
+        return pathPermissions_;
+      }
+      public int getPathPermissionsCount() {
+        return pathPermissions_.size();
+      }
+      public com.mwr.mercury.Message.ProviderResponse.Info.PatternPermission getPathPermissions(int index) {
+        return pathPermissions_.get(index);
+      }
+      public com.mwr.mercury.Message.ProviderResponse.Info.PatternPermissionOrBuilder getPathPermissionsOrBuilder(
+          int index) {
+        return pathPermissions_.get(index);
+      }
+      
+      // optional bool multiprocess = 7;
+      public static final int MULTIPROCESS_FIELD_NUMBER = 7;
+      private boolean multiprocess_;
+      public boolean hasMultiprocess() {
+        return ((bitField0_ & 0x00000010) == 0x00000010);
+      }
+      public boolean getMultiprocess() {
+        return multiprocess_;
+      }
+      
+      // optional bool grantUriPermissions = 8;
+      public static final int GRANTURIPERMISSIONS_FIELD_NUMBER = 8;
+      private boolean grantUriPermissions_;
+      public boolean hasGrantUriPermissions() {
+        return ((bitField0_ & 0x00000020) == 0x00000020);
+      }
+      public boolean getGrantUriPermissions() {
+        return grantUriPermissions_;
+      }
+      
+      private void initFields() {
+        authority_ = "";
+        packageName_ = "";
+        readPermission_ = "";
+        uriPermissionPatterns_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+        writePermission_ = "";
+        pathPermissions_ = java.util.Collections.emptyList();
+        multiprocess_ = false;
+        grantUriPermissions_ = false;
+      }
+      private byte memoizedIsInitialized = -1;
+      public final boolean isInitialized() {
+        byte isInitialized = memoizedIsInitialized;
+        if (isInitialized != -1) return isInitialized == 1;
+        
+        memoizedIsInitialized = 1;
+        return true;
+      }
+      
+      public void writeTo(com.google.protobuf.CodedOutputStream output)
+                          throws java.io.IOException {
+        getSerializedSize();
+        if (((bitField0_ & 0x00000001) == 0x00000001)) {
+          output.writeBytes(1, getAuthorityBytes());
+        }
+        if (((bitField0_ & 0x00000002) == 0x00000002)) {
+          output.writeBytes(2, getPackageNameBytes());
+        }
+        if (((bitField0_ & 0x00000004) == 0x00000004)) {
+          output.writeBytes(3, getReadPermissionBytes());
+        }
+        for (int i = 0; i < uriPermissionPatterns_.size(); i++) {
+          output.writeBytes(4, uriPermissionPatterns_.getByteString(i));
+        }
+        if (((bitField0_ & 0x00000008) == 0x00000008)) {
+          output.writeBytes(5, getWritePermissionBytes());
+        }
+        for (int i = 0; i < pathPermissions_.size(); i++) {
+          output.writeMessage(6, pathPermissions_.get(i));
+        }
+        if (((bitField0_ & 0x00000010) == 0x00000010)) {
+          output.writeBool(7, multiprocess_);
+        }
+        if (((bitField0_ & 0x00000020) == 0x00000020)) {
+          output.writeBool(8, grantUriPermissions_);
+        }
+        getUnknownFields().writeTo(output);
+      }
+      
+      private int memoizedSerializedSize = -1;
+      public int getSerializedSize() {
+        int size = memoizedSerializedSize;
+        if (size != -1) return size;
+      
+        size = 0;
+        if (((bitField0_ & 0x00000001) == 0x00000001)) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeBytesSize(1, getAuthorityBytes());
+        }
+        if (((bitField0_ & 0x00000002) == 0x00000002)) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeBytesSize(2, getPackageNameBytes());
+        }
+        if (((bitField0_ & 0x00000004) == 0x00000004)) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeBytesSize(3, getReadPermissionBytes());
+        }
+        {
+          int dataSize = 0;
+          for (int i = 0; i < uriPermissionPatterns_.size(); i++) {
+            dataSize += com.google.protobuf.CodedOutputStream
+              .computeBytesSizeNoTag(uriPermissionPatterns_.getByteString(i));
+          }
+          size += dataSize;
+          size += 1 * getUriPermissionPatternsList().size();
+        }
+        if (((bitField0_ & 0x00000008) == 0x00000008)) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeBytesSize(5, getWritePermissionBytes());
+        }
+        for (int i = 0; i < pathPermissions_.size(); i++) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeMessageSize(6, pathPermissions_.get(i));
+        }
+        if (((bitField0_ & 0x00000010) == 0x00000010)) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeBoolSize(7, multiprocess_);
+        }
+        if (((bitField0_ & 0x00000020) == 0x00000020)) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeBoolSize(8, grantUriPermissions_);
+        }
+        size += getUnknownFields().getSerializedSize();
+        memoizedSerializedSize = size;
+        return size;
+      }
+      
+      private static final long serialVersionUID = 0L;
+      @java.lang.Override
+      protected java.lang.Object writeReplace()
+          throws java.io.ObjectStreamException {
+        return super.writeReplace();
+      }
+      
+      public static com.mwr.mercury.Message.ProviderResponse.Info parseFrom(
+          com.google.protobuf.ByteString data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return newBuilder().mergeFrom(data).buildParsed();
+      }
+      public static com.mwr.mercury.Message.ProviderResponse.Info parseFrom(
+          com.google.protobuf.ByteString data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return newBuilder().mergeFrom(data, extensionRegistry)
+                 .buildParsed();
+      }
+      public static com.mwr.mercury.Message.ProviderResponse.Info parseFrom(byte[] data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return newBuilder().mergeFrom(data).buildParsed();
+      }
+      public static com.mwr.mercury.Message.ProviderResponse.Info parseFrom(
+          byte[] data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return newBuilder().mergeFrom(data, extensionRegistry)
+                 .buildParsed();
+      }
+      public static com.mwr.mercury.Message.ProviderResponse.Info parseFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return newBuilder().mergeFrom(input).buildParsed();
+      }
+      public static com.mwr.mercury.Message.ProviderResponse.Info parseFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return newBuilder().mergeFrom(input, extensionRegistry)
+                 .buildParsed();
+      }
+      public static com.mwr.mercury.Message.ProviderResponse.Info parseDelimitedFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        Builder builder = newBuilder();
+        if (builder.mergeDelimitedFrom(input)) {
+          return builder.buildParsed();
+        } else {
+          return null;
+        }
+      }
+      public static com.mwr.mercury.Message.ProviderResponse.Info parseDelimitedFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        Builder builder = newBuilder();
+        if (builder.mergeDelimitedFrom(input, extensionRegistry)) {
+          return builder.buildParsed();
+        } else {
+          return null;
+        }
+      }
+      public static com.mwr.mercury.Message.ProviderResponse.Info parseFrom(
+          com.google.protobuf.CodedInputStream input)
+          throws java.io.IOException {
+        return newBuilder().mergeFrom(input).buildParsed();
+      }
+      public static com.mwr.mercury.Message.ProviderResponse.Info parseFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return newBuilder().mergeFrom(input, extensionRegistry)
+                 .buildParsed();
+      }
+      
+      public static Builder newBuilder() { return Builder.create(); }
+      public Builder newBuilderForType() { return newBuilder(); }
+      public static Builder newBuilder(com.mwr.mercury.Message.ProviderResponse.Info prototype) {
+        return newBuilder().mergeFrom(prototype);
+      }
+      public Builder toBuilder() { return newBuilder(this); }
+      
+      @java.lang.Override
+      protected Builder newBuilderForType(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        Builder builder = new Builder(parent);
+        return builder;
+      }
+      public static final class Builder extends
+          com.google.protobuf.GeneratedMessage.Builder<Builder>
+         implements com.mwr.mercury.Message.ProviderResponse.InfoOrBuilder {
+        public static final com.google.protobuf.Descriptors.Descriptor
+            getDescriptor() {
+          return com.mwr.mercury.Message.internal_static_com_mwr_mercury_ProviderResponse_Info_descriptor;
+        }
+        
+        protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+            internalGetFieldAccessorTable() {
+          return com.mwr.mercury.Message.internal_static_com_mwr_mercury_ProviderResponse_Info_fieldAccessorTable;
+        }
+        
+        // Construct using com.mwr.mercury.Message.ProviderResponse.Info.newBuilder()
+        private Builder() {
+          maybeForceBuilderInitialization();
+        }
+        
+        private Builder(BuilderParent parent) {
+          super(parent);
+          maybeForceBuilderInitialization();
+        }
+        private void maybeForceBuilderInitialization() {
+          if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+            getPathPermissionsFieldBuilder();
+          }
+        }
+        private static Builder create() {
+          return new Builder();
+        }
+        
+        public Builder clear() {
+          super.clear();
+          authority_ = "";
+          bitField0_ = (bitField0_ & ~0x00000001);
+          packageName_ = "";
+          bitField0_ = (bitField0_ & ~0x00000002);
+          readPermission_ = "";
+          bitField0_ = (bitField0_ & ~0x00000004);
+          uriPermissionPatterns_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+          bitField0_ = (bitField0_ & ~0x00000008);
+          writePermission_ = "";
+          bitField0_ = (bitField0_ & ~0x00000010);
+          if (pathPermissionsBuilder_ == null) {
+            pathPermissions_ = java.util.Collections.emptyList();
+            bitField0_ = (bitField0_ & ~0x00000020);
+          } else {
+            pathPermissionsBuilder_.clear();
+          }
+          multiprocess_ = false;
+          bitField0_ = (bitField0_ & ~0x00000040);
+          grantUriPermissions_ = false;
+          bitField0_ = (bitField0_ & ~0x00000080);
+          return this;
+        }
+        
+        public Builder clone() {
+          return create().mergeFrom(buildPartial());
+        }
+        
+        public com.google.protobuf.Descriptors.Descriptor
+            getDescriptorForType() {
+          return com.mwr.mercury.Message.ProviderResponse.Info.getDescriptor();
+        }
+        
+        public com.mwr.mercury.Message.ProviderResponse.Info getDefaultInstanceForType() {
+          return com.mwr.mercury.Message.ProviderResponse.Info.getDefaultInstance();
+        }
+        
+        public com.mwr.mercury.Message.ProviderResponse.Info build() {
+          com.mwr.mercury.Message.ProviderResponse.Info result = buildPartial();
+          if (!result.isInitialized()) {
+            throw newUninitializedMessageException(result);
+          }
+          return result;
+        }
+        
+        private com.mwr.mercury.Message.ProviderResponse.Info buildParsed()
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          com.mwr.mercury.Message.ProviderResponse.Info result = buildPartial();
+          if (!result.isInitialized()) {
+            throw newUninitializedMessageException(
+              result).asInvalidProtocolBufferException();
+          }
+          return result;
+        }
+        
+        public com.mwr.mercury.Message.ProviderResponse.Info buildPartial() {
+          com.mwr.mercury.Message.ProviderResponse.Info result = new com.mwr.mercury.Message.ProviderResponse.Info(this);
+          int from_bitField0_ = bitField0_;
+          int to_bitField0_ = 0;
+          if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+            to_bitField0_ |= 0x00000001;
+          }
+          result.authority_ = authority_;
+          if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+            to_bitField0_ |= 0x00000002;
+          }
+          result.packageName_ = packageName_;
+          if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+            to_bitField0_ |= 0x00000004;
+          }
+          result.readPermission_ = readPermission_;
+          if (((bitField0_ & 0x00000008) == 0x00000008)) {
+            uriPermissionPatterns_ = new com.google.protobuf.UnmodifiableLazyStringList(
+                uriPermissionPatterns_);
+            bitField0_ = (bitField0_ & ~0x00000008);
+          }
+          result.uriPermissionPatterns_ = uriPermissionPatterns_;
+          if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
+            to_bitField0_ |= 0x00000008;
+          }
+          result.writePermission_ = writePermission_;
+          if (pathPermissionsBuilder_ == null) {
+            if (((bitField0_ & 0x00000020) == 0x00000020)) {
+              pathPermissions_ = java.util.Collections.unmodifiableList(pathPermissions_);
+              bitField0_ = (bitField0_ & ~0x00000020);
+            }
+            result.pathPermissions_ = pathPermissions_;
+          } else {
+            result.pathPermissions_ = pathPermissionsBuilder_.build();
+          }
+          if (((from_bitField0_ & 0x00000040) == 0x00000040)) {
+            to_bitField0_ |= 0x00000010;
+          }
+          result.multiprocess_ = multiprocess_;
+          if (((from_bitField0_ & 0x00000080) == 0x00000080)) {
+            to_bitField0_ |= 0x00000020;
+          }
+          result.grantUriPermissions_ = grantUriPermissions_;
+          result.bitField0_ = to_bitField0_;
+          onBuilt();
+          return result;
+        }
+        
+        public Builder mergeFrom(com.google.protobuf.Message other) {
+          if (other instanceof com.mwr.mercury.Message.ProviderResponse.Info) {
+            return mergeFrom((com.mwr.mercury.Message.ProviderResponse.Info)other);
+          } else {
+            super.mergeFrom(other);
+            return this;
+          }
+        }
+        
+        public Builder mergeFrom(com.mwr.mercury.Message.ProviderResponse.Info other) {
+          if (other == com.mwr.mercury.Message.ProviderResponse.Info.getDefaultInstance()) return this;
+          if (other.hasAuthority()) {
+            setAuthority(other.getAuthority());
+          }
+          if (other.hasPackageName()) {
+            setPackageName(other.getPackageName());
+          }
+          if (other.hasReadPermission()) {
+            setReadPermission(other.getReadPermission());
+          }
+          if (!other.uriPermissionPatterns_.isEmpty()) {
+            if (uriPermissionPatterns_.isEmpty()) {
+              uriPermissionPatterns_ = other.uriPermissionPatterns_;
+              bitField0_ = (bitField0_ & ~0x00000008);
+            } else {
+              ensureUriPermissionPatternsIsMutable();
+              uriPermissionPatterns_.addAll(other.uriPermissionPatterns_);
+            }
+            onChanged();
+          }
+          if (other.hasWritePermission()) {
+            setWritePermission(other.getWritePermission());
+          }
+          if (pathPermissionsBuilder_ == null) {
+            if (!other.pathPermissions_.isEmpty()) {
+              if (pathPermissions_.isEmpty()) {
+                pathPermissions_ = other.pathPermissions_;
+                bitField0_ = (bitField0_ & ~0x00000020);
+              } else {
+                ensurePathPermissionsIsMutable();
+                pathPermissions_.addAll(other.pathPermissions_);
+              }
+              onChanged();
+            }
+          } else {
+            if (!other.pathPermissions_.isEmpty()) {
+              if (pathPermissionsBuilder_.isEmpty()) {
+                pathPermissionsBuilder_.dispose();
+                pathPermissionsBuilder_ = null;
+                pathPermissions_ = other.pathPermissions_;
+                bitField0_ = (bitField0_ & ~0x00000020);
+                pathPermissionsBuilder_ = 
+                  com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
+                     getPathPermissionsFieldBuilder() : null;
+              } else {
+                pathPermissionsBuilder_.addAllMessages(other.pathPermissions_);
+              }
+            }
+          }
+          if (other.hasMultiprocess()) {
+            setMultiprocess(other.getMultiprocess());
+          }
+          if (other.hasGrantUriPermissions()) {
+            setGrantUriPermissions(other.getGrantUriPermissions());
+          }
+          this.mergeUnknownFields(other.getUnknownFields());
+          return this;
+        }
+        
+        public final boolean isInitialized() {
+          return true;
+        }
+        
+        public Builder mergeFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+          com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+            com.google.protobuf.UnknownFieldSet.newBuilder(
+              this.getUnknownFields());
+          while (true) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                this.setUnknownFields(unknownFields.build());
+                onChanged();
+                return this;
+              default: {
+                if (!parseUnknownField(input, unknownFields,
+                                       extensionRegistry, tag)) {
+                  this.setUnknownFields(unknownFields.build());
+                  onChanged();
+                  return this;
+                }
+                break;
+              }
+              case 10: {
+                bitField0_ |= 0x00000001;
+                authority_ = input.readBytes();
+                break;
+              }
+              case 18: {
+                bitField0_ |= 0x00000002;
+                packageName_ = input.readBytes();
+                break;
+              }
+              case 26: {
+                bitField0_ |= 0x00000004;
+                readPermission_ = input.readBytes();
+                break;
+              }
+              case 34: {
+                ensureUriPermissionPatternsIsMutable();
+                uriPermissionPatterns_.add(input.readBytes());
+                break;
+              }
+              case 42: {
+                bitField0_ |= 0x00000010;
+                writePermission_ = input.readBytes();
+                break;
+              }
+              case 50: {
+                com.mwr.mercury.Message.ProviderResponse.Info.PatternPermission.Builder subBuilder = com.mwr.mercury.Message.ProviderResponse.Info.PatternPermission.newBuilder();
+                input.readMessage(subBuilder, extensionRegistry);
+                addPathPermissions(subBuilder.buildPartial());
+                break;
+              }
+              case 56: {
+                bitField0_ |= 0x00000040;
+                multiprocess_ = input.readBool();
+                break;
+              }
+              case 64: {
+                bitField0_ |= 0x00000080;
+                grantUriPermissions_ = input.readBool();
+                break;
+              }
+            }
+          }
+        }
+        
+        private int bitField0_;
+        
+        // optional string authority = 1;
+        private java.lang.Object authority_ = "";
+        public boolean hasAuthority() {
+          return ((bitField0_ & 0x00000001) == 0x00000001);
+        }
+        public String getAuthority() {
+          java.lang.Object ref = authority_;
+          if (!(ref instanceof String)) {
+            String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+            authority_ = s;
+            return s;
+          } else {
+            return (String) ref;
+          }
+        }
+        public Builder setAuthority(String value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000001;
+          authority_ = value;
+          onChanged();
+          return this;
+        }
+        public Builder clearAuthority() {
+          bitField0_ = (bitField0_ & ~0x00000001);
+          authority_ = getDefaultInstance().getAuthority();
+          onChanged();
+          return this;
+        }
+        void setAuthority(com.google.protobuf.ByteString value) {
+          bitField0_ |= 0x00000001;
+          authority_ = value;
+          onChanged();
+        }
+        
+        // optional string packageName = 2;
+        private java.lang.Object packageName_ = "";
+        public boolean hasPackageName() {
+          return ((bitField0_ & 0x00000002) == 0x00000002);
+        }
+        public String getPackageName() {
+          java.lang.Object ref = packageName_;
+          if (!(ref instanceof String)) {
+            String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+            packageName_ = s;
+            return s;
+          } else {
+            return (String) ref;
+          }
+        }
+        public Builder setPackageName(String value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000002;
+          packageName_ = value;
+          onChanged();
+          return this;
+        }
+        public Builder clearPackageName() {
+          bitField0_ = (bitField0_ & ~0x00000002);
+          packageName_ = getDefaultInstance().getPackageName();
+          onChanged();
+          return this;
+        }
+        void setPackageName(com.google.protobuf.ByteString value) {
+          bitField0_ |= 0x00000002;
+          packageName_ = value;
+          onChanged();
+        }
+        
+        // optional string readPermission = 3;
+        private java.lang.Object readPermission_ = "";
+        public boolean hasReadPermission() {
+          return ((bitField0_ & 0x00000004) == 0x00000004);
+        }
+        public String getReadPermission() {
+          java.lang.Object ref = readPermission_;
+          if (!(ref instanceof String)) {
+            String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+            readPermission_ = s;
+            return s;
+          } else {
+            return (String) ref;
+          }
+        }
+        public Builder setReadPermission(String value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000004;
+          readPermission_ = value;
+          onChanged();
+          return this;
+        }
+        public Builder clearReadPermission() {
+          bitField0_ = (bitField0_ & ~0x00000004);
+          readPermission_ = getDefaultInstance().getReadPermission();
+          onChanged();
+          return this;
+        }
+        void setReadPermission(com.google.protobuf.ByteString value) {
+          bitField0_ |= 0x00000004;
+          readPermission_ = value;
+          onChanged();
+        }
+        
+        // repeated string uriPermissionPatterns = 4;
+        private com.google.protobuf.LazyStringList uriPermissionPatterns_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+        private void ensureUriPermissionPatternsIsMutable() {
+          if (!((bitField0_ & 0x00000008) == 0x00000008)) {
+            uriPermissionPatterns_ = new com.google.protobuf.LazyStringArrayList(uriPermissionPatterns_);
+            bitField0_ |= 0x00000008;
+           }
+        }
+        public java.util.List<String>
+            getUriPermissionPatternsList() {
+          return java.util.Collections.unmodifiableList(uriPermissionPatterns_);
+        }
+        public int getUriPermissionPatternsCount() {
+          return uriPermissionPatterns_.size();
+        }
+        public String getUriPermissionPatterns(int index) {
+          return uriPermissionPatterns_.get(index);
+        }
+        public Builder setUriPermissionPatterns(
+            int index, String value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureUriPermissionPatternsIsMutable();
+          uriPermissionPatterns_.set(index, value);
+          onChanged();
+          return this;
+        }
+        public Builder addUriPermissionPatterns(String value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureUriPermissionPatternsIsMutable();
+          uriPermissionPatterns_.add(value);
+          onChanged();
+          return this;
+        }
+        public Builder addAllUriPermissionPatterns(
+            java.lang.Iterable<String> values) {
+          ensureUriPermissionPatternsIsMutable();
+          super.addAll(values, uriPermissionPatterns_);
+          onChanged();
+          return this;
+        }
+        public Builder clearUriPermissionPatterns() {
+          uriPermissionPatterns_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+          bitField0_ = (bitField0_ & ~0x00000008);
+          onChanged();
+          return this;
+        }
+        void addUriPermissionPatterns(com.google.protobuf.ByteString value) {
+          ensureUriPermissionPatternsIsMutable();
+          uriPermissionPatterns_.add(value);
+          onChanged();
+        }
+        
+        // optional string writePermission = 5;
+        private java.lang.Object writePermission_ = "";
+        public boolean hasWritePermission() {
+          return ((bitField0_ & 0x00000010) == 0x00000010);
+        }
+        public String getWritePermission() {
+          java.lang.Object ref = writePermission_;
+          if (!(ref instanceof String)) {
+            String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+            writePermission_ = s;
+            return s;
+          } else {
+            return (String) ref;
+          }
+        }
+        public Builder setWritePermission(String value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000010;
+          writePermission_ = value;
+          onChanged();
+          return this;
+        }
+        public Builder clearWritePermission() {
+          bitField0_ = (bitField0_ & ~0x00000010);
+          writePermission_ = getDefaultInstance().getWritePermission();
+          onChanged();
+          return this;
+        }
+        void setWritePermission(com.google.protobuf.ByteString value) {
+          bitField0_ |= 0x00000010;
+          writePermission_ = value;
+          onChanged();
+        }
+        
+        // repeated .com.mwr.mercury.ProviderResponse.Info.PatternPermission pathPermissions = 6;
+        private java.util.List<com.mwr.mercury.Message.ProviderResponse.Info.PatternPermission> pathPermissions_ =
+          java.util.Collections.emptyList();
+        private void ensurePathPermissionsIsMutable() {
+          if (!((bitField0_ & 0x00000020) == 0x00000020)) {
+            pathPermissions_ = new java.util.ArrayList<com.mwr.mercury.Message.ProviderResponse.Info.PatternPermission>(pathPermissions_);
+            bitField0_ |= 0x00000020;
+           }
+        }
+        
+        private com.google.protobuf.RepeatedFieldBuilder<
+            com.mwr.mercury.Message.ProviderResponse.Info.PatternPermission, com.mwr.mercury.Message.ProviderResponse.Info.PatternPermission.Builder, com.mwr.mercury.Message.ProviderResponse.Info.PatternPermissionOrBuilder> pathPermissionsBuilder_;
+        
+        public java.util.List<com.mwr.mercury.Message.ProviderResponse.Info.PatternPermission> getPathPermissionsList() {
+          if (pathPermissionsBuilder_ == null) {
+            return java.util.Collections.unmodifiableList(pathPermissions_);
+          } else {
+            return pathPermissionsBuilder_.getMessageList();
+          }
+        }
+        public int getPathPermissionsCount() {
+          if (pathPermissionsBuilder_ == null) {
+            return pathPermissions_.size();
+          } else {
+            return pathPermissionsBuilder_.getCount();
+          }
+        }
+        public com.mwr.mercury.Message.ProviderResponse.Info.PatternPermission getPathPermissions(int index) {
+          if (pathPermissionsBuilder_ == null) {
+            return pathPermissions_.get(index);
+          } else {
+            return pathPermissionsBuilder_.getMessage(index);
+          }
+        }
+        public Builder setPathPermissions(
+            int index, com.mwr.mercury.Message.ProviderResponse.Info.PatternPermission value) {
+          if (pathPermissionsBuilder_ == null) {
+            if (value == null) {
+              throw new NullPointerException();
+            }
+            ensurePathPermissionsIsMutable();
+            pathPermissions_.set(index, value);
+            onChanged();
+          } else {
+            pathPermissionsBuilder_.setMessage(index, value);
+          }
+          return this;
+        }
+        public Builder setPathPermissions(
+            int index, com.mwr.mercury.Message.ProviderResponse.Info.PatternPermission.Builder builderForValue) {
+          if (pathPermissionsBuilder_ == null) {
+            ensurePathPermissionsIsMutable();
+            pathPermissions_.set(index, builderForValue.build());
+            onChanged();
+          } else {
+            pathPermissionsBuilder_.setMessage(index, builderForValue.build());
+          }
+          return this;
+        }
+        public Builder addPathPermissions(com.mwr.mercury.Message.ProviderResponse.Info.PatternPermission value) {
+          if (pathPermissionsBuilder_ == null) {
+            if (value == null) {
+              throw new NullPointerException();
+            }
+            ensurePathPermissionsIsMutable();
+            pathPermissions_.add(value);
+            onChanged();
+          } else {
+            pathPermissionsBuilder_.addMessage(value);
+          }
+          return this;
+        }
+        public Builder addPathPermissions(
+            int index, com.mwr.mercury.Message.ProviderResponse.Info.PatternPermission value) {
+          if (pathPermissionsBuilder_ == null) {
+            if (value == null) {
+              throw new NullPointerException();
+            }
+            ensurePathPermissionsIsMutable();
+            pathPermissions_.add(index, value);
+            onChanged();
+          } else {
+            pathPermissionsBuilder_.addMessage(index, value);
+          }
+          return this;
+        }
+        public Builder addPathPermissions(
+            com.mwr.mercury.Message.ProviderResponse.Info.PatternPermission.Builder builderForValue) {
+          if (pathPermissionsBuilder_ == null) {
+            ensurePathPermissionsIsMutable();
+            pathPermissions_.add(builderForValue.build());
+            onChanged();
+          } else {
+            pathPermissionsBuilder_.addMessage(builderForValue.build());
+          }
+          return this;
+        }
+        public Builder addPathPermissions(
+            int index, com.mwr.mercury.Message.ProviderResponse.Info.PatternPermission.Builder builderForValue) {
+          if (pathPermissionsBuilder_ == null) {
+            ensurePathPermissionsIsMutable();
+            pathPermissions_.add(index, builderForValue.build());
+            onChanged();
+          } else {
+            pathPermissionsBuilder_.addMessage(index, builderForValue.build());
+          }
+          return this;
+        }
+        public Builder addAllPathPermissions(
+            java.lang.Iterable<? extends com.mwr.mercury.Message.ProviderResponse.Info.PatternPermission> values) {
+          if (pathPermissionsBuilder_ == null) {
+            ensurePathPermissionsIsMutable();
+            super.addAll(values, pathPermissions_);
+            onChanged();
+          } else {
+            pathPermissionsBuilder_.addAllMessages(values);
+          }
+          return this;
+        }
+        public Builder clearPathPermissions() {
+          if (pathPermissionsBuilder_ == null) {
+            pathPermissions_ = java.util.Collections.emptyList();
+            bitField0_ = (bitField0_ & ~0x00000020);
+            onChanged();
+          } else {
+            pathPermissionsBuilder_.clear();
+          }
+          return this;
+        }
+        public Builder removePathPermissions(int index) {
+          if (pathPermissionsBuilder_ == null) {
+            ensurePathPermissionsIsMutable();
+            pathPermissions_.remove(index);
+            onChanged();
+          } else {
+            pathPermissionsBuilder_.remove(index);
+          }
+          return this;
+        }
+        public com.mwr.mercury.Message.ProviderResponse.Info.PatternPermission.Builder getPathPermissionsBuilder(
+            int index) {
+          return getPathPermissionsFieldBuilder().getBuilder(index);
+        }
+        public com.mwr.mercury.Message.ProviderResponse.Info.PatternPermissionOrBuilder getPathPermissionsOrBuilder(
+            int index) {
+          if (pathPermissionsBuilder_ == null) {
+            return pathPermissions_.get(index);  } else {
+            return pathPermissionsBuilder_.getMessageOrBuilder(index);
+          }
+        }
+        public java.util.List<? extends com.mwr.mercury.Message.ProviderResponse.Info.PatternPermissionOrBuilder> 
+             getPathPermissionsOrBuilderList() {
+          if (pathPermissionsBuilder_ != null) {
+            return pathPermissionsBuilder_.getMessageOrBuilderList();
+          } else {
+            return java.util.Collections.unmodifiableList(pathPermissions_);
+          }
+        }
+        public com.mwr.mercury.Message.ProviderResponse.Info.PatternPermission.Builder addPathPermissionsBuilder() {
+          return getPathPermissionsFieldBuilder().addBuilder(
+              com.mwr.mercury.Message.ProviderResponse.Info.PatternPermission.getDefaultInstance());
+        }
+        public com.mwr.mercury.Message.ProviderResponse.Info.PatternPermission.Builder addPathPermissionsBuilder(
+            int index) {
+          return getPathPermissionsFieldBuilder().addBuilder(
+              index, com.mwr.mercury.Message.ProviderResponse.Info.PatternPermission.getDefaultInstance());
+        }
+        public java.util.List<com.mwr.mercury.Message.ProviderResponse.Info.PatternPermission.Builder> 
+             getPathPermissionsBuilderList() {
+          return getPathPermissionsFieldBuilder().getBuilderList();
+        }
+        private com.google.protobuf.RepeatedFieldBuilder<
+            com.mwr.mercury.Message.ProviderResponse.Info.PatternPermission, com.mwr.mercury.Message.ProviderResponse.Info.PatternPermission.Builder, com.mwr.mercury.Message.ProviderResponse.Info.PatternPermissionOrBuilder> 
+            getPathPermissionsFieldBuilder() {
+          if (pathPermissionsBuilder_ == null) {
+            pathPermissionsBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+                com.mwr.mercury.Message.ProviderResponse.Info.PatternPermission, com.mwr.mercury.Message.ProviderResponse.Info.PatternPermission.Builder, com.mwr.mercury.Message.ProviderResponse.Info.PatternPermissionOrBuilder>(
+                    pathPermissions_,
+                    ((bitField0_ & 0x00000020) == 0x00000020),
+                    getParentForChildren(),
+                    isClean());
+            pathPermissions_ = null;
+          }
+          return pathPermissionsBuilder_;
+        }
+        
+        // optional bool multiprocess = 7;
+        private boolean multiprocess_ ;
+        public boolean hasMultiprocess() {
+          return ((bitField0_ & 0x00000040) == 0x00000040);
+        }
+        public boolean getMultiprocess() {
+          return multiprocess_;
+        }
+        public Builder setMultiprocess(boolean value) {
+          bitField0_ |= 0x00000040;
+          multiprocess_ = value;
+          onChanged();
+          return this;
+        }
+        public Builder clearMultiprocess() {
+          bitField0_ = (bitField0_ & ~0x00000040);
+          multiprocess_ = false;
+          onChanged();
+          return this;
+        }
+        
+        // optional bool grantUriPermissions = 8;
+        private boolean grantUriPermissions_ ;
+        public boolean hasGrantUriPermissions() {
+          return ((bitField0_ & 0x00000080) == 0x00000080);
+        }
+        public boolean getGrantUriPermissions() {
+          return grantUriPermissions_;
+        }
+        public Builder setGrantUriPermissions(boolean value) {
+          bitField0_ |= 0x00000080;
+          grantUriPermissions_ = value;
+          onChanged();
+          return this;
+        }
+        public Builder clearGrantUriPermissions() {
+          bitField0_ = (bitField0_ & ~0x00000080);
+          grantUriPermissions_ = false;
+          onChanged();
+          return this;
+        }
+        
+        // @@protoc_insertion_point(builder_scope:com.mwr.mercury.ProviderResponse.Info)
+      }
+      
+      static {
+        defaultInstance = new Info(true);
+        defaultInstance.initFields();
+      }
+      
+      // @@protoc_insertion_point(class_scope:com.mwr.mercury.ProviderResponse.Info)
+    }
+    
+    // repeated .com.mwr.mercury.ProviderResponse.Info info = 1;
+    public static final int INFO_FIELD_NUMBER = 1;
+    private java.util.List<com.mwr.mercury.Message.ProviderResponse.Info> info_;
+    public java.util.List<com.mwr.mercury.Message.ProviderResponse.Info> getInfoList() {
+      return info_;
+    }
+    public java.util.List<? extends com.mwr.mercury.Message.ProviderResponse.InfoOrBuilder> 
+        getInfoOrBuilderList() {
+      return info_;
+    }
+    public int getInfoCount() {
+      return info_.size();
+    }
+    public com.mwr.mercury.Message.ProviderResponse.Info getInfo(int index) {
+      return info_.get(index);
+    }
+    public com.mwr.mercury.Message.ProviderResponse.InfoOrBuilder getInfoOrBuilder(
+        int index) {
+      return info_.get(index);
+    }
+    
+    private void initFields() {
+      info_ = java.util.Collections.emptyList();
+    }
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized != -1) return isInitialized == 1;
+      
+      memoizedIsInitialized = 1;
+      return true;
+    }
+    
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getSerializedSize();
+      for (int i = 0; i < info_.size(); i++) {
+        output.writeMessage(1, info_.get(i));
+      }
+      getUnknownFields().writeTo(output);
+    }
+    
+    private int memoizedSerializedSize = -1;
+    public int getSerializedSize() {
+      int size = memoizedSerializedSize;
+      if (size != -1) return size;
+    
+      size = 0;
+      for (int i = 0; i < info_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(1, info_.get(i));
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
+      return size;
+    }
+    
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
+    }
+    
+    public static com.mwr.mercury.Message.ProviderResponse parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data).buildParsed();
+    }
+    public static com.mwr.mercury.Message.ProviderResponse parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.mwr.mercury.Message.ProviderResponse parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data).buildParsed();
+    }
+    public static com.mwr.mercury.Message.ProviderResponse parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.mwr.mercury.Message.ProviderResponse parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input).buildParsed();
+    }
+    public static com.mwr.mercury.Message.ProviderResponse parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.mwr.mercury.Message.ProviderResponse parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      Builder builder = newBuilder();
+      if (builder.mergeDelimitedFrom(input)) {
+        return builder.buildParsed();
+      } else {
+        return null;
+      }
+    }
+    public static com.mwr.mercury.Message.ProviderResponse parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      Builder builder = newBuilder();
+      if (builder.mergeDelimitedFrom(input, extensionRegistry)) {
+        return builder.buildParsed();
+      } else {
+        return null;
+      }
+    }
+    public static com.mwr.mercury.Message.ProviderResponse parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input).buildParsed();
+    }
+    public static com.mwr.mercury.Message.ProviderResponse parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input, extensionRegistry)
+               .buildParsed();
+    }
+    
+    public static Builder newBuilder() { return Builder.create(); }
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder(com.mwr.mercury.Message.ProviderResponse prototype) {
+      return newBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() { return newBuilder(this); }
+    
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder>
+       implements com.mwr.mercury.Message.ProviderResponseOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.mwr.mercury.Message.internal_static_com_mwr_mercury_ProviderResponse_descriptor;
+      }
+      
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.mwr.mercury.Message.internal_static_com_mwr_mercury_ProviderResponse_fieldAccessorTable;
+      }
+      
+      // Construct using com.mwr.mercury.Message.ProviderResponse.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+      
+      private Builder(BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+          getInfoFieldBuilder();
+        }
+      }
+      private static Builder create() {
+        return new Builder();
+      }
+      
+      public Builder clear() {
+        super.clear();
+        if (infoBuilder_ == null) {
+          info_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
+        } else {
+          infoBuilder_.clear();
+        }
+        return this;
+      }
+      
+      public Builder clone() {
+        return create().mergeFrom(buildPartial());
+      }
+      
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.mwr.mercury.Message.ProviderResponse.getDescriptor();
+      }
+      
+      public com.mwr.mercury.Message.ProviderResponse getDefaultInstanceForType() {
+        return com.mwr.mercury.Message.ProviderResponse.getDefaultInstance();
+      }
+      
+      public com.mwr.mercury.Message.ProviderResponse build() {
+        com.mwr.mercury.Message.ProviderResponse result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+      
+      private com.mwr.mercury.Message.ProviderResponse buildParsed()
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        com.mwr.mercury.Message.ProviderResponse result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(
+            result).asInvalidProtocolBufferException();
+        }
+        return result;
+      }
+      
+      public com.mwr.mercury.Message.ProviderResponse buildPartial() {
+        com.mwr.mercury.Message.ProviderResponse result = new com.mwr.mercury.Message.ProviderResponse(this);
+        int from_bitField0_ = bitField0_;
+        if (infoBuilder_ == null) {
+          if (((bitField0_ & 0x00000001) == 0x00000001)) {
+            info_ = java.util.Collections.unmodifiableList(info_);
+            bitField0_ = (bitField0_ & ~0x00000001);
+          }
+          result.info_ = info_;
+        } else {
+          result.info_ = infoBuilder_.build();
+        }
+        onBuilt();
+        return result;
+      }
+      
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.mwr.mercury.Message.ProviderResponse) {
+          return mergeFrom((com.mwr.mercury.Message.ProviderResponse)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+      
+      public Builder mergeFrom(com.mwr.mercury.Message.ProviderResponse other) {
+        if (other == com.mwr.mercury.Message.ProviderResponse.getDefaultInstance()) return this;
+        if (infoBuilder_ == null) {
+          if (!other.info_.isEmpty()) {
+            if (info_.isEmpty()) {
+              info_ = other.info_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+            } else {
+              ensureInfoIsMutable();
+              info_.addAll(other.info_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.info_.isEmpty()) {
+            if (infoBuilder_.isEmpty()) {
+              infoBuilder_.dispose();
+              infoBuilder_ = null;
+              info_ = other.info_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+              infoBuilder_ = 
+                com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
+                   getInfoFieldBuilder() : null;
+            } else {
+              infoBuilder_.addAllMessages(other.info_);
+            }
+          }
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        return this;
+      }
+      
+      public final boolean isInitialized() {
+        return true;
+      }
+      
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder(
+            this.getUnknownFields());
+        while (true) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              this.setUnknownFields(unknownFields.build());
+              onChanged();
+              return this;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                this.setUnknownFields(unknownFields.build());
+                onChanged();
+                return this;
+              }
+              break;
+            }
+            case 10: {
+              com.mwr.mercury.Message.ProviderResponse.Info.Builder subBuilder = com.mwr.mercury.Message.ProviderResponse.Info.newBuilder();
+              input.readMessage(subBuilder, extensionRegistry);
+              addInfo(subBuilder.buildPartial());
+              break;
+            }
+          }
+        }
+      }
+      
+      private int bitField0_;
+      
+      // repeated .com.mwr.mercury.ProviderResponse.Info info = 1;
+      private java.util.List<com.mwr.mercury.Message.ProviderResponse.Info> info_ =
+        java.util.Collections.emptyList();
+      private void ensureInfoIsMutable() {
+        if (!((bitField0_ & 0x00000001) == 0x00000001)) {
+          info_ = new java.util.ArrayList<com.mwr.mercury.Message.ProviderResponse.Info>(info_);
+          bitField0_ |= 0x00000001;
+         }
+      }
+      
+      private com.google.protobuf.RepeatedFieldBuilder<
+          com.mwr.mercury.Message.ProviderResponse.Info, com.mwr.mercury.Message.ProviderResponse.Info.Builder, com.mwr.mercury.Message.ProviderResponse.InfoOrBuilder> infoBuilder_;
+      
+      public java.util.List<com.mwr.mercury.Message.ProviderResponse.Info> getInfoList() {
+        if (infoBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(info_);
+        } else {
+          return infoBuilder_.getMessageList();
+        }
+      }
+      public int getInfoCount() {
+        if (infoBuilder_ == null) {
+          return info_.size();
+        } else {
+          return infoBuilder_.getCount();
+        }
+      }
+      public com.mwr.mercury.Message.ProviderResponse.Info getInfo(int index) {
+        if (infoBuilder_ == null) {
+          return info_.get(index);
+        } else {
+          return infoBuilder_.getMessage(index);
+        }
+      }
+      public Builder setInfo(
+          int index, com.mwr.mercury.Message.ProviderResponse.Info value) {
+        if (infoBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureInfoIsMutable();
+          info_.set(index, value);
+          onChanged();
+        } else {
+          infoBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      public Builder setInfo(
+          int index, com.mwr.mercury.Message.ProviderResponse.Info.Builder builderForValue) {
+        if (infoBuilder_ == null) {
+          ensureInfoIsMutable();
+          info_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          infoBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      public Builder addInfo(com.mwr.mercury.Message.ProviderResponse.Info value) {
+        if (infoBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureInfoIsMutable();
+          info_.add(value);
+          onChanged();
+        } else {
+          infoBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      public Builder addInfo(
+          int index, com.mwr.mercury.Message.ProviderResponse.Info value) {
+        if (infoBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureInfoIsMutable();
+          info_.add(index, value);
+          onChanged();
+        } else {
+          infoBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      public Builder addInfo(
+          com.mwr.mercury.Message.ProviderResponse.Info.Builder builderForValue) {
+        if (infoBuilder_ == null) {
+          ensureInfoIsMutable();
+          info_.add(builderForValue.build());
+          onChanged();
+        } else {
+          infoBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      public Builder addInfo(
+          int index, com.mwr.mercury.Message.ProviderResponse.Info.Builder builderForValue) {
+        if (infoBuilder_ == null) {
+          ensureInfoIsMutable();
+          info_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          infoBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      public Builder addAllInfo(
+          java.lang.Iterable<? extends com.mwr.mercury.Message.ProviderResponse.Info> values) {
+        if (infoBuilder_ == null) {
+          ensureInfoIsMutable();
+          super.addAll(values, info_);
+          onChanged();
+        } else {
+          infoBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      public Builder clearInfo() {
+        if (infoBuilder_ == null) {
+          info_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
+          onChanged();
+        } else {
+          infoBuilder_.clear();
+        }
+        return this;
+      }
+      public Builder removeInfo(int index) {
+        if (infoBuilder_ == null) {
+          ensureInfoIsMutable();
+          info_.remove(index);
+          onChanged();
+        } else {
+          infoBuilder_.remove(index);
+        }
+        return this;
+      }
+      public com.mwr.mercury.Message.ProviderResponse.Info.Builder getInfoBuilder(
+          int index) {
+        return getInfoFieldBuilder().getBuilder(index);
+      }
+      public com.mwr.mercury.Message.ProviderResponse.InfoOrBuilder getInfoOrBuilder(
+          int index) {
+        if (infoBuilder_ == null) {
+          return info_.get(index);  } else {
+          return infoBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      public java.util.List<? extends com.mwr.mercury.Message.ProviderResponse.InfoOrBuilder> 
+           getInfoOrBuilderList() {
+        if (infoBuilder_ != null) {
+          return infoBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(info_);
+        }
+      }
+      public com.mwr.mercury.Message.ProviderResponse.Info.Builder addInfoBuilder() {
+        return getInfoFieldBuilder().addBuilder(
+            com.mwr.mercury.Message.ProviderResponse.Info.getDefaultInstance());
+      }
+      public com.mwr.mercury.Message.ProviderResponse.Info.Builder addInfoBuilder(
+          int index) {
+        return getInfoFieldBuilder().addBuilder(
+            index, com.mwr.mercury.Message.ProviderResponse.Info.getDefaultInstance());
+      }
+      public java.util.List<com.mwr.mercury.Message.ProviderResponse.Info.Builder> 
+           getInfoBuilderList() {
+        return getInfoFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilder<
+          com.mwr.mercury.Message.ProviderResponse.Info, com.mwr.mercury.Message.ProviderResponse.Info.Builder, com.mwr.mercury.Message.ProviderResponse.InfoOrBuilder> 
+          getInfoFieldBuilder() {
+        if (infoBuilder_ == null) {
+          infoBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+              com.mwr.mercury.Message.ProviderResponse.Info, com.mwr.mercury.Message.ProviderResponse.Info.Builder, com.mwr.mercury.Message.ProviderResponse.InfoOrBuilder>(
+                  info_,
+                  ((bitField0_ & 0x00000001) == 0x00000001),
+                  getParentForChildren(),
+                  isClean());
+          info_ = null;
+        }
+        return infoBuilder_;
+      }
+      
+      // @@protoc_insertion_point(builder_scope:com.mwr.mercury.ProviderResponse)
+    }
+    
+    static {
+      defaultInstance = new ProviderResponse(true);
+      defaultInstance.initFields();
+    }
+    
+    // @@protoc_insertion_point(class_scope:com.mwr.mercury.ProviderResponse)
+  }
+  
   private static com.google.protobuf.Descriptors.Descriptor
     internal_static_com_mwr_mercury_Request_descriptor;
   private static
@@ -1951,6 +4314,21 @@ public final class Message {
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_com_mwr_mercury_KVPair_fieldAccessorTable;
+  private static com.google.protobuf.Descriptors.Descriptor
+    internal_static_com_mwr_mercury_ProviderResponse_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_com_mwr_mercury_ProviderResponse_fieldAccessorTable;
+  private static com.google.protobuf.Descriptors.Descriptor
+    internal_static_com_mwr_mercury_ProviderResponse_Info_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_com_mwr_mercury_ProviderResponse_Info_fieldAccessorTable;
+  private static com.google.protobuf.Descriptors.Descriptor
+    internal_static_com_mwr_mercury_ProviderResponse_Info_PatternPermission_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_com_mwr_mercury_ProviderResponse_Info_PatternPermission_fieldAccessorTable;
   
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -1966,7 +4344,18 @@ public final class Message {
       "\010Response\022\014\n\004data\030\001 \001(\014\022\r\n\005error\030\002 \001(\014\0220" +
       "\n\017structured_data\030\003 \003(\0132\027.com.mwr.mercur" +
       "y.KVPair\"$\n\006KVPair\022\013\n\003key\030\001 \002(\t\022\r\n\005value" +
-      "\030\002 \003(\014"
+      "\030\002 \003(\014\"\274\003\n\020ProviderResponse\0224\n\004info\030\001 \003(" +
+      "\0132&.com.mwr.mercury.ProviderResponse.Inf" +
+      "o\032\361\002\n\004Info\022\021\n\tauthority\030\001 \001(\t\022\023\n\013package" +
+      "Name\030\002 \001(\t\022\026\n\016readPermission\030\003 \001(\t\022\035\n\025ur",
+      "iPermissionPatterns\030\004 \003(\t\022\027\n\017writePermis" +
+      "sion\030\005 \001(\t\022Q\n\017pathPermissions\030\006 \003(\01328.co" +
+      "m.mwr.mercury.ProviderResponse.Info.Patt" +
+      "ernPermission\022\024\n\014multiprocess\030\007 \001(\010\022\033\n\023g" +
+      "rantUriPermissions\030\010 \001(\010\032k\n\021PatternPermi" +
+      "ssion\022\027\n\017writePermission\030\001 \001(\t\022\026\n\016readPe" +
+      "rmission\030\002 \001(\t\022\022\n\nwriteNeeds\030\003 \001(\t\022\021\n\tre" +
+      "adNeeds\030\004 \001(\t"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -1997,6 +4386,30 @@ public final class Message {
               new java.lang.String[] { "Key", "Value", },
               com.mwr.mercury.Message.KVPair.class,
               com.mwr.mercury.Message.KVPair.Builder.class);
+          internal_static_com_mwr_mercury_ProviderResponse_descriptor =
+            getDescriptor().getMessageTypes().get(3);
+          internal_static_com_mwr_mercury_ProviderResponse_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_com_mwr_mercury_ProviderResponse_descriptor,
+              new java.lang.String[] { "Info", },
+              com.mwr.mercury.Message.ProviderResponse.class,
+              com.mwr.mercury.Message.ProviderResponse.Builder.class);
+          internal_static_com_mwr_mercury_ProviderResponse_Info_descriptor =
+            internal_static_com_mwr_mercury_ProviderResponse_descriptor.getNestedTypes().get(0);
+          internal_static_com_mwr_mercury_ProviderResponse_Info_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_com_mwr_mercury_ProviderResponse_Info_descriptor,
+              new java.lang.String[] { "Authority", "PackageName", "ReadPermission", "UriPermissionPatterns", "WritePermission", "PathPermissions", "Multiprocess", "GrantUriPermissions", },
+              com.mwr.mercury.Message.ProviderResponse.Info.class,
+              com.mwr.mercury.Message.ProviderResponse.Info.Builder.class);
+          internal_static_com_mwr_mercury_ProviderResponse_Info_PatternPermission_descriptor =
+            internal_static_com_mwr_mercury_ProviderResponse_Info_descriptor.getNestedTypes().get(0);
+          internal_static_com_mwr_mercury_ProviderResponse_Info_PatternPermission_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_com_mwr_mercury_ProviderResponse_Info_PatternPermission_descriptor,
+              new java.lang.String[] { "WritePermission", "ReadPermission", "WriteNeeds", "ReadNeeds", },
+              com.mwr.mercury.Message.ProviderResponse.Info.PatternPermission.class,
+              com.mwr.mercury.Message.ProviderResponse.Info.PatternPermission.Builder.class);
           return null;
         }
       };

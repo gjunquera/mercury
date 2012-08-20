@@ -16,3 +16,26 @@ message KVPair {
     required string key = 1;
     repeated bytes value = 2;
 }
+
+message ProviderResponse {
+
+	message Info {
+		message PatternPermission {
+			optional string writePermission = 1;
+			optional string readPermission = 2;
+			optional string writeNeeds = 3;
+			optional string readNeeds = 4;
+		}
+
+		optional string authority = 1;
+		optional string packageName = 2;
+		optional string readPermission = 3;
+		repeated string uriPermissionPatterns = 4;
+		optional string writePermission = 5;
+		repeated PatternPermission pathPermissions = 6;
+		optional bool multiprocess = 7;
+		optional bool grantUriPermissions = 8;
+	}
+	
+	repeated Info info = 1;
+}

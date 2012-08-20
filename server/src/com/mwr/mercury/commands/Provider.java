@@ -6,6 +6,7 @@ import com.google.protobuf.ByteString;
 import com.mwr.mercury.ArgumentWrapper;
 import com.mwr.mercury.Common;
 import com.mwr.mercury.Message.KVPair;
+import com.mwr.mercury.Message.ProviderResponse;
 import com.mwr.mercury.Message.Request;
 import com.mwr.mercury.Message.Response;
 import com.mwr.mercury.Session;
@@ -20,6 +21,8 @@ import android.net.Uri;
 import android.os.PatternMatcher;
 import android.util.Base64;
 import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -27,7 +30,11 @@ import java.util.List;
 
 public class Provider
 {
-	/*
+	
+	private static final String ERROR_OK = "SUCCESS";
+	private static final String ERROR_UNKNOWN = "ERROR";
+	
+	
 	public static void info(List<KVPair> argsArray, Session currentSession)
 	{
 		String filter = Common.getParamString2(argsArray, "filter");
@@ -39,7 +46,7 @@ public class Provider
 						PackageManager.GET_URI_PERMISSION_PATTERNS,
 						PackageManager.GET_URI_PERMISSION_PATTERNS);
 
-		Request.Builder reqBuilder = Request.newBuilder();
+		ProviderResponse.Builder provBuilder = ProviderResponse.newBuilder();
 		// Iterate through content providers
 		for (int i = 0; i < providers.size(); i++)
 		{
@@ -100,18 +107,14 @@ public class Provider
 					|| (!bothFiltersPresent && (relevantFilter || relevantPermissions)) || (!bothFiltersPresent && noFilters))
 					&& providers.get(i).exported)
 			{
-				
+				ProviderResponse.Info.Builder infoBuilder = ProviderResponse.Info.newBuilder();
 				// URI Permission Patterns
 				if (uriPermissionPatterns != null)
 					for (int j = 0; j < uriPermissionPatterns.length; j++)
 					{
 						String path = uriPermissionPatterns[j].getPath();
-						ByteString bsPath = ByteString.copyFrom(path.getBytes());
-						if (path != null) {
-							reqBuilder.addArgs(KVPair.newBuilder()
-											.setKey("uriPermissionPattern")
-											.setValue(bsPath));
-						}
+						if (path != null)
+							infoBuilder.addUriPermissionPatterns(path);
 					}
 				
 				// Path permissions
@@ -120,56 +123,42 @@ public class Provider
 					{
 						if (providerPathPermissions[j].getReadPermission() != null)
 						{
-							String value = providerPathPermissions[j].getPath() + "-" + 
-										   providerPathPermissions[j].getReadPermission();
-							ByteString bsValue = ByteString.copyFrom(value.getBytes());
-							reqBuilder.addArgs(KVPair.newBuilder()
-									.setKey("pathReadPermission")
-									.setValue(bsValue));
+							ProviderResponse.Info.PatternPermission.Builder pathPermissionBuilder = 
+											ProviderResponse.Info.PatternPermission.newBuilder();
+							pathPermissionBuilder.setReadPermission(providerPathPermissions[j].getPath());
+							pathPermissionBuilder.setReadNeeds(providerPathPermissions[j].getReadPermission());
+							infoBuilder.addPathPermissions(pathPermissionBuilder);
 						}
 
 						if (providerPathPermissions[j].getWritePermission() != null)
 						{
-							String value = providerPathPermissions[j].getPath() + "-" + 
-							   			   providerPathPermissions[j].getWritePermission();
-							ByteString bsValue = ByteString.copyFrom(value.getBytes());
-							reqBuilder.addArgs(KVPair.newBuilder()
-									.setKey("pathWritePermission")
-									.setValue(bsValue));
+							ProviderResponse.Info.PatternPermission.Builder pathPermissionBuilder = 
+								ProviderResponse.Info.PatternPermission.newBuilder();
+							pathPermissionBuilder.setWritePermission(providerPathPermissions[j].getPath());
+							pathPermissionBuilder.setWriteNeeds(providerPathPermissions[j].getWritePermission());
+							infoBuilder.addPathPermissions(pathPermissionBuilder);
 						}
 					}
 				
-				if (providerReadPermission != null) 
-				{
-					ByteString bsValue = ByteString.copyFrom(providerReadPermission.getBytes());
-					reqBuilder.addArgs(KVPair.newBuilder()
-							.setKey("readPermission")
-							.setValue(bsValue));
-				}
+				if (providerReadPermission != null)
+					infoBuilder.setReadPermission(providerReadPermission);
+
 				if (providerWritePermission != null)
-				{
-					ByteString bsValue = ByteString.copyFrom(providerWritePermission.getBytes());
-					reqBuilder.addArgs(KVPair.newBuilder()
-							.setKey("writePermission")
-							.setValue(bsValue));
-				}
-				reqBuilder.addArgs(KVPair.newBuilder()
-						.setKey("grantUriPermission")
-						.setValue(ByteString.copyFrom(new Boolean(grantUriPermissions).toString().getBytes())));
-				reqBuilder.addArgs(KVPair.newBuilder()
-						.setKey("multiprocess")
-						.setValue(ByteString.copyFrom(new Boolean(providerMultiprocess).toString().getBytes())));
-				reqBuilder.setMultiprocess(new Boolean(grantUriPermissions).toString().getBytes());
-				reqBuilder.build().toByteString();
-				provBuilder.addInfo(infoBuilder.build());			
+					infoBuilder.setWritePermission(providerWritePermission);
+				
+				infoBuilder.setAuthority(providerAuthority);
+				infoBuilder.setPackageName(providerPackage);
+				infoBuilder.setGrantUriPermissions(grantUriPermissions);
+				infoBuilder.setMultiprocess(providerMultiprocess);
+				provBuilder.addInfo(infoBuilder);			
 			}
 		}
 		
-		Response resp = Response.newBuilder().setProviderResponse(provBuilder.build()).build();
-		currentSession.send(Base64.encodeToString(resp.toByteArray(), Base64.DEFAULT), false);
+		Response response = Response.newBuilder().setData(provBuilder.build().toByteString()).build();
+		currentSession.send(Base64.encodeToString(response.toByteArray(), Base64.DEFAULT), false);
 		
 	}
-*/
+
 	public static void columns(List<KVPair> argsArray,
 			Session currentSession)
 	{
@@ -181,10 +170,7 @@ public class Provider
 		Response.Builder respBuilder = Response.newBuilder();
 
 		if (columns.size() == 0)
-		{
-			ByteString bs = ByteString.copyFrom("Invalid content URI specified".getBytes());
-			respBuilder.setError(bs);
-		}
+			respBuilder.setError(ByteString.copyFrom("Invalid content URI specified".getBytes()));
 		else
 		{
 			KVPair.Builder pairBuilder = KVPair.newBuilder();
@@ -195,19 +181,17 @@ public class Provider
 			}
 			pairBuilder.setKey("columns");
 			respBuilder.addStructuredData(pairBuilder);
-			respBuilder.setError(ByteString.copyFrom("Success".getBytes()));
+			respBuilder.setError(ByteString.copyFrom(ERROR_OK.getBytes()));
 		}
 		
 		currentSession.send(Base64.encodeToString(respBuilder.build().toByteArray(), Base64.DEFAULT), false);
 	}
 
-	public static void query(List<ArgumentWrapper> argsArray,
+	public static void query(List<KVPair> argsArray,
 			Session currentSession)
 	{
-		currentSession.startTransmission();
-		currentSession.startResponse();
-		currentSession.startData();
 
+		Response.Builder respBuilder = Response.newBuilder();
 		try
 		{
 			// Get content provider and cursor
@@ -215,14 +199,14 @@ public class Provider
 					.getContentResolver();
 
 			// Get all the parameters
-			List<String> projection = Common.getParamStringList(argsArray,
+			List<String> projection = Common.getParamStringList2(argsArray,
 					"projection");
-			String selection = Common.getParamString(argsArray, "selection");
-			List<String> selectionArgs = Common.getParamStringList(argsArray,
+			String selection = Common.getParamString2(argsArray, "selection");
+			List<String> selectionArgs = Common.getParamStringList2(argsArray,
 					"selectionArgs");
-			String sortOrder = Common.getParamString(argsArray, "sortOrder");
+			String sortOrder = Common.getParamString2(argsArray, "sortOrder");
 			String showColumns = Common
-					.getParamString(argsArray, "showColumns");
+					.getParamString2(argsArray, "showColumns");
 
 			// Put projection in an array
 			String[] projectionArray = null;
@@ -257,7 +241,7 @@ public class Provider
 			}
 
 			// Issue query
-			Cursor c = r.query(Uri.parse(new String(Common.getParam(argsArray,
+			Cursor c = r.query(Uri.parse(new String(Common.getParam2(argsArray,
 					"Uri"))), projectionArray,
 					(selection.length() > 0) ? selection : null,
 					selectionArgsArray, (sortOrder.length() > 0) ? sortOrder
@@ -271,17 +255,15 @@ public class Provider
 						|| showColumns.toUpperCase().contains("TRUE"))
 				{
 					ArrayList<String> cols = Common.getColumns(r,
-							Common.getParamString(argsArray, "Uri"),
+							Common.getParamString2(argsArray, "Uri"),
 							projectionArray);
 					Iterator<String> it = cols.iterator();
-					String columns = "";
 
+					KVPair.Builder pairBuilder = KVPair.newBuilder();
+					pairBuilder.setKey("columns");
 					while (it.hasNext())
-						columns += it.next() + " | ";
-
-					currentSession.send(
-							columns.substring(0, columns.length() - 3), true);
-					currentSession.send("\n.....\n\n", true);
+						pairBuilder.addValue(ByteString.copyFrom((it.next().getBytes())));
+					respBuilder.addStructuredData(pairBuilder);
 				}
 
 				// Get all rows of data
@@ -291,6 +273,8 @@ public class Provider
 					String data = "";
 
 					// Iterate through columns
+					KVPair.Builder pairBuilder = KVPair.newBuilder();
+					pairBuilder.setKey("line");
 					for (int l = 0; l < numOfColumns; l++)
 					{
 
@@ -298,59 +282,46 @@ public class Provider
 						// blob
 						try
 						{
-							data += c.getString(l);
+							data = c.getString(l);
+							pairBuilder.addValue(ByteString.copyFrom(data.getBytes()));
 						}
 						catch (Exception e)
 						{
 							// Base64 encode blobs and prepend with (blob)
-							data += "(blob) "
-									+ Base64.encodeToString(c.getBlob(l),
-											Base64.DEFAULT);
+							pairBuilder.addValue(ByteString.copyFrom(Base64.encodeToString(c.getBlob(l),
+													Base64.DEFAULT).getBytes()));
 						}
-
-						// Check if a column separator should be added or not
-						if (l != (numOfColumns - 1))
-							data += " | ";
 					}
-
-					currentSession.send(data + "\n\n", true);
+					respBuilder.addStructuredData(pairBuilder);
 				}
-
-				currentSession.endData();
-				currentSession.noError();
+				respBuilder.setError(ByteString.copyFrom(ERROR_OK.getBytes()));
 			}
 			else
 			{
-				currentSession.endData();
-				currentSession.error("Query failed");
+				respBuilder.setError(ByteString.copyFrom("QUERY FAILED".getBytes()));
 			}
 
 		}
 		catch (Throwable t)
 		{
-			currentSession.endData();
-			currentSession.error(t.getMessage());
+			respBuilder.setError(ByteString.copyFrom(t.getMessage().getBytes()));
 		}
-
-		currentSession.endResponse();
-		currentSession.endTransmission();
+		currentSession.send(Base64.encodeToString(respBuilder.build().toByteArray(), Base64.DEFAULT), false);
 	}
 
 	public static void read(List<KVPair> argsArray,
 			Session currentSession)
 	{
-		/*
-		// Start transmission
-		currentSession.startTransmission();
-		currentSession.startResponse();
-		currentSession.startData();
 
+		Uri uri = Uri.parse(Common.getParamString2(argsArray, "Uri"));
+		ContentResolver r = currentSession.applicationContext
+				.getContentResolver();
+		InputStream is;
+		Response.Builder responseBuilder = Response.newBuilder();
 		try
 		{
-			Uri uri = Uri.parse(Common.getParamString(argsArray, "Uri"));
-			ContentResolver r = currentSession.applicationContext
-					.getContentResolver();
-			InputStream is = r.openInputStream(uri);
+			is = r.openInputStream(uri);
+
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			int len = -1;
 			do
@@ -359,73 +330,72 @@ public class Provider
 				len = is.read(buf);
 				if (len > 0)
 					baos.write(buf, 0, len);
-
+	
 			}
 			while (len != -1);
-
+	
 			byte[] buf = baos.toByteArray();
-			String b64 = Base64.encodeToString(buf, 0);
-
-			// Send response
-			currentSession.send(b64, false);
-			currentSession.endData();
-			currentSession.noError();
+			responseBuilder.setData(ByteString.copyFrom(buf));
+			responseBuilder.setError(ByteString.copyFrom(ERROR_OK.getBytes()));
+			//String b64 = Base64.encodeToString(buf, 0);
 		}
-		catch (Throwable t)
+		catch (FileNotFoundException e)
 		{
-			currentSession.endData();
-			currentSession.error(t.getMessage());
+			responseBuilder.setError(ByteString.copyFrom("File not found".getBytes()));
+			responseBuilder.setData(ByteString.copyFrom(("No files supported by provider at" 
+														+ uri.toString()).getBytes()));
 		}
-		finally
+		catch (IOException e)
 		{
-			currentSession.endResponse();
-			currentSession.endTransmission();
+			responseBuilder.setError(ByteString.copyFrom(e.getMessage().getBytes()));
 		}
-		*/
+		
+		currentSession.send(Base64.encodeToString(responseBuilder.build().toByteArray(), Base64.DEFAULT), false);
 	}
 
-	public static void insert(List<ArgumentWrapper> argsArray,
+	public static void insert(List<KVPair> argsArray,
 			Session currentSession)
 	{
+		Response.Builder responseBuilder = Response.newBuilder();
 		try
 		{
 			ContentValues contentvalues = new ContentValues();
 
 			// Place values into contentvalue structure
-			List<String> strings = Common.getParamStringList(argsArray,
+			List<String> strings = Common.getParamStringList2(argsArray,
 					"string");
 			if (strings != null)
 				contentvalues.putAll(Common.listToContentValues(strings,
 						"string"));
 
-			List<String> booleans = Common.getParamStringList(argsArray,
+			List<String> booleans = Common.getParamStringList2(argsArray,
 					"boolean");
 			if (booleans != null)
 				contentvalues.putAll(Common.listToContentValues(booleans,
 						"boolean"));
 
-			List<String> integers = Common.getParamStringList(argsArray,
+			List<String> integers = Common.getParamStringList2(argsArray,
 					"integer");
 			if (integers != null)
 				contentvalues.putAll(Common.listToContentValues(integers,
 						"integer"));
 
-			List<String> doubles = Common.getParamStringList(argsArray,
+			List<String> doubles = Common.getParamStringList2(argsArray,
 					"double");
 			if (doubles != null)
 				contentvalues.putAll(Common.listToContentValues(doubles,
 						"double"));
 
-			List<String> floats = Common.getParamStringList(argsArray, "float");
+			List<String> floats = Common.getParamStringList2(argsArray, "float");
 			if (floats != null)
 				contentvalues.putAll(Common
 						.listToContentValues(floats, "float"));
 
-			List<String> longs = Common.getParamStringList(argsArray, "long");
+			List<String> longs = Common.getParamStringList2(argsArray, "long");
 			if (longs != null)
 				contentvalues.putAll(Common.listToContentValues(longs, "long"));
 
-			List<String> shorts = Common.getParamStringList(argsArray, "short");
+			List<String> shorts = Common.getParamStringList2(argsArray, "short");
 			if (shorts != null)
 				contentvalues.putAll(Common
 						.listToContentValues(shorts, "short"));
@@ -436,67 +406,70 @@ public class Provider
 
 			// Issue insert command
 			Uri c = r.insert(
-					Uri.parse(new String(Common.getParam(argsArray, "Uri"))),
+					Uri.parse(new String(Common.getParam2(argsArray, "Uri"))),
 					contentvalues);
 
-			currentSession.sendFullTransmission(c.toString(), "");
-
+			responseBuilder.setData(ByteString.copyFrom(c.toString().getBytes()));
+			responseBuilder.setError(ByteString.copyFrom(ERROR_OK.getBytes()));
+			
 		}
 		catch (Throwable t)
 		{
-			currentSession.sendFullTransmission("", t.getMessage());
+			responseBuilder.setError(ByteString.copyFrom(ERROR_UNKNOWN.getBytes()));
 		}
+		currentSession.send(Base64.encodeToString(responseBuilder.build().toByteArray(), Base64.DEFAULT), false);
 	}
 
-	public static void update(List<ArgumentWrapper> argsArray,
+	public static void update(List<KVPair> argsArray,
 			Session currentSession)
 	{
+		Response.Builder responseBuilder = Response.newBuilder();
 		try
 		{
 			ContentValues contentvalues = new ContentValues();
 
 			// Place values into contentvalue structure
-			List<String> strings = Common.getParamStringList(argsArray,
+			List<String> strings = Common.getParamStringList2(argsArray,
 					"string");
 			if (strings != null)
 				contentvalues.putAll(Common.listToContentValues(strings,
 						"string"));
 
-			List<String> booleans = Common.getParamStringList(argsArray,
+			List<String> booleans = Common.getParamStringList2(argsArray,
 					"boolean");
 			if (booleans != null)
 				contentvalues.putAll(Common.listToContentValues(booleans,
 						"boolean"));
 
-			List<String> integers = Common.getParamStringList(argsArray,
+			List<String> integers = Common.getParamStringList2(argsArray,
 					"integer");
 			if (integers != null)
 				contentvalues.putAll(Common.listToContentValues(integers,
 						"integer"));
 
-			List<String> doubles = Common.getParamStringList(argsArray,
+			List<String> doubles = Common.getParamStringList2(argsArray,
 					"double");
 			if (doubles != null)
 				contentvalues.putAll(Common.listToContentValues(doubles,
 						"double"));
 
-			List<String> floats = Common.getParamStringList(argsArray, "float");
+			List<String> floats = Common.getParamStringList2(argsArray, "float");
 			if (floats != null)
 				contentvalues.putAll(Common
 						.listToContentValues(floats, "float"));
 
-			List<String> longs = Common.getParamStringList(argsArray, "long");
+			List<String> longs = Common.getParamStringList2(argsArray, "long");
 			if (longs != null)
 				contentvalues.putAll(Common.listToContentValues(longs, "long"));
 
-			List<String> shorts = Common.getParamStringList(argsArray, "short");
+			List<String> shorts = Common.getParamStringList2(argsArray, "short");
 			if (shorts != null)
 				contentvalues.putAll(Common
 						.listToContentValues(shorts, "short"));
 
-			List<String> selectionArgs = Common.getParamStringList(argsArray,
+			List<String> selectionArgs = Common.getParamStringList2(argsArray,
 					"selectionArgs");
-			String where = Common.getParamString(argsArray, "where");
+			String where = Common.getParamString2(argsArray, "where");
 
 			// Put selectionArgs in an array
 			String[] selectionArgsArray = null;
@@ -520,30 +493,33 @@ public class Provider
 
 			// Issue update command
 			Integer c = r.update(
-					Uri.parse(Common.getParamString(argsArray, "Uri")),
+					Uri.parse(Common.getParamString2(argsArray, "Uri")),
 					contentvalues, (where.length() > 0) ? where : null,
 					selectionArgsArray);
 
-			// Send response
-			currentSession.sendFullTransmission(c.toString()
-					+ " rows have been updated.", "");
-
+			responseBuilder.setError(ByteString.copyFrom(ERROR_OK.getBytes()));
+			KVPair.Builder pairBuilder = KVPair.newBuilder();
+			pairBuilder.setKey("rows_updated");
+			pairBuilder.addValue(ByteString.copyFrom((c.toString().getBytes())));
+			responseBuilder.addStructuredData(pairBuilder);
 		}
 		catch (Throwable t)
 		{
-			currentSession.sendFullTransmission("", t.getMessage());
+			responseBuilder.setError(ByteString.copyFrom(ERROR_UNKNOWN.getBytes()));
 		}
+		currentSession.send(Base64.encodeToString(responseBuilder.build().toByteArray(), Base64.DEFAULT), false);
 	}
 
-	public static void delete(List<ArgumentWrapper> argsArray,
+	public static void delete(List<KVPair> argsArray,
 			Session currentSession)
 	{
+		Response.Builder responseBuilder = Response.newBuilder();
 		try
 		{
 
-			List<String> selectionArgs = Common.getParamStringList(argsArray,
+			List<String> selectionArgs = Common.getParamStringList2(argsArray,
 					"selectionArgs");
-			String where = Common.getParamString(argsArray, "where");
+			String where = Common.getParamString2(argsArray, "where");
 
 			// Put selectionArgs in an array
 			String[] selectionArgsArray = null;
@@ -566,47 +542,46 @@ public class Provider
 					.getContentResolver();
 
 			// Issue delete command
-			int rowsDeleted = r.delete(
-					Uri.parse(Common.getParamString(argsArray, "Uri")),
+			Integer rowsDeleted = r.delete(
+					Uri.parse(Common.getParamString2(argsArray, "Uri")),
 					(where.length() > 0) ? where : null, selectionArgsArray);
-
-			// Send response
-			currentSession.sendFullTransmission(Integer.toString(rowsDeleted)
-					+ " rows have been deleted", "");
+			
+			responseBuilder.setError(ByteString.copyFrom(ERROR_OK.getBytes()));
+			KVPair.Builder pairBuilder = KVPair.newBuilder();
+			pairBuilder.setKey("rows_deleted");
+			pairBuilder.addValue(ByteString.copyFrom((rowsDeleted.toString().getBytes())));
+			responseBuilder.addStructuredData(pairBuilder);
 
 		}
 		catch (Throwable t)
 		{
-			currentSession.sendFullTransmission("", t.getMessage());
+			responseBuilder.setError(ByteString.copyFrom(ERROR_UNKNOWN.getBytes()));
 		}
-
-		currentSession.endTransmission();
+		currentSession.send(Base64.encodeToString(responseBuilder.build().toByteArray(), Base64.DEFAULT), false);
 	}
 
-public static void finduri(List<ArgumentWrapper> argsArray, Session currentSession)
-{
-	//Get path from arguments
-	String path = Common.getParamString(argsArray, "path");
-	
-	ArrayList<String> lines = Common.strings(path);
-	Iterator<String> it = lines.iterator();
-	
-	currentSession.startTransmission();
-	currentSession.startResponse();
-	currentSession.startData();
-	
-	while (it.hasNext())
+	public static void finduri(List<KVPair> argsArray, Session currentSession)
 	{
-		String next = it.next();
+		//Get path from arguments
+		String path = Common.getParamString2(argsArray, "path");
 		
-		if (next.toUpperCase().contains("CONTENT://") && !next.toUpperCase().equals("CONTENT://"))
-			currentSession.send(next + "\n", true); //Send content uri with newline
+		ArrayList<String> lines = Common.strings(path);
+		Iterator<String> it = lines.iterator();
+		
+		Response.Builder responseBuilder = Response.newBuilder();
+		KVPair.Builder pairBuilder = KVPair.newBuilder();
+		
+		pairBuilder.setKey("uri");
+		while (it.hasNext())
+		{
+			String next = it.next();
+			
+			if (next.toUpperCase().contains("CONTENT://") && !next.toUpperCase().equals("CONTENT://"))
+				pairBuilder.addValue(ByteString.copyFrom(next.getBytes()));
+		}
+		
+		responseBuilder.addStructuredData(pairBuilder);
+		currentSession.send(Base64.encodeToString(responseBuilder.build().toByteArray(), Base64.DEFAULT), false);
 	}
-	
-	currentSession.endData();
-	currentSession.noError();
-	currentSession.endResponse();
-	currentSession.endTransmission();
-}
 
 }

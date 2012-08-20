@@ -11,7 +11,7 @@ from google.protobuf import descriptor_pb2
 DESCRIPTOR = descriptor.FileDescriptor(
   name='Message.proto',
   package='com.mwr.mercury',
-  serialized_pb='\n\rMessage.proto\x12\x0f\x63om.mwr.mercury\"S\n\x07Request\x12\x0f\n\x07section\x18\x01 \x01(\t\x12\x10\n\x08\x66unction\x18\x02 \x01(\t\x12%\n\x04\x61rgs\x18\x03 \x03(\x0b\x32\x17.com.mwr.mercury.KVPair\"Y\n\x08Response\x12\x0c\n\x04\x64\x61ta\x18\x01 \x01(\x0c\x12\r\n\x05\x65rror\x18\x02 \x01(\x0c\x12\x30\n\x0fstructured_data\x18\x03 \x03(\x0b\x32\x17.com.mwr.mercury.KVPair\"$\n\x06KVPair\x12\x0b\n\x03key\x18\x01 \x02(\t\x12\r\n\x05value\x18\x02 \x03(\x0c')
+  serialized_pb='\n\rMessage.proto\x12\x0f\x63om.mwr.mercury\"S\n\x07Request\x12\x0f\n\x07section\x18\x01 \x01(\t\x12\x10\n\x08\x66unction\x18\x02 \x01(\t\x12%\n\x04\x61rgs\x18\x03 \x03(\x0b\x32\x17.com.mwr.mercury.KVPair\"Y\n\x08Response\x12\x0c\n\x04\x64\x61ta\x18\x01 \x01(\x0c\x12\r\n\x05\x65rror\x18\x02 \x01(\x0c\x12\x30\n\x0fstructured_data\x18\x03 \x03(\x0b\x32\x17.com.mwr.mercury.KVPair\"$\n\x06KVPair\x12\x0b\n\x03key\x18\x01 \x02(\t\x12\r\n\x05value\x18\x02 \x03(\x0c\"\xbc\x03\n\x10ProviderResponse\x12\x34\n\x04info\x18\x01 \x03(\x0b\x32&.com.mwr.mercury.ProviderResponse.Info\x1a\xf1\x02\n\x04Info\x12\x11\n\tauthority\x18\x01 \x01(\t\x12\x13\n\x0bpackageName\x18\x02 \x01(\t\x12\x16\n\x0ereadPermission\x18\x03 \x01(\t\x12\x1d\n\x15uriPermissionPatterns\x18\x04 \x03(\t\x12\x17\n\x0fwritePermission\x18\x05 \x01(\t\x12Q\n\x0fpathPermissions\x18\x06 \x03(\x0b\x32\x38.com.mwr.mercury.ProviderResponse.Info.PatternPermission\x12\x14\n\x0cmultiprocess\x18\x07 \x01(\x08\x12\x1b\n\x13grantUriPermissions\x18\x08 \x01(\x08\x1ak\n\x11PatternPermission\x12\x17\n\x0fwritePermission\x18\x01 \x01(\t\x12\x16\n\x0ereadPermission\x18\x02 \x01(\t\x12\x12\n\nwriteNeeds\x18\x03 \x01(\t\x12\x11\n\treadNeeds\x18\x04 \x01(\t')
 
 
 
@@ -134,11 +134,168 @@ _KVPAIR = descriptor.Descriptor(
   serialized_end=246,
 )
 
+
+_PROVIDERRESPONSE_INFO_PATTERNPERMISSION = descriptor.Descriptor(
+  name='PatternPermission',
+  full_name='com.mwr.mercury.ProviderResponse.Info.PatternPermission',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    descriptor.FieldDescriptor(
+      name='writePermission', full_name='com.mwr.mercury.ProviderResponse.Info.PatternPermission.writePermission', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=unicode("", "utf-8"),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    descriptor.FieldDescriptor(
+      name='readPermission', full_name='com.mwr.mercury.ProviderResponse.Info.PatternPermission.readPermission', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=unicode("", "utf-8"),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    descriptor.FieldDescriptor(
+      name='writeNeeds', full_name='com.mwr.mercury.ProviderResponse.Info.PatternPermission.writeNeeds', index=2,
+      number=3, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=unicode("", "utf-8"),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    descriptor.FieldDescriptor(
+      name='readNeeds', full_name='com.mwr.mercury.ProviderResponse.Info.PatternPermission.readNeeds', index=3,
+      number=4, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=unicode("", "utf-8"),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  serialized_start=586,
+  serialized_end=693,
+)
+
+_PROVIDERRESPONSE_INFO = descriptor.Descriptor(
+  name='Info',
+  full_name='com.mwr.mercury.ProviderResponse.Info',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    descriptor.FieldDescriptor(
+      name='authority', full_name='com.mwr.mercury.ProviderResponse.Info.authority', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=unicode("", "utf-8"),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    descriptor.FieldDescriptor(
+      name='packageName', full_name='com.mwr.mercury.ProviderResponse.Info.packageName', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=unicode("", "utf-8"),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    descriptor.FieldDescriptor(
+      name='readPermission', full_name='com.mwr.mercury.ProviderResponse.Info.readPermission', index=2,
+      number=3, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=unicode("", "utf-8"),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    descriptor.FieldDescriptor(
+      name='uriPermissionPatterns', full_name='com.mwr.mercury.ProviderResponse.Info.uriPermissionPatterns', index=3,
+      number=4, type=9, cpp_type=9, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    descriptor.FieldDescriptor(
+      name='writePermission', full_name='com.mwr.mercury.ProviderResponse.Info.writePermission', index=4,
+      number=5, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=unicode("", "utf-8"),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    descriptor.FieldDescriptor(
+      name='pathPermissions', full_name='com.mwr.mercury.ProviderResponse.Info.pathPermissions', index=5,
+      number=6, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    descriptor.FieldDescriptor(
+      name='multiprocess', full_name='com.mwr.mercury.ProviderResponse.Info.multiprocess', index=6,
+      number=7, type=8, cpp_type=7, label=1,
+      has_default_value=False, default_value=False,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    descriptor.FieldDescriptor(
+      name='grantUriPermissions', full_name='com.mwr.mercury.ProviderResponse.Info.grantUriPermissions', index=7,
+      number=8, type=8, cpp_type=7, label=1,
+      has_default_value=False, default_value=False,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[_PROVIDERRESPONSE_INFO_PATTERNPERMISSION, ],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  serialized_start=324,
+  serialized_end=693,
+)
+
+_PROVIDERRESPONSE = descriptor.Descriptor(
+  name='ProviderResponse',
+  full_name='com.mwr.mercury.ProviderResponse',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    descriptor.FieldDescriptor(
+      name='info', full_name='com.mwr.mercury.ProviderResponse.info', index=0,
+      number=1, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[_PROVIDERRESPONSE_INFO, ],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  serialized_start=249,
+  serialized_end=693,
+)
+
 _REQUEST.fields_by_name['args'].message_type = _KVPAIR
 _RESPONSE.fields_by_name['structured_data'].message_type = _KVPAIR
+_PROVIDERRESPONSE_INFO_PATTERNPERMISSION.containing_type = _PROVIDERRESPONSE_INFO;
+_PROVIDERRESPONSE_INFO.fields_by_name['pathPermissions'].message_type = _PROVIDERRESPONSE_INFO_PATTERNPERMISSION
+_PROVIDERRESPONSE_INFO.containing_type = _PROVIDERRESPONSE;
+_PROVIDERRESPONSE.fields_by_name['info'].message_type = _PROVIDERRESPONSE_INFO
 DESCRIPTOR.message_types_by_name['Request'] = _REQUEST
 DESCRIPTOR.message_types_by_name['Response'] = _RESPONSE
 DESCRIPTOR.message_types_by_name['KVPair'] = _KVPAIR
+DESCRIPTOR.message_types_by_name['ProviderResponse'] = _PROVIDERRESPONSE
 
 class Request(message.Message):
   __metaclass__ = reflection.GeneratedProtocolMessageType
@@ -157,5 +314,23 @@ class KVPair(message.Message):
   DESCRIPTOR = _KVPAIR
   
   # @@protoc_insertion_point(class_scope:com.mwr.mercury.KVPair)
+
+class ProviderResponse(message.Message):
+  __metaclass__ = reflection.GeneratedProtocolMessageType
+  
+  class Info(message.Message):
+    __metaclass__ = reflection.GeneratedProtocolMessageType
+    
+    class PatternPermission(message.Message):
+      __metaclass__ = reflection.GeneratedProtocolMessageType
+      DESCRIPTOR = _PROVIDERRESPONSE_INFO_PATTERNPERMISSION
+      
+      # @@protoc_insertion_point(class_scope:com.mwr.mercury.ProviderResponse.Info.PatternPermission)
+    DESCRIPTOR = _PROVIDERRESPONSE_INFO
+    
+    # @@protoc_insertion_point(class_scope:com.mwr.mercury.ProviderResponse.Info)
+  DESCRIPTOR = _PROVIDERRESPONSE
+  
+  # @@protoc_insertion_point(class_scope:com.mwr.mercury.ProviderResponse)
 
 # @@protoc_insertion_point(module_scope)
