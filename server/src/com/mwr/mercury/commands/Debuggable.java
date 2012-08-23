@@ -2,24 +2,31 @@
 
 package com.mwr.mercury.commands;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.util.Base64;
 
-import com.mwr.mercury.ArgumentWrapper;
+import com.google.protobuf.ByteString;
 import com.mwr.mercury.Common;
+import com.mwr.mercury.Message.DebugResponse;
+import com.mwr.mercury.Message.KVPair;
+import com.mwr.mercury.Message.NativeResponse;
 import com.mwr.mercury.Session;
+import com.mwr.mercury.Message.Response;
 
 public class Debuggable
 {
-	public static void info(List<ArgumentWrapper> argsArray, Session currentSession){
+	public static void info(List<KVPair> argsArray, Session currentSession){
 		//Assign filter if one came in the arguments
-		String filter = Common.getParamString(argsArray, "filter");
+		String filter = Common.getParamString2(argsArray, "filter");
 		
-		//String to return at the end of function
-		String returnValue = "";
+		Response.Builder responseBuilder = Response.newBuilder();
+		DebugResponse.Builder debugBuilder = DebugResponse.newBuilder();
+		responseBuilder.setError(ByteString.copyFrom("No debuggable applications found".getBytes()));
 		
 		//Get all packages from packagemanager
 		List <PackageInfo> packages = currentSession.applicationContext.getPackageManager().getInstalledPackages(PackageManager.GET_PERMISSIONS);
@@ -32,24 +39,30 @@ public class Debuggable
 			//Focus on debuggable apps only and apply filter
 			if (((app.flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0) && (app.packageName.toUpperCase().contains(filter.toUpperCase()) || app.processName.toUpperCase().contains(filter.toUpperCase()) || filter == ""))
             {
-				returnValue += "Package name: " + app.packageName + "\n";
-				returnValue += "UID: " + app.uid + "\n";
-				
+				/*
+				responseBuilder.addStructuredData(Common.createKVPair("package_name", app.packageName));
+				responseBuilder.addStructuredData(Common.createKVPair("uid", new Integer(app.uid).toString()));
+				*/
+				DebugResponse.Info.Builder infoBuilder = DebugResponse.Info.newBuilder();
+				infoBuilder.setPackageName(app.packageName);
+				infoBuilder.setUid(app.uid);
             	//Find all permissions that this app has
-            	String strPermissions = "";
             	String[] permissions = package_.requestedPermissions;
             	
+        		List<String> permissionList = new ArrayList<String>();
             	if (permissions != null)
             	{
             		for (String permission:permissions)
-            			strPermissions += permission + "; ";
+            			permissionList.add(permission);
             	}
-            	
-            	returnValue += "Permissions: " + strPermissions + "\n\n";
+            	infoBuilder.addAllPermission(permissionList);
+            	debugBuilder.addInfo(infoBuilder);
+            	//responseBuilder.addStructuredData(Common.createKVPair("permissions", permissionList));
+        		responseBuilder.setError(ByteString.copyFrom(Common.ERROR_OK.getBytes()));
             }
 		}
-		
-		currentSession.sendFullTransmission(returnValue.trim(), "");
+		responseBuilder.setData(debugBuilder.build().toByteString()).build();
+		currentSession.send(Base64.encodeToString(responseBuilder.build().toByteArray(), Base64.DEFAULT), false);
 	}
 
 }

@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import com.google.protobuf.ByteString;
 import com.mwr.mercury.Message.KVPair;
 
 import android.content.ComponentName;
@@ -60,6 +61,8 @@ class RequestWrapper
 
 public class Common
 {	
+	public static final String ERROR_OK = "SUCCESS";
+	public static final String ERROR_UNKNOWN = "ERROR";
 	
 	//Mercury persistent shell
 	public static Shell mercuryShell = null;
@@ -416,6 +419,87 @@ public class Common
 		
 		return localIntent;
 	}
+	
+	//Parse a generic intent and add to given intent
+	public static Intent parseIntentGeneric2(List<KVPair> argsArray, Intent intent)
+	{		
+		Intent localIntent = intent;
+		
+		//Iterate through arguments
+		for (KVPair pair : argsArray)
+		{
+			
+			String value = "";
+			String valueArg = "";
+			
+			try
+			{
+				String key = pair.getKey();
+				for (ByteString valueBytes : pair.getValueList()) {
+					
+					//Try split value into key=value pair
+					String[] split = new String(valueBytes.toByteArray()).split("=");
+					value = split[0];
+					if (split.length > 1)
+						valueArg = split[1];
+					
+					//Parse arguments into Intent
+					if (key.equalsIgnoreCase("ACTION"))
+						localIntent.setAction(value);
+					
+					else if (key.equalsIgnoreCase("DATA"))
+						localIntent.setData(Uri.parse(value));
+						
+					else if (key.equalsIgnoreCase("MIMETYPE"))
+						localIntent.setType(value);
+	
+					else if (key.equalsIgnoreCase("CATEGORY"))
+						localIntent.addCategory(value);
+						
+					else if (key.equalsIgnoreCase("COMPONENT"))
+						localIntent.setComponent(new ComponentName(value, valueArg));
+						
+					else if (key.equalsIgnoreCase("FLAGS"))
+						localIntent.setFlags(Integer.parseInt(new String(value)));
+						
+					else if (key.equalsIgnoreCase("EXTRABOOLEAN"))
+						localIntent.putExtra(value, Boolean.parseBoolean(valueArg));
+						
+					else if (key.equalsIgnoreCase("EXTRABYTE"))
+						localIntent.putExtra(value, Byte.parseByte(valueArg));
+						
+					else if (key.equalsIgnoreCase("EXTRADOUBLE"))
+						localIntent.putExtra(value, Double.parseDouble(valueArg));
+						
+					else if (key.equalsIgnoreCase("EXTRAFLOAT"))
+						localIntent.putExtra(value, Float.parseFloat(valueArg));
+						
+					else if (key.equalsIgnoreCase("EXTRAINTEGER"))
+						localIntent.putExtra(value, Integer.parseInt(valueArg));
+						
+					else if (key.equalsIgnoreCase("EXTRALONG"))
+						localIntent.putExtra(value, Long.parseLong(valueArg));
+						
+					else if (key.equalsIgnoreCase("EXTRASERIALIZABLE"))
+						localIntent.putExtra(value, Serializable.class.cast(valueArg));
+						
+					else if (key.equalsIgnoreCase("EXTRASHORT"))
+						localIntent.putExtra(value, Short.parseShort(valueArg));
+						
+					else if (key.equalsIgnoreCase("EXTRASTRING"))
+						localIntent.putExtra(value, valueArg);
+						
+				}
+			}
+			catch (Exception e)
+			{
+				Log.e("mercury", "Error with argument " + pair.getKey());
+			}
+			
+		}
+		
+		return localIntent;
+	}
 
 	//Extract the src file to dest - return success
 	public static boolean unzipFile(String filename, String src, String dest)
@@ -466,6 +550,24 @@ public class Common
 		return success;
 
 	}
-
+	
+	public static KVPair createKVPair(String key, String value) {
+		return createKVPair(key, ByteString.copyFrom(value.getBytes()));
+	}
+	
+	public static KVPair createKVPair(String key, List<String> values) {
+		KVPair.Builder pairBuilder = KVPair.newBuilder();
+		pairBuilder.setKey(key);
+		for (String value : values)
+			pairBuilder.addValue(ByteString.copyFrom(value.getBytes()));
+		return pairBuilder.build();
+	}
+	
+	public static KVPair createKVPair(String key, ByteString value) {
+		KVPair.Builder pairBuilder = KVPair.newBuilder();
+		pairBuilder.setKey(key);
+		pairBuilder.addValue(value);
+		return pairBuilder.build();
+	}
 
 }

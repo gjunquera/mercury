@@ -39,3 +39,86 @@ message ProviderResponse {
 	
 	repeated Info info = 1;
 }
+
+message PackageResponse {
+
+	message Info {
+		optional string packageName = 1;
+		optional string processName = 2;
+		optional string version = 3;
+		optional string dataDirectory = 4;
+		optional string apkPath = 5;
+		optional int32 uid = 6;
+		repeated int32 guid = 7;
+		optional string sharedUserId = 8;
+		repeated string sharedLibraries = 9;
+		repeated string permission = 10;
+	}
+	
+	message SharedUid {
+		repeated string packageNames = 1;
+		optional int32 uid = 2;
+		repeated string permissions = 3;
+	}
+	
+	repeated Info info = 1;
+	repeated SharedUid sharedUid = 2;
+	
+}
+
+message ServiceResponse {
+
+	message Info {
+		optional string packageName = 1;
+		optional string service = 2;
+		optional string permission = 3;
+	}
+	
+	repeated Info info = 1;
+	
+}
+
+message ActivityResponse {
+
+	message Info {
+		optional string packageName = 1;
+		optional string activity = 3;
+	}
+	
+	repeated Info info = 1;	
+}
+
+message BroadcastResponse {
+
+	message Info {
+		optional string packageName = 1;
+		optional string receiver = 2;
+		optional string permission = 3;
+	}
+	
+	repeated Info info = 1;
+	
+}
+
+message DebugResponse {
+
+	message Info {
+		optional string packageName = 1;
+		optional int32 uid = 2;
+		repeated string permission = 3;
+	}
+	
+	repeated Info info = 1;
+	
+}
+
+message NativeResponse {
+
+	message Info {
+		optional string packageName = 1;
+		repeated string nativeLib = 2;
+	}
+	
+	repeated Info info = 1;
+	
+}

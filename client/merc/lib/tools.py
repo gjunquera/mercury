@@ -44,7 +44,7 @@ MD5 = 3fae15887320940b88df79fe01e62bd8
 
             response = self.session.downloadFile(splitargs.path, splitargs.downloadfolder)
 
-            if response.isError():
+            if response.error != "SUCCESS":
                 print "\n" + response.error + "\n"
             else:
                 print "\nFile downloaded successfully\nMD5 = " + response.data + "\n"
@@ -103,10 +103,10 @@ MD5: 3fae15887320940b88df79fe01e62bd8
 
             response = self.session.uploadFile(splitargs.localPath, uploadDir)
 
-            if (response.isError()):
-                print response.getPaddedError()
+            if str(response.error) != "SUCCESS":
+                print str(response.error)
             else:
-                print "\nFile uploaded successfully to " + uploadDir + "\nMD5: " + response.data + "\n"
+                print "\nFile uploaded successfully to " + uploadDir + "\nMD5: " + str(response.data) + "\n"
 
         # FIXME: Choose specific exceptions to catch
         except Exception:
@@ -155,13 +155,13 @@ MD5 = 3fae15887320940b88df79fe01e62bd8
             # Split arguments using shlex - this means that parameters with spaces can be used - escape " characters inside with \
             splitargs = parser.parse_args(shlex.split(args))
 
-            fileSize = self.session.executeCommand("core", "fileSize", {"path":splitargs.path})
+            fileSize = self.session.newExecuteCommand("core", "fileSize", {"path":splitargs.path})
 
-            if (fileSize.isError()):
+            if str(fileSize.error) != "SUCCESS":
                 print fileSize.getPaddedError()
             else:
-                print "\nSize (bytes) = " + fileSize.data
-                print "MD5 = " + self.session.executeCommand("core", "fileMD5", {"path":splitargs.path}).data + "\n"
+                print "\nSize (bytes) = " + str(fileSize.data)
+                print "MD5 = " + str(self.session.newExecuteCommand("core", "fileMD5", {"path":splitargs.path}).data) + "\n"
 
         # FIXME: Choose specific exceptions to catch
         except Exception:

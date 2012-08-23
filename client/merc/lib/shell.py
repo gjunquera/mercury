@@ -38,14 +38,15 @@ usage: persistent [--new]
             splitargs = parser.parse_args(shlex.split(args))
 
             if splitargs.new:
-                _newShell = self.session.executeCommand("shell", "newMercuryShell", None)
+                _newShell = self.session.newExecuteCommand("shell", "newMercuryShell", None)
 
 
             prompt = ""
             while (prompt.upper() != "BACK"):
-                _write = self.session.executeCommand("shell", "executeMercuryShell", {'args':prompt})
-                read = self.session.executeCommand("shell", "readMercuryShell", None)
-                sys.stdout.write(read.getErrorOrData().replace(prompt, "", 1).strip() + " ")
+                _write = self.session.newExecuteCommand("shell", "executeMercuryShell", {'args':prompt})
+                read = self.session.newExecuteCommand("shell", "readMercuryShell", None)
+                if str(read.error) == "SUCCESS":
+                    sys.stdout.write(str(read.data).replace(prompt, "", 1).strip() + " ")
                 prompt = raw_input().replace("$BB", "/data/data/com.mwr.mercury/busybox")
 
         # FIXME: Choose specific exceptions to catch
@@ -71,7 +72,9 @@ Put in simpler terms: a command is received -> new shell session is opened -> co
                 # Check that blank input was not entered
                 if len(prompt) > 0:
                 
-                    result = self.session.executeCommand("shell", "executeSingleCommand", {'args':command}).getErrorOrData().split("\n")
+#                    result = self.session.executeCommand("shell", "executeSingleCommand", {'args':command}).getErrorOrData().split("\n")
+                    response = self.session.newExecuteCommand("shell", "executeSingleCommand", {'args':command})
+                    result = str(response.data).split("\n")
     
                     # Parse out cwd
                     if ("**Network Error**" not in result[-1]):

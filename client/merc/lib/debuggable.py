@@ -4,6 +4,7 @@
 #
 
 import shlex
+import Message_pb2
 from interface import BaseCmd, BaseArgumentParser
 
 class Debuggable(BaseCmd):
@@ -37,13 +38,21 @@ Note: it is possible to use -f instead of --filter as shorthand
             # Split arguments using shlex - this means that parameters with spaces can be used - escape " characters inside with \
             splitargs = parser.parse_args(shlex.split(args))
 
-            response = self.session.executeCommand("debuggable", "info", {'filter':splitargs.filter} if splitargs.filter else None).getPaddedErrorOrData()
+#            response = self.session.executeCommand("debuggable", "info", {'filter':splitargs.filter} if splitargs.filter else None).getPaddedErrorOrData()
+            response = self.session.newExecuteCommand("debuggable", "info", {'filter':splitargs.filter} if splitargs.filter else None)
 
-            if response.strip() == "":
-                print "\nNo debuggable applications found\n"
+            if str(response.error) == "SUCCESS":
+                debug_response = Message_pb2.DebugResponse()
+                debug_response.ParseFromString(str(response.data))
+                for info in debug_response.info:
+                    print "Package name: " + info.packageName
+                    print "UID: " + str(int(info.uid))
+                    for permission in info.permission:
+                        print "Permissions: " + permission
+                    print ""
             else:
-                print response
+                print str(response.error)
 
         # FIXME: Choose specific exceptions to catch
-        except Exception:
+        except Exception as e:
             pass

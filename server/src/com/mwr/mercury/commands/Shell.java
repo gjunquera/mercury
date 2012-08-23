@@ -4,6 +4,7 @@ package com.mwr.mercury.commands;
 
 import com.mwr.mercury.ArgumentWrapper;
 import com.mwr.mercury.Common;
+import com.mwr.mercury.Message.KVPair;
 import com.mwr.mercury.Session;
 
 import java.io.BufferedReader;
@@ -13,11 +14,11 @@ import java.util.List;
 
 public class Shell
 {
-	public static void executeSingleCommand(List<ArgumentWrapper> argsArray,
+	public static void executeSingleCommand(List<KVPair> argsArray,
 			Session currentSession)
 	{
 		// Get all the parameters
-		String args = Common.getParamString(argsArray, "args");
+		String args = Common.getParamString2(argsArray, "args");
 
 		String returnValue = "";
 
@@ -61,36 +62,36 @@ public class Shell
 		}
 		catch (Exception e)
 		{
-			currentSession.sendFullTransmission(e.getMessage(), "");
+			currentSession.newSendFullTransmission(e.getMessage(), "");
 		}
 
-		currentSession.sendFullTransmission(returnValue.trim(), "");
+		currentSession.newSendFullTransmission(returnValue.trim(), Common.ERROR_OK);
 
 		return;
 	}
 
-	public static void newMercuryShell(List<ArgumentWrapper> argsArray,
+	public static void newMercuryShell(List<KVPair> argsArray,
 			Session currentSession)
 	{
 		Common.mercuryShell = new com.mwr.mercury.Shell();
-		currentSession.sendFullTransmission("", "");
+		currentSession.newSendFullTransmission("", Common.ERROR_OK);
 	}
 
-	public static void executeMercuryShell(List<ArgumentWrapper> argsArray,
+	public static void executeMercuryShell(List<KVPair> argsArray,
 			Session currentSession)
 	{
 		//Get all the parameters
-		String args = Common.getParamString(argsArray, "args");
+		String args = Common.getParamString2(argsArray, "args");
 		
 		if (Common.mercuryShell.write(args))
-			currentSession.sendFullTransmission("", "");
+			currentSession.newSendFullTransmission("", Common.ERROR_OK);
 		else
-			currentSession.sendFullTransmission("", "error");
+			currentSession.newSendFullTransmission("", Common.ERROR_UNKNOWN);
 	}
 
-	public static void readMercuryShell(List<ArgumentWrapper> argsArray,
+	public static void readMercuryShell(List<KVPair> argsArray,
 			Session currentSession)
 	{
-		currentSession.sendFullTransmission(Common.mercuryShell.read(), "");
+		currentSession.newSendFullTransmission(Common.mercuryShell.read(), Common.ERROR_OK);
 	}
 }

@@ -4,6 +4,7 @@
 #
 
 import shlex
+import Message_pb2
 from interface import BaseCmd, BaseArgumentParser
 from common import intentDictionary
 
@@ -50,7 +51,17 @@ Required Permission: null
             request = vars(splitargs)
 
             #print self.session.executeCommand("service", "info", {'filter':splitargs.filter} if splitargs.filter else None).getPaddedErrorOrData()
-            print self.session.executeCommand("service", "info", request).getPaddedErrorOrData()
+            response = self.session.newExecuteCommand("service", "info", request)
+            if str(response.error) == "SUCCESS":
+                service_resp = Message_pb2.ServiceResponse()
+                service_resp.ParseFromString(str(response.data))
+                for info in service_resp.info:
+                    print "PackageName: " + info.packageName
+                    print "Service: " + info.service
+                    print "Required Permission: " + info.permission
+                    print ""
+            else:
+                print str(response.error)
 
         # FIXME: Choose specific exceptions to catch
         except Exception:
@@ -107,7 +118,17 @@ usage: start [--action <action>] [--category <category> [<category> ...]]
             if (splitargs.flags):
                 request['flags'] = str(int(splitargs.flags, 0))
 
-            print self.session.executeCommand("service", "start", request).getPaddedErrorOrData()
+#            print self.session.executeCommand("service", "start", request).getPaddedErrorOrData()
+            response = self.session.newExecuteCommand("service", "start", request)
+            if str(response.error) == "SUCCESS":
+                for pair in response.structured_data:
+                    if pair.key == "intent":
+                        intent = str(pair.value)
+                    elif pair.key == "package_and_class":
+                        package_class = str(pair.value)
+                print "Service started with " + intent + " - " + package_class + "\n"
+            else:
+                print str(response.error)
 
         # FIXME: Choose specific exceptions to catch
         except Exception:
@@ -177,7 +198,14 @@ usage: stop [--action <action>] [--category <category> [<category> ...]]
             if (splitargs.flags):
                 request['flags'] = str(int(splitargs.flags, 0))
 
-            print self.session.executeCommand("service", "stop", request).getPaddedErrorOrData()
+#            print self.session.executeCommand("service", "stop", request).getPaddedErrorOrData()
+            response = self.session.newExecuteCommand("service", "stop", request)
+            if str(response.error) == "SUCCESS":
+                for pair in response.structured_data:
+                    if pair.key == "intent":
+                        print "Service stopped with " + str(pair.value)
+            else:
+                print str(response.error)            
 
         # FIXME: Choose specific exceptions to catch
         except Exception:

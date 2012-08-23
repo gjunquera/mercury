@@ -4,6 +4,7 @@
 #
 
 import shlex
+import Message_pb2
 from interface import BaseCmd, BaseArgumentParser
 
 class Packages(BaseCmd):
@@ -79,7 +80,29 @@ Permissions: com.android.vending.billing.IN_APP_NOTIFY.permission.C2D_MESSAGE; c
             # Compile stated arguments to send to executeCommand
             request = vars(splitargs)
 
-            print self.session.executeCommand("packages", "info", request).getPaddedErrorOrData()
+#            print self.session.executeCommand("packages", "info", request).getPaddedErrorOrData()
+            response = self.session.newExecuteCommand("packages", "info", request)
+            package_response = Message_pb2.PackageResponse()
+            package_response.ParseFromString(str(response.data))
+            for info in package_response.info:
+                print "Package name: " + info.packageName
+                print "Process name: " + info.processName
+                print "Version: " + info.version
+                print "Data directory: " + info.dataDirectory
+                print "APK path: " + info.apkPath
+                print "UID: " + str(info.uid)
+                guid_str = ""
+                for guid in info.guid:
+                    guid_str += str(guid) + "; "
+                if len(guid_str) > 0:
+                    print "GUID: " + guid_str
+                for sharedLib in  info.sharedLibraries:
+                    print "Shared libraries: " + sharedLib
+                if info.sharedUserId is not None:
+                    print "SharedUserId: " + info.sharedUserId + " (" + str(info.uid) + ")"
+                for permission in  info.permission:
+                    print "Permissions: " + permission             
+                print "\n"
 
         # FIXME: Choose specific exceptions to catch
         except Exception:
@@ -128,8 +151,19 @@ Accumulated permissions: com.motorola.blur.setupprovider.Permissions.ACCESS_ACCO
             # Compile stated arguments to send to executeCommand
             request = vars(splitargs)
 
-            print self.session.executeCommand("packages", "shareduid", request).getPaddedErrorOrData()
-
+#            print self.session.executeCommand("packages", "shareduid", request).getPaddedErrorOrData()
+            response = self.session.newExecuteCommand("packages", "shareduid", request)
+            package_response = Message_pb2.PackageResponse()
+            package_response.ParseFromString(str(response.data))
+            for sharedUid in package_response.sharedUid:
+                print "UID: " + str(sharedUid.uid)
+                for packageName in sharedUid.packageNames:
+                    print "Package Name: " + packageName
+                permissionStr = "Accumulated permissions: "
+                for permission in sharedUid.permissions:
+                    permissionStr += permission + "; " 
+                print permissionStr + "\n"
+            
         # FIXME: Choose specific exceptions to catch
         except Exception:
             pass
@@ -161,8 +195,34 @@ Example - finding the attack surface of the built-in browser
             # Split arguments using shlex - this means that parameters with spaces can be used - escape " characters inside with \
             splitargs = parser.parse_args(shlex.split(args))
 
-            print self.session.executeCommand("packages", "attacksurface", {'packageName':splitargs.packageName}).getPaddedErrorOrData()
-
+#            print self.session.executeCommand("packages", "attacksurface", {'packageName':splitargs.packageName}).getPaddedErrorOrData()
+            response = self.session.newExecuteCommand("packages", "attacksurface", {'packageName':splitargs.packageName})
+            if response.error == "SUCCESS":
+                for pair in response.structured_data:
+                    if pair.key == "activities":
+                        value = str(pair.value).translate(None, "[']")
+                        print value + " activities exported"
+                    elif pair.key == "receivers":
+                        value = str(pair.value).translate(None, "[']")
+                        print value + " broadcast receivers exported"
+                    elif pair.key == "providers":
+                        value = str(pair.value).translate(None, "[']")
+                        print value + " content providers exported"
+                    elif pair.key == "services":
+                        value = str(pair.value).translate(None, "[']")
+                        print value + " services exported"
+                    elif pair.key == "debuggable":
+                        print "Debuggable: " + str(pair.value)
+                    elif pair.key == "uid":
+                        uid = str(pair.value)
+                    elif pair.key == "shared_uid":
+                        shared_uid = str(pair.value)
+                        
+                if (uid is not None) and (shared_uid is not None):
+                    print "shared user-id = " + uid + " (" + shared_uid + ")\n"
+            else:
+                print str(response.error)
+                
         # FIXME: Choose specific exceptions to catch
         except Exception:
             pass

@@ -2,8 +2,11 @@
 
 package com.mwr.mercury.commands;
 
-import com.mwr.mercury.ArgumentWrapper;
+import com.google.protobuf.ByteString;
 import com.mwr.mercury.Common;
+import com.mwr.mercury.Message.ActivityResponse;
+import com.mwr.mercury.Message.KVPair;
+import com.mwr.mercury.Message.Response;
 import com.mwr.mercury.Session;
 
 import android.content.Intent;
@@ -11,23 +14,23 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.util.Base64;
 
 import java.util.List;
 
 public class Activity
 {
-	public static void info(List<ArgumentWrapper> argsArray,
+	public static void info(List<KVPair> argsArray,
 			Session currentSession)
 	{
 		//Assign filter if one came in the arguments
-		String filter = Common.getParamString(argsArray, "filter");
-		
-		currentSession.startTransmission();
-		currentSession.startResponse();
-		currentSession.startData();
+		String filter = Common.getParamString2(argsArray, "filter");
 		
 		//Iterate through all packages
 		List<PackageInfo> packages = currentSession.applicationContext.getPackageManager().getInstalledPackages(0);
+		Response.Builder responseBuilder = Response.newBuilder();
+		
+		ActivityResponse.Builder activityBuilder = ActivityResponse.newBuilder();
         for(PackageInfo pack : packages)
         {
         	//Get activities in package
@@ -36,7 +39,9 @@ public class Activity
             {
             	activities = currentSession.applicationContext.getPackageManager().getPackageInfo(pack.packageName, PackageManager.GET_ACTIVITIES).activities;
             }
-            catch (Exception e) {}
+            catch (Exception e) {
+            	responseBuilder.setError(ByteString.copyFrom(Common.ERROR_UNKNOWN.getBytes()));
+            }
             
         	if (activities != null)
 			{	
@@ -48,85 +53,95 @@ public class Activity
 						boolean filterRelevant = pack.packageName.toUpperCase().contains(filter.toUpperCase()) || activities[i].name.toUpperCase().contains(filter.toUpperCase());
 						
 						if ((filterPresent && filterRelevant) || !filterPresent)
-						{
-							currentSession.send("Package name: " + activities[i].packageName + "\n", true);
-							currentSession.send("Activity: " + activities[i].name + "\n\n", true);
+						{	
+							ActivityResponse.Info.Builder infoBuilder = ActivityResponse.Info.newBuilder();
+							infoBuilder.setPackageName(activities[i].packageName);
+							infoBuilder.setActivity(activities[i].name);
+							activityBuilder.addInfo(infoBuilder);
 						}
 					}
 				}
+            	responseBuilder.setError(ByteString.copyFrom(Common.ERROR_OK.getBytes()));
 			}
         }
-		
-		currentSession.endData();
-		currentSession.noError();
-		currentSession.endResponse();
-		currentSession.endTransmission();
+		Response response = Response.newBuilder().setData(activityBuilder.build().toByteString()).build();
+		currentSession.send(Base64.encodeToString(response.toByteArray(), Base64.DEFAULT), false);
 	}
 
-	public static void start(List<ArgumentWrapper> argsArray,
+	public static void start(List<KVPair> argsArray,
 			Session currentSession)
 	{
 		//Parse intent
-		Intent intent = Common.parseIntentGeneric(argsArray, new Intent());
+		Intent intent = Common.parseIntentGeneric2(argsArray, new Intent());
 		
-		try
-		{
+		Response.Builder responseBuilder = Response.newBuilder();
+		try	{
 			currentSession.applicationContext.startActivity(intent);
-			currentSession.sendFullTransmission("Activity started with " + intent.toString(), "");
+			responseBuilder.addStructuredData(Common.createKVPair("intent", intent.toString()));
+			responseBuilder.setError(ByteString.copyFrom(Common.ERROR_OK.getBytes()));
 		}
 		catch (Throwable t)
 		{
-			currentSession.sendFullTransmission("", t.getMessage());
+			responseBuilder.setError(ByteString.copyFrom(t.getMessage().getBytes()));
 		}
+		currentSession.send(Base64.encodeToString(responseBuilder.build().toByteArray(), Base64.DEFAULT), false);
 	}
 
-	public static void match(List<ArgumentWrapper> argsArray,
+	public static void match(List<KVPair> argsArray,
 			Session currentSession)
 	{
 		//Parse intent
-		Intent intent = Common.parseIntentGeneric(argsArray, new Intent());
-
+		Intent intent = Common.parseIntentGeneric2(argsArray, new Intent());
+		
+		Response.Builder responseBuilder = Response.newBuilder();
 		try
 		{
 		
 			//Get all activities and iterate through them
 			List<ResolveInfo> activities = currentSession.applicationContext.getPackageManager().queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY & PackageManager.GET_ACTIVITIES & PackageManager.GET_INTENT_FILTERS & PackageManager.GET_RESOLVED_FILTER	);
-
-			String returnVal = intent.toString() + ":\n\n";
+			
+			String returnVal = intent.toString();
 			
 			for (int i = 0; i < activities.size(); i++)
 			{
 
 				String activityPackage = activities.get(i).activityInfo.packageName;
 				String activityTargetActivity = activities.get(i).activityInfo.name;
-
-				returnVal += "Package name: " + activityPackage + "\n";
-				returnVal += "Target activity: " + activityTargetActivity + "\n\n";
-
+				
+				responseBuilder.addStructuredData(Common.createKVPair("package_name", activityPackage));
+				responseBuilder.addStructuredData(Common.createKVPair("activity", activityTargetActivity));
 			}
-			
-			currentSession.sendFullTransmission(returnVal.trim(), "");
-		
+			responseBuilder.setData(ByteString.copyFrom(returnVal.trim().getBytes()));
+			responseBuilder.setError(ByteString.copyFrom(Common.ERROR_OK.getBytes()));
 		}
 		catch (Exception e)
 		{
-			currentSession.sendFullTransmission("", e.getMessage());
+			responseBuilder.setError(ByteString.copyFrom(Common.ERROR_UNKNOWN.getBytes()));
 		}
+		currentSession.send(Base64.encodeToString(responseBuilder.build().toByteArray(), Base64.DEFAULT), false);
 	}
 
-	public static void launchIntent(List<ArgumentWrapper> argsArray,
+	public static void launchIntent(List<KVPair> argsArray,
 			Session currentSession)
 	{
 		//Assign filter if one came in the arguments
-		String packageName = Common.getParamString(argsArray, "packageName");
+		String packageName = Common.getParamString2(argsArray, "packageName");
 		
 		Intent intent = currentSession.applicationContext.getPackageManager().getLaunchIntentForPackage(packageName);
 		
+		Response.Builder responseBuilder = Response.newBuilder();
 		//Send intent back
 		if (intent != null)
-			currentSession.sendFullTransmission(intent.toString(), "");
+		{
+			responseBuilder.setData(ByteString.copyFrom(intent.toString().getBytes()));
+			responseBuilder.setError(ByteString.copyFrom(Common.ERROR_OK.getBytes()));
+		}
 		else
-			currentSession.sendFullTransmission("", "No intent returned	");
+		{
+			responseBuilder.setData(ByteString.copyFrom("No intent returned".getBytes()));
+			responseBuilder.setError(ByteString.copyFrom(Common.ERROR_UNKNOWN.getBytes()));
+		}
+		currentSession.send(Base64.encodeToString(responseBuilder.build().toByteArray(), Base64.DEFAULT), false);
 	}
 
 }

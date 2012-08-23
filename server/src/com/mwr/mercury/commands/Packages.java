@@ -2,8 +2,12 @@
 
 package com.mwr.mercury.commands;
 
+import com.google.protobuf.ByteString;
 import com.mwr.mercury.ArgumentWrapper;
 import com.mwr.mercury.Common;
+import com.mwr.mercury.Message.KVPair;
+import com.mwr.mercury.Message.PackageResponse;
+import com.mwr.mercury.Message.Response;
 import com.mwr.mercury.Session;
 
 import android.content.pm.ActivityInfo;
@@ -12,6 +16,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ProviderInfo;
 import android.content.pm.ServiceInfo;
+import android.util.Base64;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -19,16 +24,13 @@ import java.util.List;
 
 public class Packages
 {
-	public static void info(List<ArgumentWrapper> argsArray,
+	public static void info(List<KVPair> argsArray,
 			Session currentSession)
 	{
-		currentSession.startTransmission();
-		currentSession.startResponse();
-		currentSession.startData();
 
 		// Assign filter and permissions if they came in the arguments
-		String filter = Common.getParamString(argsArray, "filter");
-		String permissions = Common.getParamString(argsArray, "permissions");
+		String filter = Common.getParamString2(argsArray, "filter");
+		String permissions = Common.getParamString2(argsArray, "permissions");
 
 		// Get all packages from packagemanager
 		PackageManager pm = currentSession.applicationContext
@@ -39,114 +41,114 @@ public class Packages
 						| PackageManager.GET_GIDS
 						| PackageManager.GET_SHARED_LIBRARY_FILES);
 
+		PackageResponse.Builder packageBuilder = PackageResponse.newBuilder();
 		// Iterate through packages
-		for (PackageInfo currentPackage : packages)
-		{
-			ApplicationInfo app = currentPackage.applicationInfo;
-
-			String packageName = app.packageName;
-			String processName = app.processName;
-			String dataDir = app.dataDir;
-			String publicSourceDir = app.publicSourceDir;
-			Integer uid = app.uid;
-			String sharedUserId = currentPackage.sharedUserId;
-			int[] gids = currentPackage.gids;
-			String version = currentPackage.versionName;
-			String[] libraries = app.sharedLibraryFiles;
-
-			// Find all permissions that this app has requested
-			String requestedPermissions = "";
-			String[] requestedPermissionsArray = currentPackage.requestedPermissions;
-
-			if (requestedPermissionsArray != null)
+		try {
+			for (PackageInfo currentPackage : packages)
 			{
-				for (String permission : requestedPermissionsArray)
-					requestedPermissions += permission + "; ";
+				ApplicationInfo app = currentPackage.applicationInfo;
+	
+				String packageName = app.packageName;
+				String processName = app.processName;
+				String dataDir = app.dataDir;
+				String publicSourceDir = app.publicSourceDir;
+				Integer uid = app.uid;
+				String sharedUserId = currentPackage.sharedUserId;
+				int[] gids = currentPackage.gids;
+				String version = currentPackage.versionName;
+				String[] libraries = app.sharedLibraryFiles;
+	
+				// Find all permissions that this app has requested
+				String requestedPermissions = "";
+				String[] requestedPermissionsArray = currentPackage.requestedPermissions;
+	
+				String librariesString = "";
+				if (libraries != null)
+					for (int i = 0; i < libraries.length; i++)
+						librariesString += libraries[i] + "; ";
+	
+				// Get the GIDs
+				String gidString = "";
+				if (gids != null)
+					for (int z = 0; z < gids.length; z++)
+						gidString += new Integer(gids[z]).toString() + "; ";
+	
+				boolean relevantFilter = filter != "";
+				if (relevantFilter)
+					relevantFilter = packageName.toUpperCase().contains(
+							filter.toUpperCase())
+							|| processName.toUpperCase().contains(
+									filter.toUpperCase())
+							|| dataDir.toUpperCase().contains(filter.toUpperCase())
+							|| publicSourceDir.toUpperCase().contains(
+									filter.toUpperCase())
+							|| (uid.toString().equals(filter));
+	
+				boolean relevantPermissions = permissions != "";
+				if (relevantPermissions)
+					relevantPermissions = requestedPermissions.toUpperCase()
+							.contains(permissions.toUpperCase());
+	
+				boolean bothFiltersPresent = false;
+				if ((filter != "") && (permissions != ""))
+					bothFiltersPresent = true;
+	
+				boolean bothFiltersRelevant = false;
+				if (bothFiltersPresent && relevantFilter && relevantPermissions)
+					bothFiltersRelevant = true;
+	
+				boolean noFilters = (filter.length() == 0)
+						&& (permissions.length() == 0);
+	
+				// Apply filter
+				if ((bothFiltersPresent && bothFiltersRelevant)
+						|| (!bothFiltersPresent && (relevantFilter || relevantPermissions))
+						|| (!bothFiltersPresent && noFilters))
+				{
+					PackageResponse.Info.Builder infoBuilder = PackageResponse.Info.newBuilder();
+					infoBuilder.setPackageName(packageName);
+					infoBuilder.setProcessName(processName);
+					if (version != null)
+						infoBuilder.setVersion(version);
+					else 
+						infoBuilder.setVersion("No version info");
+					infoBuilder.setDataDirectory(dataDir);
+					infoBuilder.setApkPath(publicSourceDir);
+					infoBuilder.setUid(uid);
+					// Get the GIDs
+					if (gids != null)
+						for (int z = 0; z < gids.length; z++)
+							infoBuilder.addGuid(gids[z]);
+	
+					if (libraries != null)
+						for (int i = 0; i < libraries.length; i++)
+							infoBuilder.addSharedLibraries(libraries[i]);
+	
+					if (sharedUserId != null)
+						infoBuilder.setSharedUserId(sharedUserId);
+					
+					if (requestedPermissionsArray != null)
+						for (String permission : requestedPermissionsArray)
+							infoBuilder.addPermission(permission);
+	
+					packageBuilder.addInfo(infoBuilder);
+				}
 			}
-
-			String librariesString = "";
-			if (libraries != null)
-				for (int i = 0; i < libraries.length; i++)
-					librariesString += libraries[i] + "; ";
-
-			// Get the GIDs
-			String gidString = "";
-			if (gids != null)
-				for (int z = 0; z < gids.length; z++)
-					gidString += new Integer(gids[z]).toString() + "; ";
-
-			boolean relevantFilter = filter != "";
-			if (relevantFilter)
-				relevantFilter = packageName.toUpperCase().contains(
-						filter.toUpperCase())
-						|| processName.toUpperCase().contains(
-								filter.toUpperCase())
-						|| dataDir.toUpperCase().contains(filter.toUpperCase())
-						|| publicSourceDir.toUpperCase().contains(
-								filter.toUpperCase())
-						|| (uid.toString().equals(filter));
-
-			boolean relevantPermissions = permissions != "";
-			if (relevantPermissions)
-				relevantPermissions = requestedPermissions.toUpperCase()
-						.contains(permissions.toUpperCase());
-
-			boolean bothFiltersPresent = false;
-			if ((filter != "") && (permissions != ""))
-				bothFiltersPresent = true;
-
-			boolean bothFiltersRelevant = false;
-			if (bothFiltersPresent && relevantFilter && relevantPermissions)
-				bothFiltersRelevant = true;
-
-			boolean noFilters = (filter.length() == 0)
-					&& (permissions.length() == 0);
-
-			// Apply filter
-			if ((bothFiltersPresent && bothFiltersRelevant)
-					|| (!bothFiltersPresent && (relevantFilter || relevantPermissions))
-					|| (!bothFiltersPresent && noFilters))
-			{
-				currentSession
-						.send("Package name: " + packageName + "\n", true);
-				currentSession
-						.send("Process name: " + processName + "\n", true);
-				currentSession.send("Version: " + version + "\n", true);
-				currentSession.send("Data directory: " + dataDir + "\n", true);
-				currentSession
-						.send("APK path: " + publicSourceDir + "\n", true);
-				currentSession.send("UID: " + uid + "\n", true);
-				currentSession.send("GID: " + gidString + "\n", true);
-
-				if (librariesString.length() > 0)
-					currentSession.send("Shared libraries: " + librariesString
-							+ "\n", true);
-
-				if (sharedUserId != null)
-					currentSession.send("SharedUserId: " + sharedUserId + " ("
-							+ uid + ")\n", true);
-
-				currentSession.send("Permissions: " + requestedPermissions
-						+ "\n\n", true);
-
-			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-
-		currentSession.endData();
-		currentSession.noError();
-		currentSession.endResponse();
-		currentSession.endTransmission();
+		
+		Response response = Response.newBuilder().setData(packageBuilder.build().toByteString()).build();
+		currentSession.send(Base64.encodeToString(response.toByteArray(), Base64.DEFAULT), false);
 	}
 
-	public static void sharedUid(List<ArgumentWrapper> argsArray,
+	public static void sharedUid(List<KVPair> argsArray,
 			Session currentSession)
 	{
-		currentSession.startTransmission();
-		currentSession.startResponse();
-		currentSession.startData();
+		PackageResponse.SharedUid.Builder sharedUidBuilder = PackageResponse.SharedUid.newBuilder();
 
 		// Get all the parameters
-		String filter = Common.getParamString(argsArray, "uid");
+		String filter = Common.getParamString2(argsArray, "uid");
 
 		// Get all packages from packagemanager
 		PackageManager pm = currentSession.applicationContext
@@ -169,15 +171,14 @@ public class Packages
 		for (Integer uid : uidList)
 		{
 			String[] packageNames = pm.getPackagesForUid(uid);
-			String accumulatedPermissions = "";
+			List<String> accumulatedPermissions = new ArrayList<String>();
 
 			if ((filter.length() > 0 && filter.equals(uid.toString()))
 					|| filter.length() == 0)
 			{
-				currentSession.send(
-						"UID: " + uid + " (" + pm.getNameForUid(uid) + ")\n",
-						true);
-
+				
+				sharedUidBuilder.setUid(uid);
+				
 				if (packages != null)
 				{
 					for (int s = 0; s < packageNames.length; s++)
@@ -204,35 +205,28 @@ public class Packages
 							for (String permission : requestedPermissionsArray)
 								if (!accumulatedPermissions
 										.contains(permission))
-									accumulatedPermissions += permission + "; ";
+									accumulatedPermissions.add(permission);// += permission + "; ";
 						}
-
-						currentSession.send("Package name: " + packageNames[s]
-								+ "\n", true);
+						sharedUidBuilder.addPackageNames(packageNames[s]);
 					}
 
 				}
-
 				// Send accumulated permissions
-				currentSession.send("Accumulated permissions: "
-						+ accumulatedPermissions + "\n", true);
-
-				currentSession.send("\n", true);
+				sharedUidBuilder.addAllPermissions(accumulatedPermissions);
 			}
 		}
 
-		currentSession.endData();
-		currentSession.noError();
-		currentSession.endResponse();
-		currentSession.endTransmission();
+		Response response = Response.newBuilder().setData(sharedUidBuilder.build().toByteString()).build();
+		currentSession.send(Base64.encodeToString(response.toByteArray(), Base64.DEFAULT), false);
 	}
 
-	public static void attackSurface(List<ArgumentWrapper> argsArray,
+	public static void attackSurface(List<KVPair> argsArray,
 			Session currentSession)
 	{
 		// Get all the parameters
-		String packageName = Common.getParamString(argsArray, "packageName");
-
+		String packageName = Common.getParamString2(argsArray, "packageName");
+		Response.Builder responseBuilder = Response.newBuilder();
+		
 		try
 		{
 
@@ -277,39 +271,40 @@ public class Packages
 					if (services[i].exported)
 						numServices++;
 
-			String attackSurface = "";
-			attackSurface += numActivities + " activities exported\n";
-			attackSurface += numReceivers + " broadcast receivers exported\n";
-			attackSurface += numProviders + " content providers exported\n";
-			attackSurface += numServices + " services exported\n\n";
+			responseBuilder.addStructuredData(Common.createKVPair("activities", new Integer(numActivities).toString()));
+			responseBuilder.addStructuredData(Common.createKVPair("receivers", new Integer(numReceivers).toString()));
+			responseBuilder.addStructuredData(Common.createKVPair("providers", new Integer(numProviders).toString()));
+			responseBuilder.addStructuredData(Common.createKVPair("services", new Integer(numServices).toString()));			
 
 			if ((currentSession.applicationContext.getPackageManager()
 					.getPackageInfo(packageName, 0).applicationInfo.flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0)
-				attackSurface += "debuggable = true\n";
+				responseBuilder.addStructuredData(Common.createKVPair("debuggable", "true"));
 
 			String shared = currentSession.applicationContext
 					.getPackageManager().getPackageInfo(packageName, 0).sharedUserId;
 
 			if (shared != null)
-				attackSurface += "shared user-id = "
-						+ currentSession.applicationContext.getPackageManager()
-								.getPackageInfo(packageName, 0).applicationInfo.uid
-						+ " (" + shared + ")\n";
-
-			currentSession.sendFullTransmission(attackSurface, "");
-
+			{
+				responseBuilder.addStructuredData(Common.createKVPair("shared_uid", shared));
+				responseBuilder.addStructuredData(Common.createKVPair("uid",new Integer
+						(currentSession.applicationContext.getPackageManager()
+						.getPackageInfo(packageName, 0).applicationInfo.uid).toString()));
+			}
+			responseBuilder.setError(ByteString.copyFrom(Common.ERROR_OK.getBytes()));
 		}
 		catch (Throwable t)
 		{
-			currentSession.sendFullTransmission("", t.getMessage());
+			responseBuilder.setError(ByteString.copyFrom(t.getMessage().getBytes()));
 		}
+		
+		currentSession.send(Base64.encodeToString(responseBuilder.build().toByteArray(), Base64.DEFAULT), false);
 	}
 
-	public static void path(List<ArgumentWrapper> argsArray,
+	public static void path(List<KVPair> argsArray,
 			Session currentSession)
 	{
 		// Assign filter and permissions if they came in the arguments
-		String packageName = Common.getParamString(argsArray, "packageName");
+		String packageName = Common.getParamString2(argsArray, "packageName");
 
 		// Get all packages from packagemanager
 		PackageManager pm = currentSession.applicationContext
@@ -339,7 +334,7 @@ public class Packages
 			packagePath += "\n" + packagePath.replace(".apk", ".odex");
 
 		// Send to client
-		currentSession.sendFullTransmission(packagePath, "");
+		currentSession.newSendFullTransmission(packagePath, Common.ERROR_OK);
 	}
 
 }

@@ -4,6 +4,7 @@
 #
 
 import shlex
+import Message_pb2
 from interface import BaseCmd, BaseArgumentParser
 from common import intentDictionary
 
@@ -64,8 +65,15 @@ Required Permission: null
             request = vars(splitargs)
 
             #print self.session.executeCommand("service", "info", {'filter':splitargs.filter} if splitargs.filter else None).getPaddedErrorOrData()
-            print self.session.executeCommand("broadcast", "info", request).getPaddedErrorOrData()
-
+            #print self.session.executeCommand("broadcast", "info", request).getPaddedErrorOrData()
+            response = self.session.newExecuteCommand("broadcast", "info", request)
+            broadcst_response = Message_pb2.BroadcastResponse()
+            broadcst_response.ParseFromString(str(response.data))
+            for info in broadcst_response.info:
+                print "Package name: " + info.packageName
+                print "Receiver: " + info.receiver
+                print "Required Permission: " + info.permission + "\n"
+                
         # FIXME: Choose specific exceptions to catch
         except Exception:
             pass
@@ -126,7 +134,15 @@ Permission Denial: not allowed to send broadcast android.intent.action.BOOT_COMP
             if (splitargs.flags):
                 request['flags'] = str(int(splitargs.flags, 0))
 
-            print self.session.executeCommand("broadcast", "send", request).getPaddedErrorOrData()
+#            print self.session.executeCommand("broadcast", "send", request).getPaddedErrorOrData()
+            response = self.session.newExecuteCommand("broadcast", "send", request)
+            if response.error == "SUCCESS":
+                for pair in response.structured_data:
+                    if pair.key == "intent":
+                        for value in pair.value:
+                            print "Broadcast sent with " + str(value)
+            else:
+                print str(response.error)                
 
         # FIXME: Choose specific exceptions to catch
         except Exception:

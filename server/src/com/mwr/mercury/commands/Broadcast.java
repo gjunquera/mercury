@@ -2,8 +2,12 @@
 
 package com.mwr.mercury.commands;
 
-import com.mwr.mercury.ArgumentWrapper;
+import com.google.protobuf.ByteString;
 import com.mwr.mercury.Common;
+import com.mwr.mercury.Message.BroadcastResponse;
+import com.mwr.mercury.Message.KVPair;
+import com.mwr.mercury.Message.ProviderResponse;
+import com.mwr.mercury.Message.Response;
 import com.mwr.mercury.Session;
 
 import android.content.Intent;
@@ -11,27 +15,25 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ServiceInfo;
+import android.util.Base64;
 
 import java.util.List;
 
 public class Broadcast
 {
-	public static void info(List<ArgumentWrapper> argsArray,
+	public static void info(List<KVPair> argsArray,
 			Session currentSession)
 	{
 		//Assign filter and permissions if they came in the arguments
-		String filter = Common.getParamString(argsArray, "filter");
-		String permissions = Common.getParamString(argsArray, "permissions");
-		
-		currentSession.startTransmission();
-		currentSession.startResponse();
-		currentSession.startData();
-		
+		String filter = Common.getParamString2(argsArray, "filter");
+		String permissions = Common.getParamString2(argsArray, "permissions");
+				
 		//Get all packages from packagemanager
 		PackageManager pm = currentSession.applicationContext.getPackageManager();
 		List <PackageInfo> packages = pm.getInstalledPackages(PackageManager.GET_RECEIVERS | PackageManager.GET_PERMISSIONS);
 		
-		
+		Response.Builder responseBuilder = Response.newBuilder();
+		BroadcastResponse.Builder broadcastBuilder = BroadcastResponse.newBuilder();
 		//Iterate through packages
 		for (PackageInfo package_:packages)
 		{
@@ -76,36 +78,42 @@ public class Broadcast
 					//Apply filter and only look @ exported providers
 					if (((bothFiltersPresent && bothFiltersRelevant) || (!bothFiltersPresent && (relevantFilter || relevantPermissions)) || (!bothFiltersPresent && noFilters)) && receivers[i].exported)
 					{
-						currentSession.send("Package name: " + receivers[i].packageName + "\n", true);
-						currentSession.send("Receiver: " + receivers[i].name + "\n", true);
-						currentSession.send("Required Permission: " + receivers[i].permission + "\n\n", true);
+						BroadcastResponse.Info.Builder infoBuilder = BroadcastResponse.Info.newBuilder();
+						infoBuilder.setPackageName(receivers[i].packageName);
+						infoBuilder.setReceiver(receivers[i].name);
+						if (receivers[i].permission == null) 
+							infoBuilder.setPermission("null");							
+						else
+							infoBuilder.setPermission(receivers[i].permission);
+				    	responseBuilder.setError(ByteString.copyFrom(Common.ERROR_OK.getBytes()));
+						broadcastBuilder.addInfo(infoBuilder);
 					}
 				}
 			}
 		}
-
-		currentSession.endData();
-		currentSession.noError();
-		currentSession.endResponse();
-		currentSession.endTransmission();
+		
+		Response response = Response.newBuilder().setData(broadcastBuilder.build().toByteString()).build();
+		currentSession.send(Base64.encodeToString(response.toByteArray(), Base64.DEFAULT), false);
 	}
 
-	public static void send(List<ArgumentWrapper> argsArray,
+	public static void send(List<KVPair> argsArray,
 			Session currentSession)
 	{
 		// Parse intent
-		Intent intent = Common.parseIntentGeneric(argsArray, new Intent());
+		Intent intent = Common.parseIntentGeneric2(argsArray, new Intent());
 
+		Response.Builder responseBuilder = Response.newBuilder();
 		try
 		{
 			currentSession.applicationContext.sendBroadcast(intent);
-			currentSession.sendFullTransmission(
-					"Broadcast sent with " + intent.toString(), "");
+			responseBuilder.addStructuredData(Common.createKVPair("intent", intent.toString()));
+	    	responseBuilder.setError(ByteString.copyFrom(Common.ERROR_OK.getBytes()));
 		}
 		catch (Throwable t)
 		{
-			currentSession.sendFullTransmission("", t.getMessage());
+	    	responseBuilder.setError(ByteString.copyFrom(t.getMessage().getBytes()));
 		}
+    	currentSession.send(Base64.encodeToString(responseBuilder.build().toByteArray(), Base64.DEFAULT), false);
 	}
 
 }

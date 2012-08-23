@@ -4,6 +4,7 @@
 #
 
 import shlex
+import Message_pb2
 from interface import BaseCmd, BaseArgumentParser
 
 class Native(BaseCmd):
@@ -37,12 +38,19 @@ Note: it is possible to use -f instead of --filter as shorthand
             # Split arguments using shlex - this means that parameters with spaces can be used - escape " characters inside with \
             splitargs = parser.parse_args(shlex.split(args))
 
-            response = self.session.executeCommand("native", "info", {'filter':splitargs.filter} if splitargs.filter else None).getPaddedErrorOrData()
-
-            if response.strip() == "":
-                print "\nNo applications found containing native code\n"
+#            response = self.session.executeCommand("native", "info", {'filter':splitargs.filter} if splitargs.filter else None).getPaddedErrorOrData()
+            response = self.session.newExecuteCommand("native", "info", {'filter':splitargs.filter} if splitargs.filter else None)
+            
+            if str(response.error) == "SUCCESS":
+                native_response = Message_pb2.NativeResponse()
+                native_response.ParseFromString(str(response.data))
+                for info in native_response.info:
+                    print "Package name: " + info.packageName
+                    for native in info.nativeLib:
+                        print "Native Library: " + native
+                    print ""
             else:
-                print response
+                print str(response.error)
 
         # FIXME: Choose specific exceptions to catch
         except:

@@ -11,8 +11,11 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import com.google.protobuf.ByteString;
 import com.mwr.mercury.*;
 import com.mwr.mercury.Message.KVPair;
+import com.mwr.mercury.Message.Response;
 
 import android.util.Base64;
 
@@ -24,19 +27,19 @@ public class Core
 	}
 	
 	//core.version() - returns Mercury version
-	public static void version(List<ArgumentWrapper> argsArray, Session currentSession){
+	public static void version(List<KVPair> argsArray, Session currentSession){
 		String version = "";
 		try
 		{
 			version = currentSession.applicationContext.getPackageManager().getPackageInfo(currentSession.applicationContext.getPackageName(), 0).versionName;
 		}
 		catch (Exception e) {}
-		currentSession.sendFullTransmission(version, "");
+		currentSession.newSendFullTransmission(version, "");
 	}
 	
-	public static void fileSize(List<ArgumentWrapper> argsArray, Session currentSession){
+	public static void fileSize(List<KVPair> argsArray, Session currentSession){
 		//Get path from arguments
-		String path = Common.getParamString(argsArray, "path");
+		String path = Common.getParamString2(argsArray, "path");
 		
 		try
 		{
@@ -44,46 +47,42 @@ public class Core
 			
 			//Send the size of the file
 			if (file.exists())
-				currentSession.sendFullTransmission(String.valueOf(file.length()), "");
+				currentSession.newSendFullTransmission(String.valueOf(file.length()), Common.ERROR_OK);
 			else
-				currentSession.sendFullTransmission("", "File does not exist");
+				currentSession.newSendFullTransmission("", "File does not exist");
 		}
 		catch (Exception e)
 		{
-			currentSession.sendFullTransmission("", e.getMessage());
+			currentSession.newSendFullTransmission("", e.getMessage());
 		}
 	}
 	
-	public static void fileMD5(List<ArgumentWrapper> argsArray, Session currentSession){
+	public static void fileMD5(List<KVPair> argsArray, Session currentSession){
 		//Get path from arguments
-		String path = Common.getParamString(argsArray, "path");
+		String path = Common.getParamString2(argsArray, "path");
 		
 		try
 		{
 			//Send the number of bytes in the file
-			currentSession.sendFullTransmission(Common.md5SumFile(path), "");
+			currentSession.newSendFullTransmission(Common.md5SumFile(path), Common.ERROR_OK);
 		}
 		catch (Exception e)
 		{
-			currentSession.sendFullTransmission("", e.getMessage());
+			currentSession.newSendFullTransmission("", e.getMessage());
 		}
 	}
 	
-	public static void download(List<ArgumentWrapper> argsArray, Session currentSession){
+	public static void download(List<KVPair> argsArray, Session currentSession){
 		//Get path from arguments
-		String path = Common.getParamString(argsArray, "path");
-		Integer offset = Integer.parseInt(Common.getParamString(argsArray, "offset"));
-		
-		//Start sending structure
-		currentSession.startTransmission();
-		currentSession.startResponse();
-		currentSession.startData();
+		String path = Common.getParamString2(argsArray, "path");
+		Integer offset = Integer.parseInt(Common.getParamString2(argsArray, "offset"));
 		
 		File file = new File(path);
 		InputStream in = null;
 		
 		int buffSize = 50 * 1024; //50KB
 		
+		Response.Builder responseBuilder = Response.newBuilder();
 		try
 		{
 			in = new BufferedInputStream(new FileInputStream(file));
@@ -95,17 +94,16 @@ public class Core
 			
 			int bytesRead = in.read(buffer, 0, buffSize);
 			
-			currentSession.send(new String(Base64.encode(buffer, 0, bytesRead, Base64.DEFAULT)) + "\n", false);
-			
-			//End data section of structure
-		    currentSession.endData();
-		    currentSession.noError();
+			byte[] responseData = new byte[bytesRead];
+			System.arraycopy(buffer, 0, responseData, 0, bytesRead);
+			responseBuilder.setData(ByteString.copyFrom(responseData));
+			responseBuilder.setError(ByteString.copyFrom(Common.ERROR_OK.getBytes()));
+//			currentSession.send(new String(Base64.encode(buffer, 0, bytesRead, Base64.DEFAULT)) + "\n", false);
 		
 		}
 		catch (Exception e)
 		{
-			currentSession.endData();
-			currentSession.error(e.getMessage());
+			responseBuilder.setError(ByteString.copyFrom(e.getMessage().getBytes()));
 		}
 		finally
 		{
@@ -119,16 +117,14 @@ public class Core
 				catch (Exception e) {}
 			}
 		     
-		     //End transmission
-		     currentSession.endResponse();
-		     currentSession.endTransmission();
+			currentSession.send(Base64.encodeToString(responseBuilder.build().toByteArray(), Base64.DEFAULT), false);
 		}
 	}
 	
-	public static void upload(List<ArgumentWrapper> argsArray, Session currentSession){
+	public static void upload(List<KVPair> argsArray, Session currentSession){
 		//Get path from arguments
-		String path = Common.getParamString(argsArray, "path");
-		byte[] data = Common.getParam(argsArray, "data");
+		String path = Common.getParamString2(argsArray, "path");
+		byte[] data = Common.getParam2(argsArray, "data");
 		
 		File file = new File(path);
 		BufferedOutputStream out = null;
@@ -138,12 +134,12 @@ public class Core
 			out = new BufferedOutputStream(new FileOutputStream(file,true)); 
 			out.write(data);
 			
-			currentSession.sendFullTransmission("", "");
+			currentSession.newSendFullTransmission("", Common.ERROR_OK);
 		
 		}
 		catch (Exception e)
 		{
-			currentSession.sendFullTransmission("", e.getMessage());
+			currentSession.newSendFullTransmission("", e.getMessage());
 		}
 		finally
 		{
@@ -159,55 +155,49 @@ public class Core
 		}
 	}
 	
-	public static void strings(List<ArgumentWrapper> argsArray, Session currentSession){
+	public static void strings(List<KVPair> argsArray, Session currentSession){
 		//Get path from arguments
-		String path = Common.getParamString(argsArray, "path");
+		String path = Common.getParamString2(argsArray, "path");
 		
 		ArrayList<String> lines = Common.strings(path);
 		Iterator<String> it = lines.iterator();
 		
-		currentSession.startTransmission();
-		currentSession.startResponse();
-		currentSession.startData();
-		
+		Response.Builder responseBuilder = Response.newBuilder();		
 		while (it.hasNext())
-			currentSession.send(it.next() + "\n", true); //Send this with newline
-		
-		currentSession.endData();
-		currentSession.noError();
-		currentSession.endResponse();
-		currentSession.endTransmission();
+			responseBuilder.addStructuredData(Common.createKVPair("string", it.next()));
+
+		currentSession.send(Base64.encodeToString(responseBuilder.build().toByteArray(), Base64.DEFAULT), false);
 	}
 	
-	public static void unzip(List<ArgumentWrapper> argsArray, Session currentSession){
+	public static void unzip(List<KVPair> argsArray, Session currentSession){
 		//Get path from arguments
-		String filename = Common.getParamString(argsArray, "filename");
-		String path = Common.getParamString(argsArray, "path");
-		String destination = Common.getParamString(argsArray, "destination");
+		String filename = Common.getParamString2(argsArray, "filename");
+		String path = Common.getParamString2(argsArray, "path");
+		String destination = Common.getParamString2(argsArray, "destination");
 		
 		//Unzip file
 		boolean success = Common.unzipFile(filename, path, destination);
 		
 		if (success)
-			currentSession.sendFullTransmission("", "");
+			currentSession.newSendFullTransmission("", Common.ERROR_OK);
 		else
-			currentSession.sendFullTransmission("", "Unzip failed");
+			currentSession.newSendFullTransmission("", "Unzip failed");
 	}
 	
-	public static void delete(List<ArgumentWrapper> argsArray, Session currentSession){
+	public static void delete(List<KVPair> argsArray, Session currentSession){
 		//Get path from arguments
-		String path = Common.getParamString(argsArray, "path");
+		String path = Common.getParamString2(argsArray, "path");
 		
 		try
 		{
 			if (new File(path).delete())
-				currentSession.sendFullTransmission("", "");
+				currentSession.newSendFullTransmission("", Common.ERROR_OK);
 			else
-				currentSession.sendFullTransmission("", "Could not delete");
+				currentSession.newSendFullTransmission("", "Could not delete");
 		}
 		catch (Exception e)
 		{
-			currentSession.sendFullTransmission("", e.getMessage());
+			currentSession.newSendFullTransmission("", e.getMessage());
 		}
 	}
 

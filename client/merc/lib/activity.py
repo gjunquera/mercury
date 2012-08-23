@@ -4,6 +4,7 @@
 #
 
 import shlex
+import Message_pb2
 from interface import BaseCmd, BaseArgumentParser
 from common import intentDictionary
 
@@ -80,7 +81,14 @@ Activity started with Intent { act=android.intent.action.VIEW dat=http://www.goo
             if (splitargs.flags):
                 request['flags'] = str(int(splitargs.flags, 0))
 
-            print self.session.executeCommand("activity", "start", request).getPaddedErrorOrData()
+            #print self.session.executeCommand("activity", "start", request).getPaddedErrorOrData()
+            response = self.session.newExecuteCommand("activity", "start", request)
+            if str(response.error) == "SUCCESS":
+                for pair in response.structured_data:
+                    if pair.key == "intent":
+                        print "Activity started with " + str(pair.value)
+            else:
+                print str(response.error)
 
         # FIXME: Choose specific exceptions to catch
         except Exception:
@@ -166,7 +174,19 @@ Target activity: com.android.browser.BrowserActivity
             if (splitargs.flags):
                 request['flags'] = str(int(splitargs.flags, 0))
 
-            print self.session.executeCommand("activity", "match", request).getPaddedErrorOrData()
+#            print self.session.executeCommand("activity", "match", request).getPaddedErrorOrData()
+            response = self.session.newExecuteCommand("activity", "match", request)
+            if response.error == "SUCCESS":
+                for pair in response.structured_data:
+                    print str(response.data) + ":\n"
+                    if pair.key == "package_name":
+                        for value in pair.value:
+                            print "Package name: " + str(value)
+                    elif pair.key == "activity":
+                        for value in pair.value:
+                            print "Target Activity: " + str(value) + "\n"
+            else:
+                print str(response.error)
 
         # FIXME: Choose specific exceptions to catch
         except Exception:
@@ -227,8 +247,13 @@ Activity: com.android.browser.AddBookmarkPage
             # Split arguments using shlex - this means that parameters with spaces can be used - escape " characters inside with \
             splitargs = parser.parse_args(shlex.split(args))
 
-            print self.session.executeCommand("activity", "info", {'filter':splitargs.filter} if splitargs.filter else None).getPaddedErrorOrData()
-
+#            print self.session.executeCommand("activity", "info", {'filter':splitargs.filter} if splitargs.filter else None).getPaddedErrorOrData()
+            response = self.session.newExecuteCommand("activity", "info", {'filter':splitargs.filter} if splitargs.filter else None)
+            activity_response = Message_pb2.ActivityResponse()
+            activity_response.ParseFromString(str(response.data))
+            for info in activity_response.info:
+                print "Package name: " + info.packageName
+                print "Activity: " + info.activity + "\n"
         # FIXME: Choose specific exceptions to catch
         except Exception:
             pass
@@ -258,8 +283,10 @@ Intent { act=android.intent.action.MAIN flg=0x10000000 cmp=com.android.browser/.
             # Split arguments using shlex - this means that parameters with spaces can be used - escape " characters inside with \
             splitargs = parser.parse_args(shlex.split(args))
 
-            print self.session.executeCommand("activity", "launchintent", {'packageName':splitargs.packageName}).getPaddedErrorOrData()
-
+            #print self.session.executeCommand("activity", "launchintent", {'packageName':splitargs.packageName}).getPaddedErrorOrData()
+            response = self.session.newExecuteCommand("activity", "launchintent", {'packageName':splitargs.packageName})
+            print str(response.data)
+            
         # FIXME: Choose specific exceptions to catch
         except Exception:
             pass

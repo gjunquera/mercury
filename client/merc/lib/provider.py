@@ -162,7 +162,7 @@ No files supported by provider at content://settings/secure/../../../../../../..
             # Compile stated arguments to send to executeCommand
             request = vars(splitargs)
             
-            response = self.session.newExecuteCommand("provider", "read", request).getPaddedErrorOrData()
+            response = self.session.newExecuteCommand("provider", "read", request)
             print str(response.data)
 
         # FIXME: Choose specific exceptions to catch
@@ -370,10 +370,10 @@ Multiprocess allowed: false
             request = vars(splitargs)
 
             #print self.session.makeRequest("provider", "info", request)#.getPaddedErrorOrData()
-            resp = self.session.newExecuteCommand("provider", "info", request)
-            providerResp = Message_pb2.ProviderResponse()
-            providerResp.ParseFromString(str(resp.data))
-            for info in providerResp.info:
+            response = self.session.newExecuteCommand("provider", "info", request)
+            provider_response = Message_pb2.ProviderResponse()
+            provider_response.ParseFromString(str(response.data))
+            for info in provider_response.info:
                 print "PackageName: " + info.packageName
                 print "Authority: " + info.authority
                 print "Required Permission - Read: " + info.readPermission
@@ -422,26 +422,26 @@ content://com.google.settings/partner
             # Split arguments using shlex - this means that parameters with spaces can be used - escape " characters inside with \
             splitargs = parser.parse_args(shlex.split(args))
 
-            path = self.session.executeCommand("packages", "path", {'packageName':splitargs.packageName}).data
+            path = str(self.session.newExecuteCommand("packages", "path", {'packageName':splitargs.packageName}).data)
 
             print ""
 
             # Delete classes.dex that might be there from previously
-            self.session.executeCommand("core", "delete", {'path':'/data/data/com.mwr.mercury/classes.dex'})
+            self.session.newExecuteCommand("core", "delete", {'path':'/data/data/com.mwr.mercury/classes.dex'})
 
             # Iterate through paths returned
             for line in path.split():
 
                 if (".apk" in line):
                     print line + ":"
-                    if self.session.executeCommand("core", "unzip", {'filename':'classes.dex', 'path':line, 'destination':'/data/data/com.mwr.mercury/'}).isError():
+                    if str(self.session.newExecuteCommand("core", "unzip", {'filename':'classes.dex', 'path':line, 'destination':'/data/data/com.mwr.mercury/'}).error) != "SUCCESS":
 
                         print "Contains no classes.dex\n"
 
                     else:
 
                         #strings = self.session.executeCommand("provider", "finduri", {'path':'/data/data/com.mwr.mercury/classes.dex'}).data
-                        response = self.session.newExecuteCommand("provider", "finduri", {'path':'/data/data/com.mwr.mercury/classes.dex'}).data
+                        response = self.session.newExecuteCommand("provider", "finduri", {'path':'/data/data/com.mwr.mercury/classes.dex'})
                         
                         if str(response.error) == "SUCCESS":
                             for pair in response.structured_data:
@@ -455,18 +455,20 @@ content://com.google.settings/partner
 #                                print string[string.upper().find("CONTENT"):]
 
                         # Delete classes.dex
-                        self.session.executeCommand("core", "delete", {'path':'/data/data/com.mwr.mercury/classes.dex'})
+                        self.session.newExecuteCommand("core", "delete", {'path':'/data/data/com.mwr.mercury/classes.dex'})
 
                         print ""
 
 
                 if (".odex" in line):
                     print line + ":"
-                    strings = self.session.executeCommand("core", "strings", {'path':line}).data
+                    strings = self.session.newExecuteCommand("core", "strings", {'path':line})
 
-                    for string in strings.split():
-                        if (("CONTENT://" in string.upper()) and ("CONTENT://" != string.upper())):
-                            print string[string.upper().find("CONTENT"):]
+                    for pair in strings.structured_data:
+                        if pair.key == "string":
+                            string = str(pair.value)
+                            if (("CONTENT://" in string.upper()) and ("CONTENT://" != string.upper())):
+                                print string[string.upper().find("CONTENT"):]
 
                     print ""
 

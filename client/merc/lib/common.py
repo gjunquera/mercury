@@ -252,7 +252,7 @@ class Session:
             try:
                 response = Message_pb2.Response()
                 response.ParseFromString(protoStr)
-            except Exception:
+            except Exception as e:
                 #TODO change this return 
                 returnValue.error = "Malformed response"
             
@@ -410,9 +410,15 @@ class Session:
     # Download a file from the server - returns MD5 if successful - else returns error message
     def downloadFile(self, filePath, downloadFolder):
 
-        fileSize = self.executeCommand("core", "fileSize", {'path':filePath})
-        if fileSize.isError():
-            return fileSize
+        response = self.newExecuteCommand("core", "fileSize", {'path':filePath})
+        
+        returnValue = Response()
+        
+        returnValue.error = str(response.error)
+        if returnValue.error != "SUCCESS":
+            return returnValue
+        
+        fileSize = int(response.data)
 
         offset = 0
 
@@ -428,29 +434,31 @@ class Session:
 
         fileContentsToMD5 = ""
 
-        while (int(fileSize.data) > offset):
+        while (fileSize > offset):
 
-            content = self.executeCommand("core", "download", {'path':filePath, 'offset':str(offset)})
+            content = self.newExecuteCommand("core", "download", {'path':filePath, 'offset':str(offset)})
 
-            offset += len(content.data)
+            dataStr = str(content.data)
+            offset += len(dataStr)
 
-            if content.isError():
+            returnValue.error = str(content.error)
+            if returnValue.error != "SUCCESS":
                 # If error occurred then return it
-                return content.error
+                return returnValue
             else:
                 # Write content to file
                 f = open(localpath, 'ab')
-                f.write(content.data)
+                f.write(dataStr)
                 f.close()
 
                 # Write to fileContents to use for MD5
-                fileContentsToMD5 += content.data
+                fileContentsToMD5 += dataStr
 
         # Overwrite data with MD5 of the complete file
-        content.data = md5.new(fileContentsToMD5).hexdigest()
+        returnValue.data = md5.new(fileContentsToMD5).hexdigest()
 
         # Return structure
-        return content
+        return returnValue
 
     # Upload a file to the server part by part - returns MD5 of file on server if successful - else returns error message
     def uploadFile(self, localPath, uploadFolder):
@@ -459,19 +467,19 @@ class Session:
         fullPath = os.path.join(uploadFolder, os.path.basename(localPath))
 
         # Delete existing file if there is one
-        self.executeCommand("core", "delete", {'path':fullPath})
+        self.newExecuteCommand("core", "delete", {'path':fullPath})
 
         # Read from file and send
         f = open(localPath, 'r')
         bytesRead = f.read(20480)    # Read 20KB chunks
         while len(bytesRead) > 0:
             # Send these chunks to the server
-            _response = self.executeCommand("core", "upload", {'path':fullPath, 'data':bytesRead})
+            _response = self.newExecuteCommand("core", "upload", {'path':fullPath, 'data':bytesRead})
             bytesRead = f.read(20480)    # Read 20KB chunks
         f.close()
 
         # Get the MD5 of the uploaded file
-        return self.executeCommand("core", "fileMD5", {'path':fullPath})
+        return self.newExecuteCommand("core", "fileMD5", {'path':fullPath})
 
 class UIColor(object):
     """

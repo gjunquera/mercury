@@ -3,11 +3,9 @@
 package com.mwr.mercury.commands;
 
 import com.google.protobuf.ByteString;
-import com.mwr.mercury.ArgumentWrapper;
 import com.mwr.mercury.Common;
 import com.mwr.mercury.Message.KVPair;
 import com.mwr.mercury.Message.ProviderResponse;
-import com.mwr.mercury.Message.Request;
 import com.mwr.mercury.Message.Response;
 import com.mwr.mercury.Session;
 
@@ -29,11 +27,7 @@ import java.util.Iterator;
 import java.util.List;
 
 public class Provider
-{
-	
-	private static final String ERROR_OK = "SUCCESS";
-	private static final String ERROR_UNKNOWN = "ERROR";
-	
+{	
 	
 	public static void info(List<KVPair> argsArray, Session currentSession)
 	{
@@ -46,7 +40,7 @@ public class Provider
 						PackageManager.GET_URI_PERMISSION_PATTERNS,
 						PackageManager.GET_URI_PERMISSION_PATTERNS);
 
-		ProviderResponse.Builder provBuilder = ProviderResponse.newBuilder();
+		ProviderResponse.Builder providerBuilder = ProviderResponse.newBuilder();
 		// Iterate through content providers
 		for (int i = 0; i < providers.size(); i++)
 		{
@@ -150,11 +144,11 @@ public class Provider
 				infoBuilder.setPackageName(providerPackage);
 				infoBuilder.setGrantUriPermissions(grantUriPermissions);
 				infoBuilder.setMultiprocess(providerMultiprocess);
-				provBuilder.addInfo(infoBuilder);			
+				providerBuilder.addInfo(infoBuilder);			
 			}
 		}
 		
-		Response response = Response.newBuilder().setData(provBuilder.build().toByteString()).build();
+		Response response = Response.newBuilder().setData(providerBuilder.build().toByteString()).build();
 		currentSession.send(Base64.encodeToString(response.toByteArray(), Base64.DEFAULT), false);
 		
 	}
@@ -181,7 +175,7 @@ public class Provider
 			}
 			pairBuilder.setKey("columns");
 			respBuilder.addStructuredData(pairBuilder);
-			respBuilder.setError(ByteString.copyFrom(ERROR_OK.getBytes()));
+			respBuilder.setError(ByteString.copyFrom(Common.ERROR_OK.getBytes()));
 		}
 		
 		currentSession.send(Base64.encodeToString(respBuilder.build().toByteArray(), Base64.DEFAULT), false);
@@ -294,7 +288,7 @@ public class Provider
 					}
 					respBuilder.addStructuredData(pairBuilder);
 				}
-				respBuilder.setError(ByteString.copyFrom(ERROR_OK.getBytes()));
+				respBuilder.setError(ByteString.copyFrom(Common.ERROR_OK.getBytes()));
 			}
 			else
 			{
@@ -336,7 +330,7 @@ public class Provider
 	
 			byte[] buf = baos.toByteArray();
 			responseBuilder.setData(ByteString.copyFrom(buf));
-			responseBuilder.setError(ByteString.copyFrom(ERROR_OK.getBytes()));
+			responseBuilder.setError(ByteString.copyFrom(Common.ERROR_OK.getBytes()));
 			//String b64 = Base64.encodeToString(buf, 0);
 		}
 		catch (FileNotFoundException e)
@@ -410,12 +404,12 @@ public class Provider
 					contentvalues);
 
 			responseBuilder.setData(ByteString.copyFrom(c.toString().getBytes()));
-			responseBuilder.setError(ByteString.copyFrom(ERROR_OK.getBytes()));
+			responseBuilder.setError(ByteString.copyFrom(Common.ERROR_OK.getBytes()));
 			
 		}
 		catch (Throwable t)
 		{
-			responseBuilder.setError(ByteString.copyFrom(ERROR_UNKNOWN.getBytes()));
+			responseBuilder.setError(ByteString.copyFrom(Common.ERROR_UNKNOWN.getBytes()));
 		}
 		currentSession.send(Base64.encodeToString(responseBuilder.build().toByteArray(), Base64.DEFAULT), false);
 	}
@@ -497,7 +491,7 @@ public class Provider
 					contentvalues, (where.length() > 0) ? where : null,
 					selectionArgsArray);
 
-			responseBuilder.setError(ByteString.copyFrom(ERROR_OK.getBytes()));
+			responseBuilder.setError(ByteString.copyFrom(Common.ERROR_OK.getBytes()));
 			KVPair.Builder pairBuilder = KVPair.newBuilder();
 			pairBuilder.setKey("rows_updated");
 			pairBuilder.addValue(ByteString.copyFrom((c.toString().getBytes())));
@@ -505,7 +499,7 @@ public class Provider
 		}
 		catch (Throwable t)
 		{
-			responseBuilder.setError(ByteString.copyFrom(ERROR_UNKNOWN.getBytes()));
+			responseBuilder.setError(ByteString.copyFrom(Common.ERROR_UNKNOWN.getBytes()));
 		}
 		currentSession.send(Base64.encodeToString(responseBuilder.build().toByteArray(), Base64.DEFAULT), false);
 	}
@@ -546,7 +540,7 @@ public class Provider
 					Uri.parse(Common.getParamString2(argsArray, "Uri")),
 					(where.length() > 0) ? where : null, selectionArgsArray);
 			
-			responseBuilder.setError(ByteString.copyFrom(ERROR_OK.getBytes()));
+			responseBuilder.setError(ByteString.copyFrom(Common.ERROR_OK.getBytes()));
 			KVPair.Builder pairBuilder = KVPair.newBuilder();
 			pairBuilder.setKey("rows_deleted");
 			pairBuilder.addValue(ByteString.copyFrom((rowsDeleted.toString().getBytes())));
@@ -555,7 +549,7 @@ public class Provider
 		}
 		catch (Throwable t)
 		{
-			responseBuilder.setError(ByteString.copyFrom(ERROR_UNKNOWN.getBytes()));
+			responseBuilder.setError(ByteString.copyFrom(Common.ERROR_UNKNOWN.getBytes()));
 		}
 		currentSession.send(Base64.encodeToString(responseBuilder.build().toByteArray(), Base64.DEFAULT), false);
 	}
