@@ -80,8 +80,7 @@ Permissions: com.android.vending.billing.IN_APP_NOTIFY.permission.C2D_MESSAGE; c
             # Compile stated arguments to send to executeCommand
             request = vars(splitargs)
 
-#            print self.session.executeCommand("packages", "info", request).getPaddedErrorOrData()
-            response = self.session.newExecuteCommand("packages", "info", request)
+            response = self.session.executeCommand("packages", "info", request)
             package_response = Message_pb2.PackageResponse()
             package_response.ParseFromString(str(response.data))
             for info in package_response.info:
@@ -152,7 +151,7 @@ Accumulated permissions: com.motorola.blur.setupprovider.Permissions.ACCESS_ACCO
             request = vars(splitargs)
 
 #            print self.session.executeCommand("packages", "shareduid", request).getPaddedErrorOrData()
-            response = self.session.newExecuteCommand("packages", "shareduid", request)
+            response = self.session.executeCommand("packages", "shareduid", request)
             package_response = Message_pb2.PackageResponse()
             package_response.ParseFromString(str(response.data))
             for sharedUid in package_response.sharedUid:
@@ -196,7 +195,7 @@ Example - finding the attack surface of the built-in browser
             splitargs = parser.parse_args(shlex.split(args))
 
 #            print self.session.executeCommand("packages", "attacksurface", {'packageName':splitargs.packageName}).getPaddedErrorOrData()
-            response = self.session.newExecuteCommand("packages", "attacksurface", {'packageName':splitargs.packageName})
+            response = self.session.executeCommand("packages", "attacksurface", {'packageName':splitargs.packageName})
             if response.error == "SUCCESS":
                 for pair in response.structured_data:
                     if pair.key == "activities":

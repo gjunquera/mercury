@@ -98,7 +98,7 @@ Use adb forward tcp:31415 tcp:31415 when using an emulator or usb-connected devi
             newsession = Session(splitargs.ip, sessionport, "bind")
 
             # Check if connection can be established
-            connectResponse = newsession.newExecuteCommand("core", "ping", None)
+            connectResponse = newsession.executeCommand("core", "ping", None)
             data = str(connectResponse.data)
             if data == "pong":
 

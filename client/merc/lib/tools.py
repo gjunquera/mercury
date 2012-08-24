@@ -155,13 +155,13 @@ MD5 = 3fae15887320940b88df79fe01e62bd8
             # Split arguments using shlex - this means that parameters with spaces can be used - escape " characters inside with \
             splitargs = parser.parse_args(shlex.split(args))
 
-            fileSize = self.session.newExecuteCommand("core", "fileSize", {"path":splitargs.path})
+            fileSize = self.session.executeCommand("core", "fileSize", {"path":splitargs.path})
 
             if str(fileSize.error) != "SUCCESS":
                 print fileSize.getPaddedError()
             else:
                 print "\nSize (bytes) = " + str(fileSize.data)
-                print "MD5 = " + str(self.session.newExecuteCommand("core", "fileMD5", {"path":splitargs.path}).data) + "\n"
+                print "MD5 = " + str(self.session.executeCommand("core", "fileMD5", {"path":splitargs.path}).data) + "\n"
 
         # FIXME: Choose specific exceptions to catch
         except Exception:

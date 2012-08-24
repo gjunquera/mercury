@@ -1,10 +1,14 @@
 // License: Refer to the README in the root directory
 
 package com.mwr.mercury;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
 import com.google.protobuf.ByteString;
@@ -31,7 +35,7 @@ public class Session
 		clientSocket = client;
 		applicationContext = ctx;
 		connected = true;
-		
+
 		try
 		{
 			//input = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()), 8192);		
@@ -78,17 +82,19 @@ public class Session
 		//int cur = in.read();
 		//while(cur == '\n' || cur  == '\r' || cur == ' ') cur = in.read();
 		String out = "";
-		in.skipWs();
+		//in.skipWs();
+		DataInputStream dataInput = new DataInputStream(clientSocket.getInputStream());
 		while(true) {
 			//Log.d("RECV", "before");
+			dataInput.readShort();
+			dataInput.readShort();
+			dataInput.readInt();
 			String r = in.readChunk();
 			//Log.d("RECV", "after");
 			try
 			{
 				byte[] buffer = Base64.decode(r, Base64.DEFAULT);
 				Request request = Request.parseFrom(buffer);
-				request.getFunction();
-				request.getSection();
 				return request;
 			}
 			catch (Exception e)
@@ -126,16 +132,39 @@ public class Session
 	}
 
 	//Write to session - return success
-	public boolean send(String data, boolean base64)
+	public boolean send(String data, boolean base64, short type)
 	{
+		try
+		{
+			DataOutputStream dataOutput = new DataOutputStream(clientSocket.getOutputStream());
+//			output = clientSocket.getOutputStream();
+			dataOutput.writeShort(Common.version);
+			dataOutput.writeShort(type);
+			dataOutput.writeInt(data.getBytes().length);
+			dataOutput.write(data.getBytes());
+		}
+		catch (IOException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}
+		
+		return true;
+		
+		/*
 		try
 		{
 			//Write to socket base64 encoded with a newline on end
 			if (base64)
 				output.print(new String(Base64.encode(data.getBytes(), Base64.DEFAULT)) + "\n");
-			else
+			else {
 			//Or not
+				output.print(Common.version);
+				output.print(type);
+				output.print(length);
 				output.print(data);
+			}
 			
 			output.flush();
 			
@@ -145,8 +174,10 @@ public class Session
 		{
 			return false;
 		}
+		*/
 	}
 	
+	/*
 	//Send start of transmission tag
 	public void startTransmission()
 	{
@@ -207,11 +238,12 @@ public class Session
 		//}
 		//catch (IOException e) {}
 	}
+	*/
 	
 	//Send a full transmission without worrying about structure
 	//Should only be used for small responses < 50KB
-	public void sendFullTransmission(String response, String error)
-	{
+//	public void sendFullTransmission(String response, String error)
+//	{
 		/*
 		
 		Sends the following structure:
@@ -231,7 +263,7 @@ public class Session
 	    </transmission>
 		
 		*/
-		
+/*		
 		startTransmission();
 		startResponse();
 		startData();
@@ -249,7 +281,8 @@ public class Session
 		endResponse();
 		endTransmission();
 	}
-	
+	*/
+		
 	// Send a full transmission without worrying about structure
 	// Should only be used for small responses < 50KB
 	public void newSendFullTransmission(String response, String error)
@@ -264,7 +297,7 @@ public class Session
 			builder.setError(ByteString.copyFrom(error.getBytes()));
 		resp = builder.build();
 		
-		send(Base64.encodeToString(resp.toByteArray(), Base64.DEFAULT), false);
+		send(Base64.encodeToString(resp.toByteArray(), Base64.DEFAULT), false, Common.COMMAND_REPLY);
 		//send(resp.toByteArray(), false);
 	}
   

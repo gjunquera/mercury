@@ -50,8 +50,7 @@ Required Permission: null
             # Compile stated arguments to send to executeCommand
             request = vars(splitargs)
 
-            #print self.session.executeCommand("service", "info", {'filter':splitargs.filter} if splitargs.filter else None).getPaddedErrorOrData()
-            response = self.session.newExecuteCommand("service", "info", request)
+            response = self.session.executeCommand("service", "info", request)
             if str(response.error) == "SUCCESS":
                 service_resp = Message_pb2.ServiceResponse()
                 service_resp.ParseFromString(str(response.data))
@@ -118,8 +117,7 @@ usage: start [--action <action>] [--category <category> [<category> ...]]
             if (splitargs.flags):
                 request['flags'] = str(int(splitargs.flags, 0))
 
-#            print self.session.executeCommand("service", "start", request).getPaddedErrorOrData()
-            response = self.session.newExecuteCommand("service", "start", request)
+            response = self.session.executeCommand("service", "start", request)
             if str(response.error) == "SUCCESS":
                 for pair in response.structured_data:
                     if pair.key == "intent":
@@ -198,8 +196,7 @@ usage: stop [--action <action>] [--category <category> [<category> ...]]
             if (splitargs.flags):
                 request['flags'] = str(int(splitargs.flags, 0))
 
-#            print self.session.executeCommand("service", "stop", request).getPaddedErrorOrData()
-            response = self.session.newExecuteCommand("service", "stop", request)
+            response = self.session.executeCommand("service", "stop", request)
             if str(response.error) == "SUCCESS":
                 for pair in response.structured_data:
                     if pair.key == "intent":

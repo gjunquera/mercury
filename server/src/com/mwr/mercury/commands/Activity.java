@@ -24,7 +24,7 @@ public class Activity
 			Session currentSession)
 	{
 		//Assign filter if one came in the arguments
-		String filter = Common.getParamString2(argsArray, "filter");
+		String filter = Common.getParamString(argsArray, "filter");
 		
 		//Iterate through all packages
 		List<PackageInfo> packages = currentSession.applicationContext.getPackageManager().getInstalledPackages(0);
@@ -65,14 +65,14 @@ public class Activity
 			}
         }
 		Response response = Response.newBuilder().setData(activityBuilder.build().toByteString()).build();
-		currentSession.send(Base64.encodeToString(response.toByteArray(), Base64.DEFAULT), false);
+		currentSession.send(Base64.encodeToString(response.toByteArray(), Base64.DEFAULT), false, Common.COMMAND_REPLY);
 	}
 
 	public static void start(List<KVPair> argsArray,
 			Session currentSession)
 	{
 		//Parse intent
-		Intent intent = Common.parseIntentGeneric2(argsArray, new Intent());
+		Intent intent = Common.parseIntentGeneric(argsArray, new Intent());
 		
 		Response.Builder responseBuilder = Response.newBuilder();
 		try	{
@@ -84,14 +84,14 @@ public class Activity
 		{
 			responseBuilder.setError(ByteString.copyFrom(t.getMessage().getBytes()));
 		}
-		currentSession.send(Base64.encodeToString(responseBuilder.build().toByteArray(), Base64.DEFAULT), false);
+		currentSession.send(Base64.encodeToString(responseBuilder.build().toByteArray(), Base64.DEFAULT), false, Common.COMMAND_REPLY);
 	}
 
 	public static void match(List<KVPair> argsArray,
 			Session currentSession)
 	{
 		//Parse intent
-		Intent intent = Common.parseIntentGeneric2(argsArray, new Intent());
+		Intent intent = Common.parseIntentGeneric(argsArray, new Intent());
 		
 		Response.Builder responseBuilder = Response.newBuilder();
 		try
@@ -118,14 +118,14 @@ public class Activity
 		{
 			responseBuilder.setError(ByteString.copyFrom(Common.ERROR_UNKNOWN.getBytes()));
 		}
-		currentSession.send(Base64.encodeToString(responseBuilder.build().toByteArray(), Base64.DEFAULT), false);
+		currentSession.send(Base64.encodeToString(responseBuilder.build().toByteArray(), Base64.DEFAULT), false, Common.COMMAND_REPLY);
 	}
 
 	public static void launchIntent(List<KVPair> argsArray,
 			Session currentSession)
 	{
 		//Assign filter if one came in the arguments
-		String packageName = Common.getParamString2(argsArray, "packageName");
+		String packageName = Common.getParamString(argsArray, "packageName");
 		
 		Intent intent = currentSession.applicationContext.getPackageManager().getLaunchIntentForPackage(packageName);
 		
@@ -141,7 +141,7 @@ public class Activity
 			responseBuilder.setData(ByteString.copyFrom("No intent returned".getBytes()));
 			responseBuilder.setError(ByteString.copyFrom(Common.ERROR_UNKNOWN.getBytes()));
 		}
-		currentSession.send(Base64.encodeToString(responseBuilder.build().toByteArray(), Base64.DEFAULT), false);
+		currentSession.send(Base64.encodeToString(responseBuilder.build().toByteArray(), Base64.DEFAULT), false, Common.COMMAND_REPLY);
 	}
 
 }

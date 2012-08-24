@@ -29,8 +29,8 @@ public class Packages
 	{
 
 		// Assign filter and permissions if they came in the arguments
-		String filter = Common.getParamString2(argsArray, "filter");
-		String permissions = Common.getParamString2(argsArray, "permissions");
+		String filter = Common.getParamString(argsArray, "filter");
+		String permissions = Common.getParamString(argsArray, "permissions");
 
 		// Get all packages from packagemanager
 		PackageManager pm = currentSession.applicationContext
@@ -139,7 +139,7 @@ public class Packages
 		}
 		
 		Response response = Response.newBuilder().setData(packageBuilder.build().toByteString()).build();
-		currentSession.send(Base64.encodeToString(response.toByteArray(), Base64.DEFAULT), false);
+		currentSession.send(Base64.encodeToString(response.toByteArray(), Base64.DEFAULT), false, Common.COMMAND_REPLY);
 	}
 
 	public static void sharedUid(List<KVPair> argsArray,
@@ -148,7 +148,7 @@ public class Packages
 		PackageResponse.SharedUid.Builder sharedUidBuilder = PackageResponse.SharedUid.newBuilder();
 
 		// Get all the parameters
-		String filter = Common.getParamString2(argsArray, "uid");
+		String filter = Common.getParamString(argsArray, "uid");
 
 		// Get all packages from packagemanager
 		PackageManager pm = currentSession.applicationContext
@@ -217,14 +217,14 @@ public class Packages
 		}
 
 		Response response = Response.newBuilder().setData(sharedUidBuilder.build().toByteString()).build();
-		currentSession.send(Base64.encodeToString(response.toByteArray(), Base64.DEFAULT), false);
+		currentSession.send(Base64.encodeToString(response.toByteArray(), Base64.DEFAULT), false, Common.COMMAND_REPLY);
 	}
 
 	public static void attackSurface(List<KVPair> argsArray,
 			Session currentSession)
 	{
 		// Get all the parameters
-		String packageName = Common.getParamString2(argsArray, "packageName");
+		String packageName = Common.getParamString(argsArray, "packageName");
 		Response.Builder responseBuilder = Response.newBuilder();
 		
 		try
@@ -297,15 +297,17 @@ public class Packages
 			responseBuilder.setError(ByteString.copyFrom(t.getMessage().getBytes()));
 		}
 		
-		currentSession.send(Base64.encodeToString(responseBuilder.build().toByteArray(), Base64.DEFAULT), false);
+		currentSession.send(Base64.encodeToString(responseBuilder.build().toByteArray(), Base64.DEFAULT), false, Common.COMMAND_REPLY);
 	}
 
 	public static void path(List<KVPair> argsArray,
 			Session currentSession)
 	{
 		// Assign filter and permissions if they came in the arguments
-		String packageName = Common.getParamString2(argsArray, "packageName");
+		String packageName = Common.getParamString(argsArray, "packageName");
 
+		Response.Builder responseBuilder = Response.newBuilder();
+		List<String> pathList = new ArrayList<String>();
 		// Get all packages from packagemanager
 		PackageManager pm = currentSession.applicationContext
 				.getPackageManager();
@@ -325,16 +327,21 @@ public class Packages
 			if (app.packageName.equals(packageName))
 			{
 				packagePath = app.publicSourceDir;
+				pathList.add(app.publicSourceDir);
 				break;
 			}
 		}
 
 		// Check if an odex file exists for the package
 		if (new File(packagePath.replace(".apk", ".odex")).exists())
-			packagePath += "\n" + packagePath.replace(".apk", ".odex");
+			pathList.add(packagePath.replace(".apk", ".odex"));
+			//packagePath += "\n" + packagePath.replace(".apk", ".odex");
 
 		// Send to client
-		currentSession.newSendFullTransmission(packagePath, Common.ERROR_OK);
+		responseBuilder.setError(ByteString.copyFrom(Common.ERROR_OK.getBytes()));
+		responseBuilder.addStructuredData(Common.createKVPair("path", pathList));
+		currentSession.send(Base64.encodeToString(responseBuilder.build().toByteArray(), Base64.DEFAULT), false, Common.COMMAND_REPLY);		
+//		currentSession.newSendFullTransmission(packagePath, Common.ERROR_OK);
 	}
 
 }

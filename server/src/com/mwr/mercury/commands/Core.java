@@ -39,7 +39,7 @@ public class Core
 	
 	public static void fileSize(List<KVPair> argsArray, Session currentSession){
 		//Get path from arguments
-		String path = Common.getParamString2(argsArray, "path");
+		String path = Common.getParamString(argsArray, "path");
 		
 		try
 		{
@@ -59,7 +59,7 @@ public class Core
 	
 	public static void fileMD5(List<KVPair> argsArray, Session currentSession){
 		//Get path from arguments
-		String path = Common.getParamString2(argsArray, "path");
+		String path = Common.getParamString(argsArray, "path");
 		
 		try
 		{
@@ -74,8 +74,8 @@ public class Core
 	
 	public static void download(List<KVPair> argsArray, Session currentSession){
 		//Get path from arguments
-		String path = Common.getParamString2(argsArray, "path");
-		Integer offset = Integer.parseInt(Common.getParamString2(argsArray, "offset"));
+		String path = Common.getParamString(argsArray, "path");
+		Integer offset = Integer.parseInt(Common.getParamString(argsArray, "offset"));
 		
 		File file = new File(path);
 		InputStream in = null;
@@ -117,14 +117,14 @@ public class Core
 				catch (Exception e) {}
 			}
 		     
-			currentSession.send(Base64.encodeToString(responseBuilder.build().toByteArray(), Base64.DEFAULT), false);
+			currentSession.send(Base64.encodeToString(responseBuilder.build().toByteArray(), Base64.DEFAULT), false, Common.COMMAND_REPLY);
 		}
 	}
 	
 	public static void upload(List<KVPair> argsArray, Session currentSession){
 		//Get path from arguments
-		String path = Common.getParamString2(argsArray, "path");
-		byte[] data = Common.getParam2(argsArray, "data");
+		String path = Common.getParamString(argsArray, "path");
+		byte[] data = Common.getParam(argsArray, "data");
 		
 		File file = new File(path);
 		BufferedOutputStream out = null;
@@ -157,23 +157,23 @@ public class Core
 	
 	public static void strings(List<KVPair> argsArray, Session currentSession){
 		//Get path from arguments
-		String path = Common.getParamString2(argsArray, "path");
+		String path = Common.getParamString(argsArray, "path");
 		
 		ArrayList<String> lines = Common.strings(path);
 		Iterator<String> it = lines.iterator();
 		
 		Response.Builder responseBuilder = Response.newBuilder();		
-		while (it.hasNext())
+		while (it.hasNext()) 
 			responseBuilder.addStructuredData(Common.createKVPair("string", it.next()));
 
-		currentSession.send(Base64.encodeToString(responseBuilder.build().toByteArray(), Base64.DEFAULT), false);
+		currentSession.send(Base64.encodeToString(responseBuilder.build().toByteArray(), Base64.DEFAULT), false, Common.COMMAND_REPLY);
 	}
 	
 	public static void unzip(List<KVPair> argsArray, Session currentSession){
 		//Get path from arguments
-		String filename = Common.getParamString2(argsArray, "filename");
-		String path = Common.getParamString2(argsArray, "path");
-		String destination = Common.getParamString2(argsArray, "destination");
+		String filename = Common.getParamString(argsArray, "filename");
+		String path = Common.getParamString(argsArray, "path");
+		String destination = Common.getParamString(argsArray, "destination");
 		
 		//Unzip file
 		boolean success = Common.unzipFile(filename, path, destination);
@@ -186,7 +186,7 @@ public class Core
 	
 	public static void delete(List<KVPair> argsArray, Session currentSession){
 		//Get path from arguments
-		String path = Common.getParamString2(argsArray, "path");
+		String path = Common.getParamString(argsArray, "path");
 		
 		try
 		{

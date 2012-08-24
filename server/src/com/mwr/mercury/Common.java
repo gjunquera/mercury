@@ -63,6 +63,19 @@ public class Common
 {	
 	public static final String ERROR_OK = "SUCCESS";
 	public static final String ERROR_UNKNOWN = "ERROR";
+	public static final short COMMAND_REQUEST = 0;
+	public static final short COMMAND_REPLY = 1;
+	public static final short REFLECTIVE_REQUEST = 2;
+	public static final short REFLECTIVE_REPLY = 3;
+
+	public enum Day {
+	    SUNDAY, MONDAY, TUESDAY, WEDNESDAY,
+	    THURSDAY, FRIDAY, SATURDAY 
+	}
+	
+	public static final short version = 1;
+	
+	
 	
 	//Mercury persistent shell
 	public static Shell mercuryShell = null;
@@ -145,7 +158,7 @@ public class Common
 	
 	//Get parameter from a List<ArgumentWrapper> in byte[] format
 	//TODO remove this method
-	public static byte[] getParam(List<ArgumentWrapper> argWrapper, String type)
+/*	public static byte[] getParam(List<ArgumentWrapper> argWrapper, String type)
 	{
 		
 		for (int i = 0; i < argWrapper.size(); i++)
@@ -156,10 +169,11 @@ public class Common
 		
 		return null;
 	}
+	*/
 	
 	//Get parameter from a List<ArgumentWrapper> in byte[] format
 	//TODO change this method name
-	public static byte[] getParam2(List<KVPair> pairsArray, String key)
+	public static byte[] getParam(List<KVPair> pairsArray, String key)
 	{
 		
 		if (key == null || pairsArray == null) 
@@ -177,6 +191,7 @@ public class Common
 	
 	//Get parameter from a List<ArgumentWrapper> in String format
 	//TODO remove this method
+	/*
 	public static String getParamString(List<ArgumentWrapper> argWrapper, String type)
 	{
 		byte[] param = getParam(argWrapper, type); 
@@ -184,12 +199,12 @@ public class Common
 			return "";
 		else return new String(param);
 	}
+	*/
 	
-	//TODO change this method name
 	//Get parameter from a List<Args>
-	public static String getParamString2(List<KVPair> pairsArray, String key) 
+	public static String getParamString(List<KVPair> pairsArray, String key) 
 	{
-		byte[] param = getParam2(pairsArray, key);
+		byte[] param = getParam(pairsArray, key);
 		if (param == null) 
 			return "";
 		else return new String(param);
@@ -197,7 +212,7 @@ public class Common
 
 	//Get parameter from a List<ArgumentWrapper> in List<String> format
 	//TODO remove this method
-	public static List<String> getParamStringList(List<ArgumentWrapper> argWrapper, String type)
+/*	public static List<String> getParamStringList(List<ArgumentWrapper> argWrapper, String type)
 	{
 		List<String> returnValues = new ArrayList<String>();
 		
@@ -209,10 +224,10 @@ public class Common
 		
 		return returnValues;
 	}
+	*/
 	
-	//Get parameter from a List<ArgumentWrapper> in List<String> format
-	//TODO change this method name
-	public static List<String> getParamStringList2(List<KVPair> pairsArray, String key)
+	//Get parameter from a List<KVPair> in List<String> format
+	public static List<String> getParamStringList(List<KVPair> pairsArray, String key)
 	{
 		List<String> returnValues = new ArrayList<String>();
 		
@@ -337,6 +352,7 @@ public class Common
 	}
 			
 	//Parse a generic intent and add to given intent
+	/*
 	public static Intent parseIntentGeneric(List<ArgumentWrapper> argsArray, Intent intent)
 	{		
 		Intent localIntent = intent;
@@ -418,10 +434,10 @@ public class Common
 		}
 		
 		return localIntent;
-	}
+	}*/
 	
 	//Parse a generic intent and add to given intent
-	public static Intent parseIntentGeneric2(List<KVPair> argsArray, Intent intent)
+	public static Intent parseIntentGeneric(List<KVPair> argsArray, Intent intent)
 	{		
 		Intent localIntent = intent;
 		

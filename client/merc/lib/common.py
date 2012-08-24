@@ -11,11 +11,19 @@ import base64
 import types
 import md5
 import sys
-from xml.dom.minidom import parseString
+import struct
 import Message_pb2
+from xml.dom.minidom import parseString
+from array import array
 
 # Mercury version
 mercury_version = "1.0"
+PROTOCOL_VERSION = 1
+COMMAND_REQUEST = 0;
+COMMAND_REPLY = 1;
+REFLECTIVE_REQUEST = 2;
+REFLECTIVE_REPLY = 3;
+ERROR_OK = "SUCCESS"
 
 # Debugging mode
 debug_mode = False
@@ -102,114 +110,28 @@ class Session:
             return False
 
     def sendData(self, data):
+        version = struct.pack("h", PROTOCOL_VERSION)
+        command = struct.pack("h", COMMAND_REQUEST)
+        byteData = bytearray(data)
+        length = len(byteData)
+        networkLength = struct.pack("I", length)
+        #TODO get appropriate command
         if not self.socketConn:
             self.connectSocket()
+        self.socketConn.send(version)
+        self.socketConn.send(command)
+        self.socketConn.send(networkLength)
         self.socketConn.sendall(data)
 
     def receiveData(self):
         return self.socketConn.recv(1024)
+    
+    def receiveData2(self, length):
+        return self.socketConn.recv(length)
 
     def closeSocket(self):
         self.socketConn.close()
         self.socketConn = None
-
-
-
-    #<?xml version="1.0" ?>
-    #<transmission>
-    #    <command>
-    #        <section>provider</section>
-    #        <function>query</function>
-    #        <arguments>
-    #            <selectionargs>ZWlzaA==</selectionargs>
-    #            <selection>dzAwdHk=</selection>
-    #            <projection>bG9sb2xsb2xvbG9sb2wgbG9sb2xvbG9s</projection>
-    #            <URI>Y29udGVudDovL3Bldw==</URI>
-    #            <sortorder>YXNj</sortorder>
-    #        </arguments>
-    #    </command>
-    #</transmission>
-
-    # section = section of program where command was executed from
-    # function = function to execute
-    # args_dict = a dict object that defines the arguments that come with the command
-    # None is sent for args_dict if there are no arguments
-    # Return a structured XML command
-    def XMLifyCommand(self, section, function, args_dict):
-
-        # Create document
-        doc = xml.dom.minidom.Document()
-
-        # Create root element
-        root_element = doc.createElementNS("mercury-command", "transmission")
-
-        # Create root element - command
-        command_element = doc.createElementNS("mercury-command", "command")
-        root_element.appendChild(command_element)
-
-        # Create element - section
-        section_element = doc.createElementNS("mercury-command", "section")
-        section_element.appendChild(doc.createTextNode(section))
-        command_element.appendChild(section_element)
-
-        # Create element - function
-        function_element = doc.createElementNS("mercury-command", "function")
-        function_element.appendChild(doc.createTextNode(function))
-        command_element.appendChild(function_element)
-
-        # Create element - arguments
-        argument_element = doc.createElementNS("mercury-command", "arguments")
-        command_element.appendChild(argument_element)
-
-        if (args_dict is not None):
-        # Create elements - argument[i] by iterating through arguments that got sent to this function
-            i = 1
-            for key, value in args_dict.iteritems():
-
-                # vars() creates keys with None value - this checks for a None and disregards
-                if value is not None:
-
-                    if isinstance(value, types.StringType):
-
-                        arg_element = doc.createElementNS("mercury-command", key)
-                        argument_element.appendChild(arg_element)
-
-                        # Arguments are always base64 encoded
-                        arg_element.appendChild(doc.createTextNode(base64.b64encode(value)))
-
-                    else:
-
-                        for val in value:
-
-                            arg_element = doc.createElementNS("mercury-command", key)
-                            argument_element.appendChild(arg_element)
-
-                            # Arguments are always base64 encoded
-                            arg_element.appendChild(doc.createTextNode(base64.b64encode(val)))
-
-                    i = i + 1
-
-        # Add command element to document at root level
-        doc.appendChild(root_element)
-
-        # For thorough debugging purposes
-        if debug_mode:
-            print doc.toprettyxml("\t", "\n", None)
-
-
-        return doc.toxml()
-    
-    #message Args {
-    #    optional string type = 1;
-    #    optional string values = 2;
-    #}
-    #
-    #message Request {
-    #    
-    #    required int32 section = 1;
-    #    required int32 function = 2;
-    #    optional BasicRequest args = 3;
-    #}
 
     # section = section of program where command was executed from
     # function = function to execute
@@ -244,136 +166,23 @@ class Session:
         except Exception, e:
             print e
 
-    def parseResponse(self, xmlinput):
+    def parseResponse(self, input_str):
 
             #TODO change this line    
             returnValue = Response()
-            protoStr = base64.b64decode(xmlinput)
+            protoStr = base64.b64decode(input_str)
             try:
                 response = Message_pb2.Response()
                 response.ParseFromString(protoStr)
-            except Exception as e:
+            except Exception:
                 #TODO change this return 
                 returnValue.error = "Malformed response"
             
             #return returnValue
             return response
-
-
-    # Convert received XML into a Response() - very slow due to parseString
-    def UnXMLifyResponse(self, xmlinput):
-
-        # Strip the end of the response
-        xmlStr = xmlinput.strip()
-
-        # Define response
-        returnValue = Response()
-
-        # Reject malformed response - check if <transmission> tags are at start and end
-        if not ((xmlStr[:36] == '<?xml version="1.0" ?><transmission>') and (xmlStr[-15:] == "</transmission>")):
-            returnValue.error = "Malformed response: " + xmlStr
-            return returnValue
-
-        # Parse the XML
-        doc = parseString(xmlStr)
-        responses = doc.getElementsByTagName("response")
-        for response in responses:
-            # Get <data> text
-            for data in response.getElementsByTagName("data")[0].childNodes:
-                if (data.nodeType == data.TEXT_NODE):
-                    lines = data.nodeValue.split("\n")
-                    for line in lines:
-                        if line != "":
-                            returnValue.data += base64.b64decode(line)
-                    break
-
-            # Get <error> text        
-            for error in response.getElementsByTagName("error")[0].childNodes:
-                if (error.nodeType == error.TEXT_NODE):
-                    lines = error.nodeValue.split("\n")
-                    for line in lines:
-                        if line != "":
-                            returnValue.error += base64.b64decode(line)
-                    break
-
-        # Return error/response dict
-        return returnValue
-
-
-
-    # Convert received XML into a Response() - use regex to get data and error
-    def UnXMLifyResponseRegex(self, xmlinput):
-
-        # Strip the end of the response
-        xmlStr = xmlinput.strip()
-
-        # Define response
-        returnValue = Response()
-
-        # Reject malformed response - check if <transmission> tags are at start and end
-        if not ((xmlStr[:36] == '<?xml version="1.0" ?><transmission>') and (xmlStr[-15:] == "</transmission>")):
-            returnValue.error = "Malformed response: " + xmlStr
-            return returnValue
-
-        # Parse the XML using regular expressions        
-        # Get text inside data and decode
-        if ("<data />" not in xmlStr):
-            data_regex = re.compile(r'<data>(.*)</data>', re.DOTALL)
-            y = data_regex.search(xmlStr)
-            for line in y.group(1).split("\n"):
-                if line != "":
-                    returnValue.data += base64.b64decode(line)
-
-        # Get text inside error and decode
-        if ("<error />" not in xmlStr):
-            error_regex = re.compile(r'<error>(.*)</error>', re.DOTALL)
-            y = error_regex.search(xmlStr)
-            for line in y.group(1).split("\n"):
-                if line != "":
-                    returnValue.error += base64.b64decode(line)
-
-        # Return response
-        return returnValue
-
-
-
-
-
-    # Execute a command and get a Response()
-    def executeCommand(self, section, function, args_dict):
-        """Send a command to the device and get a response"""
-
-        parsedResponse = Response()
-
-        try:
-
-            # Convert command to XML and send
-            self.sendData(self.XMLifyCommand(section, function, args_dict) + "\n")
-
-            # Receive until the socket is closed
-            responseBuffer = ""
-            receivedData = self.receiveData()
-            while receivedData:
-                responseBuffer = responseBuffer + receivedData
-                if responseBuffer.lower().endswith('</transmission>'):
-                    break
-                receivedData = self.receiveData()
-
-            # Parse response from server
-            # parsedResponse = self.UnXMLifyResponseRegex(responseBuffer) # Can use this as well but no noticeable performance gain
-            parsedResponse = self.UnXMLifyResponse(responseBuffer)
-
-        except socket.error:
-            # Return that a network error occurred
-            parsedResponse.error = "**Network Error** Could not reach server"
-        except KeyboardInterrupt:
-            # Catch Control + C to make sure that Mercury is not exited
-            parsedResponse.error = "**Error** User aborted command"
-
-        return parsedResponse
     
     # Execute a command and get a Response()
-    def newExecuteCommand(self, section, function, args_dict):
+    def executeCommand(self, section, function, args_dict):
         """Send a command to the device and get a response"""
 
         parsedResponse = Response()
@@ -385,6 +194,13 @@ class Session:
 
             # Receive until the socket is closed
             responseBuffer = ""
+            #read version
+            self.socketConn.recv(2)
+            #read message type
+            self.socketConn.recv(2)
+            #read version message length
+            self.socketConn.recv(4)
+#            lengthInt = struct.unpack("!i", length)[0]
             receivedData = self.receiveData()
             while receivedData:
                 responseBuffer = responseBuffer + receivedData
@@ -393,7 +209,6 @@ class Session:
                 receivedData = self.receiveData()
 
             # Parse response from server
-            # parsedResponse = self.UnXMLifyResponseRegex(responseBuffer) # Can use this as well but no noticeable performance gain
             parsedResponse = self.parseResponse(responseBuffer)
 
         except socket.error:
@@ -410,7 +225,7 @@ class Session:
     # Download a file from the server - returns MD5 if successful - else returns error message
     def downloadFile(self, filePath, downloadFolder):
 
-        response = self.newExecuteCommand("core", "fileSize", {'path':filePath})
+        response = self.executeCommand("core", "fileSize", {'path':filePath})
         
         returnValue = Response()
         
@@ -436,7 +251,7 @@ class Session:
 
         while (fileSize > offset):
 
-            content = self.newExecuteCommand("core", "download", {'path':filePath, 'offset':str(offset)})
+            content = self.executeCommand("core", "download", {'path':filePath, 'offset':str(offset)})
 
             dataStr = str(content.data)
             offset += len(dataStr)
@@ -467,19 +282,19 @@ class Session:
         fullPath = os.path.join(uploadFolder, os.path.basename(localPath))
 
         # Delete existing file if there is one
-        self.newExecuteCommand("core", "delete", {'path':fullPath})
+        self.executeCommand("core", "delete", {'path':fullPath})
 
         # Read from file and send
         f = open(localPath, 'r')
-        bytesRead = f.read(20480)    # Read 20KB chunks
+        bytesRead = f.read(5120)    # Read 20KB chunks 20480
         while len(bytesRead) > 0:
             # Send these chunks to the server
-            _response = self.newExecuteCommand("core", "upload", {'path':fullPath, 'data':bytesRead})
-            bytesRead = f.read(20480)    # Read 20KB chunks
+            _response = self.executeCommand("core", "upload", {'path':fullPath, 'data':bytesRead})
+            bytesRead = f.read(320)    # Read 20KB chunks
         f.close()
 
         # Get the MD5 of the uploaded file
-        return self.newExecuteCommand("core", "fileMD5", {'path':fullPath})
+        return self.executeCommand("core", "fileMD5", {'path':fullPath})
 
 class UIColor(object):
     """

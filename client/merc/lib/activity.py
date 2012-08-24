@@ -81,8 +81,7 @@ Activity started with Intent { act=android.intent.action.VIEW dat=http://www.goo
             if (splitargs.flags):
                 request['flags'] = str(int(splitargs.flags, 0))
 
-            #print self.session.executeCommand("activity", "start", request).getPaddedErrorOrData()
-            response = self.session.newExecuteCommand("activity", "start", request)
+            response = self.session.executeCommand("activity", "start", request)
             if str(response.error) == "SUCCESS":
                 for pair in response.structured_data:
                     if pair.key == "intent":
@@ -174,8 +173,7 @@ Target activity: com.android.browser.BrowserActivity
             if (splitargs.flags):
                 request['flags'] = str(int(splitargs.flags, 0))
 
-#            print self.session.executeCommand("activity", "match", request).getPaddedErrorOrData()
-            response = self.session.newExecuteCommand("activity", "match", request)
+            response = self.session.executeCommand("activity", "match", request)
             if response.error == "SUCCESS":
                 for pair in response.structured_data:
                     print str(response.data) + ":\n"
@@ -247,8 +245,7 @@ Activity: com.android.browser.AddBookmarkPage
             # Split arguments using shlex - this means that parameters with spaces can be used - escape " characters inside with \
             splitargs = parser.parse_args(shlex.split(args))
 
-#            print self.session.executeCommand("activity", "info", {'filter':splitargs.filter} if splitargs.filter else None).getPaddedErrorOrData()
-            response = self.session.newExecuteCommand("activity", "info", {'filter':splitargs.filter} if splitargs.filter else None)
+            response = self.session.executeCommand("activity", "info", {'filter':splitargs.filter} if splitargs.filter else None)
             activity_response = Message_pb2.ActivityResponse()
             activity_response.ParseFromString(str(response.data))
             for info in activity_response.info:
@@ -283,8 +280,7 @@ Intent { act=android.intent.action.MAIN flg=0x10000000 cmp=com.android.browser/.
             # Split arguments using shlex - this means that parameters with spaces can be used - escape " characters inside with \
             splitargs = parser.parse_args(shlex.split(args))
 
-            #print self.session.executeCommand("activity", "launchintent", {'packageName':splitargs.packageName}).getPaddedErrorOrData()
-            response = self.session.newExecuteCommand("activity", "launchintent", {'packageName':splitargs.packageName})
+            response = self.session.executeCommand("activity", "launchintent", {'packageName':splitargs.packageName})
             print str(response.data)
             
         # FIXME: Choose specific exceptions to catch

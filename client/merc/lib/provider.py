@@ -48,8 +48,7 @@ _id | name | value
             if (splitargs.uri):
                 request['uri'] = splitargs.uri
 
-            #print self.session.makeRequest("provider", "columns", request).getPaddedErrorOrData()
-            response = self.session.newExecuteCommand("provider", "columns", request)
+            response = self.session.executeCommand("provider", "columns", request)
             msg = "| "
             if response.error == "SUCCESS":
                 for pair in response.structured_data:
@@ -123,8 +122,7 @@ _id | name | value
             # Compile stated arguments to send to executeCommand
             request = vars(splitargs)
 
-            #print self.session.executeCommand("provider", "query", request).getPaddedErrorOrData()
-            response = self.session.newExecuteCommand("provider", "query", request)
+            response = self.session.executeCommand("provider", "query", request)
             if str(response.error) == "SUCCESS":
                 for pair in response.structured_data:
                     msg = "| "
@@ -162,7 +160,7 @@ No files supported by provider at content://settings/secure/../../../../../../..
             # Compile stated arguments to send to executeCommand
             request = vars(splitargs)
             
-            response = self.session.newExecuteCommand("provider", "read", request)
+            response = self.session.executeCommand("provider", "read", request)
             print str(response.data)
 
         # FIXME: Choose specific exceptions to catch
@@ -207,8 +205,7 @@ content://com.vulnerable.im/messages/3
             # Compile stated arguments to send to executeCommand
             request = vars(splitargs)
 
-            #print self.session.executeCommand("provider", "insert", request).getPaddedErrorOrData()
-            response = self.session.newExecuteCommand("provider", "insert", request)
+            response = self.session.executeCommand("provider", "insert", request)
             print str(response.data)
 
         # FIXME: Choose specific exceptions to catch
@@ -234,8 +231,7 @@ usage: delete Uri [--where <where>] [--selectionArgs <arg> [<arg> ...]]
             # Compile stated arguments to send to executeCommand
             request = vars(splitargs)
 
-            # print self.session.executeCommand("provider", "delete", request).getPaddedErrorOrData()
-            response = self.session.newExecuteCommand("provider", "delete", request)
+            response = self.session.executeCommand("provider", "delete", request)
            
             for pair in response.structured_data:
                 for pair in response.structured_data:
@@ -288,7 +284,7 @@ Example - updating an item in a content provider
             # Compile stated arguments to send to executeCommand
             request = vars(splitargs)
 
-            response = self.session.newExecuteCommand("provider", "update", request)
+            response = self.session.executeCommand("provider", "update", request)
            
             for pair in response.structured_data:
                 if pair.key == "rows_updated":
@@ -369,8 +365,7 @@ Multiprocess allowed: false
             # Compile stated arguments to send to executeCommand
             request = vars(splitargs)
 
-            #print self.session.makeRequest("provider", "info", request)#.getPaddedErrorOrData()
-            response = self.session.newExecuteCommand("provider", "info", request)
+            response = self.session.executeCommand("provider", "info", request)
             provider_response = Message_pb2.ProviderResponse()
             provider_response.ParseFromString(str(response.data))
             for info in provider_response.info:
@@ -422,55 +417,53 @@ content://com.google.settings/partner
             # Split arguments using shlex - this means that parameters with spaces can be used - escape " characters inside with \
             splitargs = parser.parse_args(shlex.split(args))
 
-            path = str(self.session.newExecuteCommand("packages", "path", {'packageName':splitargs.packageName}).data)
+            path = self.session.executeCommand("packages", "path", {'packageName':splitargs.packageName})
 
             print ""
 
             # Delete classes.dex that might be there from previously
-            self.session.newExecuteCommand("core", "delete", {'path':'/data/data/com.mwr.mercury/classes.dex'})
+            self.session.executeCommand("core", "delete", {'path':'/data/data/com.mwr.mercury/classes.dex'})
 
             # Iterate through paths returned
-            for line in path.split():
+            for pair in path.structured_data:
+                for value in pair.value:
+                    line = str(value)
+                    
+                    if (".apk" in line):
+                        print line + ":"
+                        if str(self.session.executeCommand("core", "unzip", {'filename':'classes.dex', 'path':line, 'destination':'/data/data/com.mwr.mercury/'}).error) != "SUCCESS":
+    
+                            print "Contains no classes.dex\n"
+    
+                        else:
+    
+                            #strings = self.session.executeCommand("provider", "finduri", {'path':'/data/data/com.mwr.mercury/classes.dex'}).data
+                            response = self.session.executeCommand("provider", "finduri", {'path':'/data/data/com.mwr.mercury/classes.dex'})
+                            
+                            if str(response.error) == "SUCCESS":
+                                for pair in response.structured_data:
+                                    if pair.key == "uri":
+                                        value = str(pair.value)
+                                        if (("CONTENT://" in value.upper()) and ("CONTENT://" != value.upper())):
+                                            print value[value.upper().find("CONTENT"):]
 
-                if (".apk" in line):
-                    print line + ":"
-                    if str(self.session.newExecuteCommand("core", "unzip", {'filename':'classes.dex', 'path':line, 'destination':'/data/data/com.mwr.mercury/'}).error) != "SUCCESS":
-
-                        print "Contains no classes.dex\n"
-
-                    else:
-
-                        #strings = self.session.executeCommand("provider", "finduri", {'path':'/data/data/com.mwr.mercury/classes.dex'}).data
-                        response = self.session.newExecuteCommand("provider", "finduri", {'path':'/data/data/com.mwr.mercury/classes.dex'})
-                        
-                        if str(response.error) == "SUCCESS":
-                            for pair in response.structured_data:
-                                if pair.key == "uri":
-                                    value = str(pair.value)
-                                    if (("CONTENT://" in value.upper()) and ("CONTENT://" != value.upper())):
-                                        print value[value.upper().find("CONTENT"):]
-                        
-#                        for string in strings.split():
-#                            if (("CONTENT://" in string.upper()) and ("CONTENT://" != string.upper())):
-#                                print string[string.upper().find("CONTENT"):]
-
-                        # Delete classes.dex
-                        self.session.newExecuteCommand("core", "delete", {'path':'/data/data/com.mwr.mercury/classes.dex'})
-
-                        print ""
-
-
-                if (".odex" in line):
-                    print line + ":"
-                    strings = self.session.newExecuteCommand("core", "strings", {'path':line})
-
-                    for pair in strings.structured_data:
-                        if pair.key == "string":
-                            string = str(pair.value)
-                            if (("CONTENT://" in string.upper()) and ("CONTENT://" != string.upper())):
-                                print string[string.upper().find("CONTENT"):]
-
-                    print ""
+                            # Delete classes.dex
+                            self.session.executeCommand("core", "delete", {'path':'/data/data/com.mwr.mercury/classes.dex'})
+    
+                            print ""
+    
+    
+                    if (".odex" in line):
+                        print line + ":"
+                        response_odex = self.session.executeCommand("provider", "finduri", {'path':line})
+                        if str(response_odex.error) == "SUCCESS":
+                                for pair in response_odex.structured_data:
+                                    if pair.key == "uri":
+                                        for value in pair.value:
+                                            value_str = str(value)
+                                            if (("CONTENT://" in value_str.upper()) and ("CONTENT://" != value_str.upper())):
+                                                print value_str[value_str.upper().find("CONTENT"):] 
+                                print ""
 
 
         # FIXME: Choose specific exceptions to catch

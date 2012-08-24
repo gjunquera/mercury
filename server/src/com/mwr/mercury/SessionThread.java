@@ -87,13 +87,13 @@ class SessionThread extends Thread
 				}
 				catch (Exception e)
 				{
-					currentSession.sendFullTransmission("", "Command not found on Mercury server");
+					currentSession.newSendFullTransmission("", "Command not found on Mercury server");
 				}
 //			}
 			
 			//Default case if command not found
 			if (!found)
-				currentSession.sendFullTransmission("", "Command not found on Mercury server");
+				currentSession.newSendFullTransmission("", "Command not found on Mercury server");
 	  }
   
   

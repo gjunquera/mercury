@@ -25,8 +25,8 @@ public class Service
 {
 	public static void info(List<KVPair> argsArray, Session currentSession){
 		//Assign filter and permissions if they came in the arguments
-		String filter = Common.getParamString2(argsArray, "filter");
-		String permissions = Common.getParamString2(argsArray, "permissions");
+		String filter = Common.getParamString(argsArray, "filter");
+		String permissions = Common.getParamString(argsArray, "permissions");
 				
 		//Get all packages from packagemanager
 		PackageManager pm = currentSession.applicationContext.getPackageManager();
@@ -91,12 +91,12 @@ public class Service
 		Response.Builder responseBuilder = Response.newBuilder();
 		responseBuilder.setError(ByteString.copyFrom(Common.ERROR_OK.getBytes()));
 		responseBuilder.setData(serviceBuilder.build().toByteString());
-		currentSession.send(Base64.encodeToString(responseBuilder.build().toByteArray(), Base64.DEFAULT), false);
+		currentSession.send(Base64.encodeToString(responseBuilder.build().toByteArray(), Base64.DEFAULT), false, Common.COMMAND_REPLY);
 	}
 	
 	public static void start(List<KVPair> argsArray, Session currentSession){
 		//Parse intent
-		Intent intent = Common.parseIntentGeneric2(argsArray, new Intent());
+		Intent intent = Common.parseIntentGeneric(argsArray, new Intent());
 		Response.Builder responseBuilder = Response.newBuilder();
 		try
 		{
@@ -115,12 +115,12 @@ public class Service
 			responseBuilder.setError(ByteString.copyFrom(t.getMessage().getBytes()));
 //			currentSession.sendFullTransmission("", t.getMessage());
 		}
-		currentSession.send(Base64.encodeToString(responseBuilder.build().toByteArray(), Base64.DEFAULT), false);
+		currentSession.send(Base64.encodeToString(responseBuilder.build().toByteArray(), Base64.DEFAULT), false, Common.COMMAND_REPLY);
 	}
 	
 	public static void stop(List<KVPair> argsArray, Session currentSession){
 		//Parse intent
-		Intent intent = Common.parseIntentGeneric2(argsArray, new Intent());
+		Intent intent = Common.parseIntentGeneric(argsArray, new Intent());
 		
 		Response.Builder responseBuilder = Response.newBuilder();
 		try
@@ -141,7 +141,7 @@ public class Service
 			responseBuilder.setError(ByteString.copyFrom(t.getMessage().getBytes()));
 //			currentSession.sendFullTransmission("", t.getMessage());
 		}
-		currentSession.send(Base64.encodeToString(responseBuilder.build().toByteArray(), Base64.DEFAULT), false);
+		currentSession.send(Base64.encodeToString(responseBuilder.build().toByteArray(), Base64.DEFAULT), false, Common.COMMAND_REPLY);
 	}
 
 }

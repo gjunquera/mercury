@@ -26,7 +26,7 @@ public class Native
 	public static void info(List<KVPair> argsArray, Session currentSession) {
 		
 		//Assign filter if one came in the arguments
-		String filter = Common.getParamString2(argsArray, "filter");
+		String filter = Common.getParamString(argsArray, "filter");
 		
 		//Get all packages from packagemanager
 		List <PackageInfo> packages = currentSession.applicationContext.getPackageManager().getInstalledPackages(PackageManager.GET_PERMISSIONS);
@@ -74,16 +74,12 @@ public class Native
 					infoBuilder.setPackageName(app.packageName);
 					infoBuilder.addAllNativeLib(nativeList);
 					nativeBuilder.addInfo(infoBuilder);
-					responseBuilder.setError(ByteString.copyFrom(Common.ERROR_OK.getBytes()));
-/*					responseBuilder.addStructuredData(Common.createKVPair("package_name", app.packageName));
-					responseBuilder.addStructuredData(Common.createKVPair("native_lib", nativeList));
-					responseBuilder.setError(ByteString.copyFrom(Common.ERROR_OK.getBytes()));
-*/					
+					responseBuilder.setError(ByteString.copyFrom(Common.ERROR_OK.getBytes()));				
 				}
             }
 		}
 		
 		responseBuilder.setData(nativeBuilder.build().toByteString()).build();
-		currentSession.send(Base64.encodeToString(responseBuilder.build().toByteArray(), Base64.DEFAULT), false);
+		currentSession.send(Base64.encodeToString(responseBuilder.build().toByteArray(), Base64.DEFAULT), false, Common.COMMAND_REPLY);
 	}
 }

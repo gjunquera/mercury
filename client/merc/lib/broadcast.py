@@ -64,9 +64,7 @@ Required Permission: null
             # Compile stated arguments to send to executeCommand
             request = vars(splitargs)
 
-            #print self.session.executeCommand("service", "info", {'filter':splitargs.filter} if splitargs.filter else None).getPaddedErrorOrData()
-            #print self.session.executeCommand("broadcast", "info", request).getPaddedErrorOrData()
-            response = self.session.newExecuteCommand("broadcast", "info", request)
+            response = self.session.executeCommand("broadcast", "info", request)
             broadcst_response = Message_pb2.BroadcastResponse()
             broadcst_response.ParseFromString(str(response.data))
             for info in broadcst_response.info:
@@ -134,8 +132,7 @@ Permission Denial: not allowed to send broadcast android.intent.action.BOOT_COMP
             if (splitargs.flags):
                 request['flags'] = str(int(splitargs.flags, 0))
 
-#            print self.session.executeCommand("broadcast", "send", request).getPaddedErrorOrData()
-            response = self.session.newExecuteCommand("broadcast", "send", request)
+            response = self.session.executeCommand("broadcast", "send", request)
             if response.error == "SUCCESS":
                 for pair in response.structured_data:
                     if pair.key == "intent":

@@ -18,7 +18,7 @@ public class Shell
 			Session currentSession)
 	{
 		// Get all the parameters
-		String args = Common.getParamString2(argsArray, "args");
+		String args = Common.getParamString(argsArray, "args");
 
 		String returnValue = "";
 
@@ -81,7 +81,7 @@ public class Shell
 			Session currentSession)
 	{
 		//Get all the parameters
-		String args = Common.getParamString2(argsArray, "args");
+		String args = Common.getParamString(argsArray, "args");
 		
 		if (Common.mercuryShell.write(args))
 			currentSession.newSendFullTransmission("", Common.ERROR_OK);

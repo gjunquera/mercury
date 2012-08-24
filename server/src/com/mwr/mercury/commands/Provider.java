@@ -31,8 +31,8 @@ public class Provider
 	
 	public static void info(List<KVPair> argsArray, Session currentSession)
 	{
-		String filter = Common.getParamString2(argsArray, "filter");
-		String permissions = Common.getParamString2(argsArray, "permissions");
+		String filter = Common.getParamString(argsArray, "filter");
+		String permissions = Common.getParamString(argsArray, "permissions");
 		
 		// Get all providers and iterate through them
 		List<ProviderInfo> providers = currentSession.applicationContext
@@ -149,7 +149,7 @@ public class Provider
 		}
 		
 		Response response = Response.newBuilder().setData(providerBuilder.build().toByteString()).build();
-		currentSession.send(Base64.encodeToString(response.toByteArray(), Base64.DEFAULT), false);
+		currentSession.send(Base64.encodeToString(response.toByteArray(), Base64.DEFAULT), false, Common.COMMAND_REPLY);
 		
 	}
 
@@ -159,7 +159,7 @@ public class Provider
 		// Get list of columns
 		ArrayList<String> columns = Common.getColumns(
 				currentSession.applicationContext.getContentResolver(),
-				Common.getParamString2(argsArray, "uri"), null);
+				Common.getParamString(argsArray, "uri"), null);
 
 		Response.Builder respBuilder = Response.newBuilder();
 
@@ -178,7 +178,7 @@ public class Provider
 			respBuilder.setError(ByteString.copyFrom(Common.ERROR_OK.getBytes()));
 		}
 		
-		currentSession.send(Base64.encodeToString(respBuilder.build().toByteArray(), Base64.DEFAULT), false);
+		currentSession.send(Base64.encodeToString(respBuilder.build().toByteArray(), Base64.DEFAULT), false, Common.COMMAND_REPLY);
 	}
 
 	public static void query(List<KVPair> argsArray,
@@ -193,14 +193,14 @@ public class Provider
 					.getContentResolver();
 
 			// Get all the parameters
-			List<String> projection = Common.getParamStringList2(argsArray,
+			List<String> projection = Common.getParamStringList(argsArray,
 					"projection");
-			String selection = Common.getParamString2(argsArray, "selection");
-			List<String> selectionArgs = Common.getParamStringList2(argsArray,
+			String selection = Common.getParamString(argsArray, "selection");
+			List<String> selectionArgs = Common.getParamStringList(argsArray,
 					"selectionArgs");
-			String sortOrder = Common.getParamString2(argsArray, "sortOrder");
+			String sortOrder = Common.getParamString(argsArray, "sortOrder");
 			String showColumns = Common
-					.getParamString2(argsArray, "showColumns");
+					.getParamString(argsArray, "showColumns");
 
 			// Put projection in an array
 			String[] projectionArray = null;
@@ -235,7 +235,7 @@ public class Provider
 			}
 
 			// Issue query
-			Cursor c = r.query(Uri.parse(new String(Common.getParam2(argsArray,
+			Cursor c = r.query(Uri.parse(new String(Common.getParam(argsArray,
 					"Uri"))), projectionArray,
 					(selection.length() > 0) ? selection : null,
 					selectionArgsArray, (sortOrder.length() > 0) ? sortOrder
@@ -249,7 +249,7 @@ public class Provider
 						|| showColumns.toUpperCase().contains("TRUE"))
 				{
 					ArrayList<String> cols = Common.getColumns(r,
-							Common.getParamString2(argsArray, "Uri"),
+							Common.getParamString(argsArray, "Uri"),
 							projectionArray);
 					Iterator<String> it = cols.iterator();
 
@@ -300,14 +300,14 @@ public class Provider
 		{
 			respBuilder.setError(ByteString.copyFrom(t.getMessage().getBytes()));
 		}
-		currentSession.send(Base64.encodeToString(respBuilder.build().toByteArray(), Base64.DEFAULT), false);
+		currentSession.send(Base64.encodeToString(respBuilder.build().toByteArray(), Base64.DEFAULT), false, Common.COMMAND_REPLY);
 	}
 
 	public static void read(List<KVPair> argsArray,
 			Session currentSession)
 	{
 
-		Uri uri = Uri.parse(Common.getParamString2(argsArray, "Uri"));
+		Uri uri = Uri.parse(Common.getParamString(argsArray, "Uri"));
 		ContentResolver r = currentSession.applicationContext
 				.getContentResolver();
 		InputStream is;
@@ -344,7 +344,7 @@ public class Provider
 			responseBuilder.setError(ByteString.copyFrom(e.getMessage().getBytes()));
 		}
 		
-		currentSession.send(Base64.encodeToString(responseBuilder.build().toByteArray(), Base64.DEFAULT), false);
+		currentSession.send(Base64.encodeToString(responseBuilder.build().toByteArray(), Base64.DEFAULT), false, Common.COMMAND_REPLY);
 	}
 
 	public static void insert(List<KVPair> argsArray,
@@ -356,40 +356,40 @@ public class Provider
 			ContentValues contentvalues = new ContentValues();
 
 			// Place values into contentvalue structure
-			List<String> strings = Common.getParamStringList2(argsArray,
+			List<String> strings = Common.getParamStringList(argsArray,
 					"string");
 			if (strings != null)
 				contentvalues.putAll(Common.listToContentValues(strings,
 						"string"));
 
-			List<String> booleans = Common.getParamStringList2(argsArray,
+			List<String> booleans = Common.getParamStringList(argsArray,
 					"boolean");
 			if (booleans != null)
 				contentvalues.putAll(Common.listToContentValues(booleans,
 						"boolean"));
 
-			List<String> integers = Common.getParamStringList2(argsArray,
+			List<String> integers = Common.getParamStringList(argsArray,
 					"integer");
 			if (integers != null)
 				contentvalues.putAll(Common.listToContentValues(integers,
 						"integer"));
 
-			List<String> doubles = Common.getParamStringList2(argsArray,
+			List<String> doubles = Common.getParamStringList(argsArray,
 					"double");
 			if (doubles != null)
 				contentvalues.putAll(Common.listToContentValues(doubles,
 						"double"));
 
-			List<String> floats = Common.getParamStringList2(argsArray, "float");
+			List<String> floats = Common.getParamStringList(argsArray, "float");
 			if (floats != null)
 				contentvalues.putAll(Common
 						.listToContentValues(floats, "float"));
 
-			List<String> longs = Common.getParamStringList2(argsArray, "long");
+			List<String> longs = Common.getParamStringList(argsArray, "long");
 			if (longs != null)
 				contentvalues.putAll(Common.listToContentValues(longs, "long"));
 
-			List<String> shorts = Common.getParamStringList2(argsArray, "short");
+			List<String> shorts = Common.getParamStringList(argsArray, "short");
 			if (shorts != null)
 				contentvalues.putAll(Common
 						.listToContentValues(shorts, "short"));
@@ -400,7 +400,7 @@ public class Provider
 
 			// Issue insert command
 			Uri c = r.insert(
-					Uri.parse(new String(Common.getParam2(argsArray, "Uri"))),
+					Uri.parse(new String(Common.getParam(argsArray, "Uri"))),
 					contentvalues);
 
 			responseBuilder.setData(ByteString.copyFrom(c.toString().getBytes()));
@@ -411,7 +411,7 @@ public class Provider
 		{
 			responseBuilder.setError(ByteString.copyFrom(Common.ERROR_UNKNOWN.getBytes()));
 		}
-		currentSession.send(Base64.encodeToString(responseBuilder.build().toByteArray(), Base64.DEFAULT), false);
+		currentSession.send(Base64.encodeToString(responseBuilder.build().toByteArray(), Base64.DEFAULT), false, Common.COMMAND_REPLY);
 	}
 
 	public static void update(List<KVPair> argsArray,
@@ -423,47 +423,47 @@ public class Provider
 			ContentValues contentvalues = new ContentValues();
 
 			// Place values into contentvalue structure
-			List<String> strings = Common.getParamStringList2(argsArray,
+			List<String> strings = Common.getParamStringList(argsArray,
 					"string");
 			if (strings != null)
 				contentvalues.putAll(Common.listToContentValues(strings,
 						"string"));
 
-			List<String> booleans = Common.getParamStringList2(argsArray,
+			List<String> booleans = Common.getParamStringList(argsArray,
 					"boolean");
 			if (booleans != null)
 				contentvalues.putAll(Common.listToContentValues(booleans,
 						"boolean"));
 
-			List<String> integers = Common.getParamStringList2(argsArray,
+			List<String> integers = Common.getParamStringList(argsArray,
 					"integer");
 			if (integers != null)
 				contentvalues.putAll(Common.listToContentValues(integers,
 						"integer"));
 
-			List<String> doubles = Common.getParamStringList2(argsArray,
+			List<String> doubles = Common.getParamStringList(argsArray,
 					"double");
 			if (doubles != null)
 				contentvalues.putAll(Common.listToContentValues(doubles,
 						"double"));
 
-			List<String> floats = Common.getParamStringList2(argsArray, "float");
+			List<String> floats = Common.getParamStringList(argsArray, "float");
 			if (floats != null)
 				contentvalues.putAll(Common
 						.listToContentValues(floats, "float"));
 
-			List<String> longs = Common.getParamStringList2(argsArray, "long");
+			List<String> longs = Common.getParamStringList(argsArray, "long");
 			if (longs != null)
 				contentvalues.putAll(Common.listToContentValues(longs, "long"));
 
-			List<String> shorts = Common.getParamStringList2(argsArray, "short");
+			List<String> shorts = Common.getParamStringList(argsArray, "short");
 			if (shorts != null)
 				contentvalues.putAll(Common
 						.listToContentValues(shorts, "short"));
 
-			List<String> selectionArgs = Common.getParamStringList2(argsArray,
+			List<String> selectionArgs = Common.getParamStringList(argsArray,
 					"selectionArgs");
-			String where = Common.getParamString2(argsArray, "where");
+			String where = Common.getParamString(argsArray, "where");
 
 			// Put selectionArgs in an array
 			String[] selectionArgsArray = null;
@@ -487,7 +487,7 @@ public class Provider
 
 			// Issue update command
 			Integer c = r.update(
-					Uri.parse(Common.getParamString2(argsArray, "Uri")),
+					Uri.parse(Common.getParamString(argsArray, "Uri")),
 					contentvalues, (where.length() > 0) ? where : null,
 					selectionArgsArray);
 
@@ -501,7 +501,7 @@ public class Provider
 		{
 			responseBuilder.setError(ByteString.copyFrom(Common.ERROR_UNKNOWN.getBytes()));
 		}
-		currentSession.send(Base64.encodeToString(responseBuilder.build().toByteArray(), Base64.DEFAULT), false);
+		currentSession.send(Base64.encodeToString(responseBuilder.build().toByteArray(), Base64.DEFAULT), false, Common.COMMAND_REPLY);
 	}
 
 	public static void delete(List<KVPair> argsArray,
@@ -511,9 +511,9 @@ public class Provider
 		try
 		{
 
-			List<String> selectionArgs = Common.getParamStringList2(argsArray,
+			List<String> selectionArgs = Common.getParamStringList(argsArray,
 					"selectionArgs");
-			String where = Common.getParamString2(argsArray, "where");
+			String where = Common.getParamString(argsArray, "where");
 
 			// Put selectionArgs in an array
 			String[] selectionArgsArray = null;
@@ -537,7 +537,7 @@ public class Provider
 
 			// Issue delete command
 			Integer rowsDeleted = r.delete(
-					Uri.parse(Common.getParamString2(argsArray, "Uri")),
+					Uri.parse(Common.getParamString(argsArray, "Uri")),
 					(where.length() > 0) ? where : null, selectionArgsArray);
 			
 			responseBuilder.setError(ByteString.copyFrom(Common.ERROR_OK.getBytes()));
@@ -551,13 +551,13 @@ public class Provider
 		{
 			responseBuilder.setError(ByteString.copyFrom(Common.ERROR_UNKNOWN.getBytes()));
 		}
-		currentSession.send(Base64.encodeToString(responseBuilder.build().toByteArray(), Base64.DEFAULT), false);
+		currentSession.send(Base64.encodeToString(responseBuilder.build().toByteArray(), Base64.DEFAULT), false, Common.COMMAND_REPLY);
 	}
 
 	public static void finduri(List<KVPair> argsArray, Session currentSession)
 	{
 		//Get path from arguments
-		String path = Common.getParamString2(argsArray, "path");
+		String path = Common.getParamString(argsArray, "path");
 		
 		ArrayList<String> lines = Common.strings(path);
 		Iterator<String> it = lines.iterator();
@@ -575,7 +575,8 @@ public class Provider
 		}
 		
 		responseBuilder.addStructuredData(pairBuilder);
-		currentSession.send(Base64.encodeToString(responseBuilder.build().toByteArray(), Base64.DEFAULT), false);
+		responseBuilder.setError(ByteString.copyFrom(Common.ERROR_OK.getBytes()));
+		currentSession.send(Base64.encodeToString(responseBuilder.build().toByteArray(), Base64.DEFAULT), false, Common.COMMAND_REPLY);
 	}
 
 }

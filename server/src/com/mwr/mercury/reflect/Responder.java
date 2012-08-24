@@ -27,11 +27,13 @@ public class Responder
 		send(response);
 	}
 	
+	
 	public void send(String response) {
 		String out = "<reflect>" + response + "</reflect>\n";
-		session.startTransmission();
+	/*	session.startTransmission();
 		session.send(out, false);
 		session.endTransmission();
+		*/
 	}
 	
 	public String createObjRef(String objRef) {

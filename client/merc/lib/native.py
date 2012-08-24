@@ -38,8 +38,7 @@ Note: it is possible to use -f instead of --filter as shorthand
             # Split arguments using shlex - this means that parameters with spaces can be used - escape " characters inside with \
             splitargs = parser.parse_args(shlex.split(args))
 
-#            response = self.session.executeCommand("native", "info", {'filter':splitargs.filter} if splitargs.filter else None).getPaddedErrorOrData()
-            response = self.session.newExecuteCommand("native", "info", {'filter':splitargs.filter} if splitargs.filter else None)
+            response = self.session.executeCommand("native", "info", {'filter':splitargs.filter} if splitargs.filter else None)
             
             if str(response.error) == "SUCCESS":
                 native_response = Message_pb2.NativeResponse()

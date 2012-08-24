@@ -22,7 +22,7 @@ public class Debuggable
 {
 	public static void info(List<KVPair> argsArray, Session currentSession){
 		//Assign filter if one came in the arguments
-		String filter = Common.getParamString2(argsArray, "filter");
+		String filter = Common.getParamString(argsArray, "filter");
 		
 		Response.Builder responseBuilder = Response.newBuilder();
 		DebugResponse.Builder debugBuilder = DebugResponse.newBuilder();
@@ -39,10 +39,6 @@ public class Debuggable
 			//Focus on debuggable apps only and apply filter
 			if (((app.flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0) && (app.packageName.toUpperCase().contains(filter.toUpperCase()) || app.processName.toUpperCase().contains(filter.toUpperCase()) || filter == ""))
             {
-				/*
-				responseBuilder.addStructuredData(Common.createKVPair("package_name", app.packageName));
-				responseBuilder.addStructuredData(Common.createKVPair("uid", new Integer(app.uid).toString()));
-				*/
 				DebugResponse.Info.Builder infoBuilder = DebugResponse.Info.newBuilder();
 				infoBuilder.setPackageName(app.packageName);
 				infoBuilder.setUid(app.uid);
@@ -57,12 +53,11 @@ public class Debuggable
             	}
             	infoBuilder.addAllPermission(permissionList);
             	debugBuilder.addInfo(infoBuilder);
-            	//responseBuilder.addStructuredData(Common.createKVPair("permissions", permissionList));
         		responseBuilder.setError(ByteString.copyFrom(Common.ERROR_OK.getBytes()));
             }
 		}
 		responseBuilder.setData(debugBuilder.build().toByteString()).build();
-		currentSession.send(Base64.encodeToString(responseBuilder.build().toByteArray(), Base64.DEFAULT), false);
+		currentSession.send(Base64.encodeToString(responseBuilder.build().toByteArray(), Base64.DEFAULT), false, Common.COMMAND_REPLY);
 	}
 
 }

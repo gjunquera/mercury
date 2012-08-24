@@ -25,8 +25,8 @@ public class Broadcast
 			Session currentSession)
 	{
 		//Assign filter and permissions if they came in the arguments
-		String filter = Common.getParamString2(argsArray, "filter");
-		String permissions = Common.getParamString2(argsArray, "permissions");
+		String filter = Common.getParamString(argsArray, "filter");
+		String permissions = Common.getParamString(argsArray, "permissions");
 				
 		//Get all packages from packagemanager
 		PackageManager pm = currentSession.applicationContext.getPackageManager();
@@ -93,14 +93,14 @@ public class Broadcast
 		}
 		
 		Response response = Response.newBuilder().setData(broadcastBuilder.build().toByteString()).build();
-		currentSession.send(Base64.encodeToString(response.toByteArray(), Base64.DEFAULT), false);
+		currentSession.send(Base64.encodeToString(response.toByteArray(), Base64.DEFAULT), false, Common.COMMAND_REPLY);
 	}
 
 	public static void send(List<KVPair> argsArray,
 			Session currentSession)
 	{
 		// Parse intent
-		Intent intent = Common.parseIntentGeneric2(argsArray, new Intent());
+		Intent intent = Common.parseIntentGeneric(argsArray, new Intent());
 
 		Response.Builder responseBuilder = Response.newBuilder();
 		try
@@ -113,7 +113,7 @@ public class Broadcast
 		{
 	    	responseBuilder.setError(ByteString.copyFrom(t.getMessage().getBytes()));
 		}
-    	currentSession.send(Base64.encodeToString(responseBuilder.build().toByteArray(), Base64.DEFAULT), false);
+    	currentSession.send(Base64.encodeToString(responseBuilder.build().toByteArray(), Base64.DEFAULT), false, Common.COMMAND_REPLY);
 	}
 
 }
