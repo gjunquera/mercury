@@ -124,10 +124,7 @@ class Session:
         self.socketConn.sendall(data)
 
     def receiveData(self):
-        return self.socketConn.recv(1024)
-    
-    def receiveData2(self, length):
-        return self.socketConn.recv(length)
+        return self.socketConn.recv(8192)
 
     def closeSocket(self):
         self.socketConn.close()

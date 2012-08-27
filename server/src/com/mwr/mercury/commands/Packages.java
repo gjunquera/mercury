@@ -145,7 +145,7 @@ public class Packages
 	public static void sharedUid(List<KVPair> argsArray,
 			Session currentSession)
 	{
-		PackageResponse.SharedUid.Builder sharedUidBuilder = PackageResponse.SharedUid.newBuilder();
+		PackageResponse.Builder packageBuilder = PackageResponse.newBuilder();
 
 		// Get all the parameters
 		String filter = Common.getParamString(argsArray, "uid");
@@ -176,7 +176,7 @@ public class Packages
 			if ((filter.length() > 0 && filter.equals(uid.toString()))
 					|| filter.length() == 0)
 			{
-				
+				PackageResponse.SharedUid.Builder sharedUidBuilder = PackageResponse.SharedUid.newBuilder();
 				sharedUidBuilder.setUid(uid);
 				
 				if (packages != null)
@@ -213,10 +213,11 @@ public class Packages
 				}
 				// Send accumulated permissions
 				sharedUidBuilder.addAllPermissions(accumulatedPermissions);
+				packageBuilder.addSharedUid(sharedUidBuilder);
 			}
 		}
 
-		Response response = Response.newBuilder().setData(sharedUidBuilder.build().toByteString()).build();
+		Response response = Response.newBuilder().setData(packageBuilder.build().toByteString()).build();
 		currentSession.send(Base64.encodeToString(response.toByteArray(), Base64.DEFAULT), false, Common.COMMAND_REPLY);
 	}
 
