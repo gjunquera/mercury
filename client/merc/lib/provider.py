@@ -128,7 +128,8 @@ _id | name | value
                     msg = "| "
                     for value in pair.value:
                         msg += str(value) + " | "
-                    print msg + "\n"
+                    print msg
+                print ""
 
         # FIXME: Choose specific exceptions to catch
         except Exception:

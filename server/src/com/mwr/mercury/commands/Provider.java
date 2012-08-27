@@ -277,7 +277,10 @@ public class Provider
 						try
 						{
 							data = c.getString(l);
-							pairBuilder.addValue(ByteString.copyFrom(data.getBytes()));
+							if (data != null)
+								pairBuilder.addValue(ByteString.copyFrom(data.getBytes()));
+							else 
+								pairBuilder.addValue(ByteString.copyFrom("null".getBytes()));
 						}
 						catch (Exception e)
 						{
@@ -289,6 +292,7 @@ public class Provider
 					respBuilder.addStructuredData(pairBuilder);
 				}
 				respBuilder.setError(ByteString.copyFrom(Common.ERROR_OK.getBytes()));
+				c.close();
 			}
 			else
 			{
