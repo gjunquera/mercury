@@ -156,23 +156,8 @@ public class Common
 		return md5;
 	}
 	
-	//Get parameter from a List<ArgumentWrapper> in byte[] format
-	//TODO remove this method
-/*	public static byte[] getParam(List<ArgumentWrapper> argWrapper, String type)
-	{
-		
-		for (int i = 0; i < argWrapper.size(); i++)
-		{
-			if (argWrapper.get(i).type.toUpperCase().equals(type.toUpperCase()))
-				return argWrapper.get(i).value;
-		}
-		
-		return null;
-	}
-	*/
 	
 	//Get parameter from a List<ArgumentWrapper> in byte[] format
-	//TODO change this method name
 	public static byte[] getParam(List<KVPair> pairsArray, String key)
 	{
 		
@@ -188,19 +173,7 @@ public class Common
 		}
 		return null;
 	}
-	
-	//Get parameter from a List<ArgumentWrapper> in String format
-	//TODO remove this method
-	/*
-	public static String getParamString(List<ArgumentWrapper> argWrapper, String type)
-	{
-		byte[] param = getParam(argWrapper, type); 
-		if (getParam(argWrapper, type) == null)
-			return "";
-		else return new String(param);
-	}
-	*/
-	
+		
 	//Get parameter from a List<Args>
 	public static String getParamString(List<KVPair> pairsArray, String key) 
 	{
@@ -209,22 +182,6 @@ public class Common
 			return "";
 		else return new String(param);
 	}
-
-	//Get parameter from a List<ArgumentWrapper> in List<String> format
-	//TODO remove this method
-/*	public static List<String> getParamStringList(List<ArgumentWrapper> argWrapper, String type)
-	{
-		List<String> returnValues = new ArrayList<String>();
-		
-		for (int i = 0; i < argWrapper.size(); i++)
-		{
-			if (argWrapper.get(i).type.toUpperCase().equals(type.toUpperCase()))
-				returnValues.add(new String(argWrapper.get(i).value));
-		}
-		
-		return returnValues;
-	}
-	*/
 	
 	//Get parameter from a List<KVPair> in List<String> format
 	public static List<String> getParamStringList(List<KVPair> pairsArray, String key)
@@ -350,91 +307,6 @@ public class Common
 		
 		return lines;
 	}
-			
-	//Parse a generic intent and add to given intent
-	/*
-	public static Intent parseIntentGeneric(List<ArgumentWrapper> argsArray, Intent intent)
-	{		
-		Intent localIntent = intent;
-		Iterator<ArgumentWrapper> it = argsArray.iterator();
-		
-		//Iterate through arguments
-		while (it.hasNext())
-		{
-			ArgumentWrapper arg = it.next();
-			
-			String key = "";
-			String value = "";
-			
-			try
-			{
-			
-				//Try split value into key:value pair
-				try
-				{
-					String[] split = new String(arg.value).split("=");
-					key = split[0];
-					value = split[1];
-				}
-				catch (Exception e) {}
-				
-				//Parse arguments into Intent
-				if (arg.type.toUpperCase().equals("ACTION"))
-					localIntent.setAction(new String(arg.value));
-				
-				if (arg.type.toUpperCase().equals("DATA"))
-					localIntent.setData(Uri.parse(new String(arg.value)));
-					
-				if (arg.type.toUpperCase().equals("MIMETYPE"))
-					localIntent.setType(new String(arg.value));
-
-				if (arg.type.toUpperCase().equals("CATEGORY"))
-					localIntent.addCategory(new String(arg.value));
-					
-				if (arg.type.toUpperCase().equals("COMPONENT"))
-					localIntent.setComponent(new ComponentName(key, value));
-					
-				if (arg.type.toUpperCase().equals("FLAGS"))
-					localIntent.setFlags(Integer.parseInt(new String(arg.value)));
-					
-				if (arg.type.toUpperCase().equals("EXTRABOOLEAN"))
-					localIntent.putExtra(key, Boolean.parseBoolean(value));
-					
-				if (arg.type.toUpperCase().equals("EXTRABYTE"))
-					localIntent.putExtra(key, Byte.parseByte(value));
-					
-				if (arg.type.toUpperCase().equals("EXTRADOUBLE"))
-					localIntent.putExtra(key, Double.parseDouble(value));
-					
-				if (arg.type.toUpperCase().equals("EXTRAFLOAT"))
-					localIntent.putExtra(key, Float.parseFloat(value));
-					
-				if (arg.type.toUpperCase().equals("EXTRAINTEGER"))
-					localIntent.putExtra(key, Integer.parseInt(value));
-					
-				if (arg.type.toUpperCase().equals("EXTRALONG"))
-					localIntent.putExtra(key, Long.parseLong(value));
-					
-				if (arg.type.toUpperCase().equals("EXTRASERIALIZABLE"))
-					localIntent.putExtra(key, Serializable.class.cast(value));
-					
-				if (arg.type.toUpperCase().equals("EXTRASHORT"))
-					localIntent.putExtra(key, Short.parseShort(value));
-					
-				if (arg.type.toUpperCase().equals("EXTRASTRING"))
-					localIntent.putExtra(key, value);
-					
-			}
-			catch (Exception e)
-			{
-				Log.e("mercury", "Error with argument " + arg.type + "--" + new String(arg.value));
-			}
-			
-			
-		}
-		
-		return localIntent;
-	}*/
 	
 	//Parse a generic intent and add to given intent
 	public static Intent parseIntentGeneric(List<KVPair> argsArray, Intent intent)
