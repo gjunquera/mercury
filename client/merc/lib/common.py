@@ -195,7 +195,7 @@ class Session:
             self.socketConn.recv(2)
             #read message type
             self.socketConn.recv(2)
-            #read version message length
+            #read message length
             self.socketConn.recv(4)
 #            lengthInt = struct.unpack("!i", length)[0]
             receivedData = self.receiveData()
@@ -283,11 +283,11 @@ class Session:
 
         # Read from file and send
         f = open(localPath, 'r')
-        bytesRead = f.read(5120)    # Read 20KB chunks 20480
+        bytesRead = f.read(20480)    # Read 20KB chunks
         while len(bytesRead) > 0:
             # Send these chunks to the server
             _response = self.executeCommand("core", "upload", {'path':fullPath, 'data':bytesRead})
-            bytesRead = f.read(320)    # Read 20KB chunks
+            bytesRead = f.read(20480)    # Read 20KB chunks
         f.close()
 
         # Get the MD5 of the uploaded file

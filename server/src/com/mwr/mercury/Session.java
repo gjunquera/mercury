@@ -83,14 +83,24 @@ public class Session
 		DataInputStream dataInput = new DataInputStream(clientSocket.getInputStream());
 		while(true) {
 			//Log.d("RECV", "before");
+            //read version
 			dataInput.readShort();
+            //read message type
 			dataInput.readShort();
+            //read message length
 			dataInput.readInt();
-			String r = in.readChunk();
+			String r = "";
+			String response = "";
+			while ((r = dataInput.readLine()) != null) {
+				response += r;
+				if (response.endsWith("\n"));
+					break;
+			}
+//			String r = in.readChunk();
 			//Log.d("RECV", "after");
 			try
 			{
-				byte[] buffer = Base64.decode(r, Base64.DEFAULT);
+				byte[] buffer = Base64.decode(response, Base64.DEFAULT);
 				Request request = Request.parseFrom(buffer);
 				return request;
 			}
