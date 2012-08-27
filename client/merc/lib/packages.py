@@ -196,7 +196,7 @@ Example - finding the attack surface of the built-in browser
 
 #            print self.session.executeCommand("packages", "attacksurface", {'packageName':splitargs.packageName}).getPaddedErrorOrData()
             response = self.session.executeCommand("packages", "attacksurface", {'packageName':splitargs.packageName})
-            if response.error == "SUCCESS":
+            if response.error == "OK":
                 for pair in response.structured_data:
                     if pair.key == "activities":
                         value = str(pair.value).translate(None, "[']")

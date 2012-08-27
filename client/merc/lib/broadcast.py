@@ -133,7 +133,7 @@ Permission Denial: not allowed to send broadcast android.intent.action.BOOT_COMP
                 request['flags'] = str(int(splitargs.flags, 0))
 
             response = self.session.executeCommand("broadcast", "send", request)
-            if response.error == "SUCCESS":
+            if response.error == "OK":
                 for pair in response.structured_data:
                     if pair.key == "intent":
                         for value in pair.value:

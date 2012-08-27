@@ -20,8 +20,8 @@ import android.util.Log;
 
 public class Session
 {
-	private BufferedBracketReader input;
-	private PrintWriter output;
+	DataInputStream dataInput;
+	DataOutputStream dataOutput;
 	private Socket clientSocket;  
 	public boolean connected;
 	public Context applicationContext;
@@ -35,9 +35,9 @@ public class Session
 
 		try
 		{
-			//input = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()), 8192);		
-			input = new BufferedBracketReader(new InputStreamReader(clientSocket.getInputStream()));
-			output = new PrintWriter(clientSocket.getOutputStream(), true);
+			//input = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()), 8192);
+			dataInput = new DataInputStream(clientSocket.getInputStream());
+			dataOutput = new DataOutputStream(clientSocket.getOutputStream());
 		}
 		catch (Exception e) {}
 		
@@ -49,13 +49,7 @@ public class Session
 	{
 		try
 		{
-			//Wait until ready
-			//while (!input.ready());
-			
-			//Read from socket
-			//String content = input.readLine();
-			//String content = readTransmission(input);
-			Request content = readTransmission(input);
+			Request content = readTransmission();
 					
 			//Maintain whether connection is still connected or not
 			if (content == null)
@@ -72,17 +66,10 @@ public class Session
 		}
 	}
 	
-	private Request readTransmission(BufferedBracketReader in) throws IOException
+	private Request readTransmission() throws IOException
 	{
-		//String out = "";
-		//StringBuilder sb = new StringBuilder(512);
-		//int cur = in.read();
-		//while(cur == '\n' || cur  == '\r' || cur == ' ') cur = in.read();
 		String out = "";
-		//in.skipWs();
-		DataInputStream dataInput = new DataInputStream(clientSocket.getInputStream());
 		while(true) {
-			//Log.d("RECV", "before");
             //read version
 			dataInput.readShort();
             //read message type
@@ -96,8 +83,6 @@ public class Session
 				if (response.endsWith("\n"));
 					break;
 			}
-//			String r = in.readChunk();
-			//Log.d("RECV", "after");
 			try
 			{
 				byte[] buffer = Base64.decode(response, Base64.DEFAULT);
@@ -107,7 +92,6 @@ public class Session
 			catch (Exception e)
 			{
 				if(r!=null) {
-					//Log.d("RECV", r);
 					out += r;
 					if(out.endsWith("</transmission>")) {
 						ArrayList<RequestWrapper> parsedCommands = new XML(out).getCommands();
@@ -123,18 +107,6 @@ public class Session
 					}
 				}
 			}
-			
-			
-			/*
-			sb.append((char)cur);
-			 
-			if (cur == (char)'>') {
-				String out = sb.toString();
-				if(out.endsWith("</transmission>"))
-					return out;
-			}
-			cur = in.read();
-			*/
 		}
 	}
 
@@ -143,7 +115,6 @@ public class Session
 	{
 		try
 		{
-			DataOutputStream dataOutput = new DataOutputStream(clientSocket.getOutputStream());
 			dataOutput.writeShort(Common.version);
 			dataOutput.writeShort(type);
 			dataOutput.writeInt(data.getBytes().length);

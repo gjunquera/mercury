@@ -17,7 +17,6 @@ import java.net.SocketException;
 import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.Iterator;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -33,35 +32,17 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.util.Log;
 
-//An interface to use in CommandWrapper to better define Commands
-interface Executor { public void execute(List<ArgumentWrapper> argsArray, Session currentSession); }
-
-//A class to wrap commands and their implementations inside
-class CommandWrapper
-{
-	public String section;
-	public String function;
-	public Executor executor;
-	
-	public CommandWrapper(String inputSection, String inputFunction, Executor inputExecutor)
-	{
-		section = inputSection;
-		function = inputFunction;
-		executor = inputExecutor;
-	}
-}
-
 //A class to wrap requests that come in
 class RequestWrapper
 {
 	public String section;
 	public String function;
-	public List<ArgumentWrapper> argsArray;
+	public List<KVPair> argsArray;
 }
 
 public class Common
 {	
-	public static final String ERROR_OK = "SUCCESS";
+	public static final String ERROR_OK = "OK";
 	public static final String ERROR_UNKNOWN = "ERROR";
 	public static final short COMMAND_REQUEST = 0;
 	public static final short COMMAND_REPLY = 1;
@@ -157,7 +138,7 @@ public class Common
 	}
 	
 	
-	//Get parameter from a List<ArgumentWrapper> in byte[] format
+	//Get parameter from a List<KVPair> in byte[] format
 	public static byte[] getParam(List<KVPair> pairsArray, String key)
 	{
 		

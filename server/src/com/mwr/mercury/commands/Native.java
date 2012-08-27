@@ -3,11 +3,9 @@ package com.mwr.mercury.commands;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.os.Parcelable.Creator;
 import android.util.Base64;
 
 import com.google.protobuf.ByteString;
-import com.mwr.mercury.ArgumentWrapper;
 import com.mwr.mercury.Common;
 import com.mwr.mercury.Message.KVPair;
 import com.mwr.mercury.Message.NativeResponse;

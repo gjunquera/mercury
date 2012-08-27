@@ -50,7 +50,7 @@ _id | name | value
 
             response = self.session.executeCommand("provider", "columns", request)
             msg = "| "
-            if response.error == "SUCCESS":
+            if response.error == "OK":
                 for pair in response.structured_data:
                     for column in pair.value:
                         msg += str(column) + " | "
@@ -123,7 +123,7 @@ _id | name | value
             request = vars(splitargs)
 
             response = self.session.executeCommand("provider", "query", request)
-            if str(response.error) == "SUCCESS":
+            if str(response.error) == "OK":
                 for pair in response.structured_data:
                     msg = "| "
                     for value in pair.value:
@@ -431,7 +431,7 @@ content://com.google.settings/partner
                     
                     if (".apk" in line):
                         print line + ":"
-                        if str(self.session.executeCommand("core", "unzip", {'filename':'classes.dex', 'path':line, 'destination':'/data/data/com.mwr.mercury/'}).error) != "SUCCESS":
+                        if str(self.session.executeCommand("core", "unzip", {'filename':'classes.dex', 'path':line, 'destination':'/data/data/com.mwr.mercury/'}).error) != "OK":
     
                             print "Contains no classes.dex\n"
     
@@ -440,12 +440,13 @@ content://com.google.settings/partner
                             #strings = self.session.executeCommand("provider", "finduri", {'path':'/data/data/com.mwr.mercury/classes.dex'}).data
                             response = self.session.executeCommand("provider", "finduri", {'path':'/data/data/com.mwr.mercury/classes.dex'})
                             
-                            if str(response.error) == "SUCCESS":
+                            if str(response.error) == "OK":
                                 for pair in response.structured_data:
                                     if pair.key == "uri":
-                                        value = str(pair.value)
-                                        if (("CONTENT://" in value.upper()) and ("CONTENT://" != value.upper())):
-                                            print value[value.upper().find("CONTENT"):]
+                                        for value in pair.value:
+                                            value_str = str(value)
+                                            if (("CONTENT://" in value_str.upper()) and ("CONTENT://" != value_str.upper())):
+                                                print value_str[value_str.upper().find("CONTENT"):]
 
                             # Delete classes.dex
                             self.session.executeCommand("core", "delete", {'path':'/data/data/com.mwr.mercury/classes.dex'})
@@ -456,7 +457,7 @@ content://com.google.settings/partner
                     if (".odex" in line):
                         print line + ":"
                         response_odex = self.session.executeCommand("provider", "finduri", {'path':line})
-                        if str(response_odex.error) == "SUCCESS":
+                        if str(response_odex.error) == "OK":
                                 for pair in response_odex.structured_data:
                                     if pair.key == "uri":
                                         for value in pair.value:

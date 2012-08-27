@@ -44,7 +44,7 @@ MD5 = 3fae15887320940b88df79fe01e62bd8
 
             response = self.session.downloadFile(splitargs.path, splitargs.downloadfolder)
 
-            if response.error != "SUCCESS":
+            if response.error != "OK":
                 print "\n" + response.error + "\n"
             else:
                 print "\nFile downloaded successfully\nMD5 = " + response.data + "\n"
@@ -103,7 +103,7 @@ MD5: 3fae15887320940b88df79fe01e62bd8
 
             response = self.session.uploadFile(splitargs.localPath, uploadDir)
 
-            if str(response.error) != "SUCCESS":
+            if str(response.error) != "OK":
                 print str(response.error)
             else:
                 print "\nFile uploaded successfully to " + uploadDir + "\nMD5: " + str(response.data) + "\n"
@@ -157,7 +157,7 @@ MD5 = 3fae15887320940b88df79fe01e62bd8
 
             fileSize = self.session.executeCommand("core", "fileSize", {"path":splitargs.path})
 
-            if str(fileSize.error) != "SUCCESS":
+            if str(fileSize.error) != "OK":
                 print fileSize.getPaddedError()
             else:
                 print "\nSize (bytes) = " + str(fileSize.data)

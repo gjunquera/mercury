@@ -2,7 +2,6 @@
 
 package com.mwr.mercury.commands;
 
-import com.mwr.mercury.ArgumentWrapper;
 import com.mwr.mercury.Common;
 import com.mwr.mercury.Message.KVPair;
 import com.mwr.mercury.Session;

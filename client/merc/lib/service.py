@@ -51,7 +51,7 @@ Required Permission: null
             request = vars(splitargs)
 
             response = self.session.executeCommand("service", "info", request)
-            if str(response.error) == "SUCCESS":
+            if str(response.error) == "OK":
                 service_resp = Message_pb2.ServiceResponse()
                 service_resp.ParseFromString(str(response.data))
                 for info in service_resp.info:
@@ -118,7 +118,7 @@ usage: start [--action <action>] [--category <category> [<category> ...]]
                 request['flags'] = str(int(splitargs.flags, 0))
 
             response = self.session.executeCommand("service", "start", request)
-            if str(response.error) == "SUCCESS":
+            if str(response.error) == "OK":
                 for pair in response.structured_data:
                     if pair.key == "intent":
                         intent = str(pair.value)
@@ -197,7 +197,7 @@ usage: stop [--action <action>] [--category <category> [<category> ...]]
                 request['flags'] = str(int(splitargs.flags, 0))
 
             response = self.session.executeCommand("service", "stop", request)
-            if str(response.error) == "SUCCESS":
+            if str(response.error) == "OK":
                 for pair in response.structured_data:
                     if pair.key == "intent":
                         print "Service stopped with " + str(pair.value)

@@ -23,7 +23,7 @@ COMMAND_REQUEST = 0;
 COMMAND_REPLY = 1;
 REFLECTIVE_REQUEST = 2;
 REFLECTIVE_REPLY = 3;
-ERROR_OK = "SUCCESS"
+ERROR_OK = "OK"
 
 # Debugging mode
 debug_mode = False
@@ -227,7 +227,7 @@ class Session:
         returnValue = Response()
         
         returnValue.error = str(response.error)
-        if returnValue.error != "SUCCESS":
+        if returnValue.error != "OK":
             return returnValue
         
         fileSize = int(response.data)
@@ -254,7 +254,7 @@ class Session:
             offset += len(dataStr)
 
             returnValue.error = str(content.error)
-            if returnValue.error != "SUCCESS":
+            if returnValue.error != "OK":
                 # If error occurred then return it
                 return returnValue
             else:

@@ -3,7 +3,6 @@
 package com.mwr.mercury.commands;
 
 import com.google.protobuf.ByteString;
-import com.mwr.mercury.ArgumentWrapper;
 import com.mwr.mercury.Common;
 import com.mwr.mercury.Message.KVPair;
 import com.mwr.mercury.Message.PackageResponse;

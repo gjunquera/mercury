@@ -64,7 +64,7 @@ private ArrayList<RequestWrapper> parseXML(String xmlInput)
 
 	//The variable to put all commands into
 	ArrayList<RequestWrapper> cmdList = new ArrayList<RequestWrapper>();
-	
+/*	
 	try
 	{
 	
@@ -121,7 +121,7 @@ private ArrayList<RequestWrapper> parseXML(String xmlInput)
 	
 		}
 		catch (Exception e) {}
-	
+*/	
 	return cmdList;
 
 }

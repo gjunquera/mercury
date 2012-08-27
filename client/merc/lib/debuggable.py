@@ -40,7 +40,7 @@ Note: it is possible to use -f instead of --filter as shorthand
 
             response = self.session.executeCommand("debuggable", "info", {'filter':splitargs.filter} if splitargs.filter else None)
 
-            if str(response.error) == "SUCCESS":
+            if str(response.error) == "OK":
                 debug_response = Message_pb2.DebugResponse()
                 debug_response.ParseFromString(str(response.data))
                 for info in debug_response.info:

@@ -82,7 +82,7 @@ Activity started with Intent { act=android.intent.action.VIEW dat=http://www.goo
                 request['flags'] = str(int(splitargs.flags, 0))
 
             response = self.session.executeCommand("activity", "start", request)
-            if str(response.error) == "SUCCESS":
+            if str(response.error) == "OK":
                 for pair in response.structured_data:
                     if pair.key == "intent":
                         print "Activity started with " + str(pair.value)
@@ -174,7 +174,7 @@ Target activity: com.android.browser.BrowserActivity
                 request['flags'] = str(int(splitargs.flags, 0))
 
             response = self.session.executeCommand("activity", "match", request)
-            if response.error == "SUCCESS":
+            if response.error == "OK":
                 for pair in response.structured_data:
                     print str(response.data) + ":\n"
                     if pair.key == "package_name":

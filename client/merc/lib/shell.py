@@ -45,7 +45,7 @@ usage: persistent [--new]
             while (prompt.upper() != "BACK"):
                 _write = self.session.executeCommand("shell", "executeMercuryShell", {'args':prompt})
                 read = self.session.executeCommand("shell", "readMercuryShell", None)
-                if str(read.error) == "SUCCESS":
+                if str(read.error) == "OK":
                     sys.stdout.write(str(read.data).replace(prompt, "", 1).strip() + " ")
                 prompt = raw_input().replace("$BB", "/data/data/com.mwr.mercury/busybox")
 
