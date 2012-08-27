@@ -5,17 +5,14 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
 import com.google.protobuf.ByteString;
 import com.mwr.mercury.Message.Request;
 import com.mwr.mercury.Message.Request.Builder;
 import com.mwr.mercury.Message.Response;
-import com.mwr.mercury.Message.ResponseOrBuilder;
 
 import android.content.Context;
 import android.util.Base64;
@@ -137,7 +134,6 @@ public class Session
 		try
 		{
 			DataOutputStream dataOutput = new DataOutputStream(clientSocket.getOutputStream());
-//			output = clientSocket.getOutputStream();
 			dataOutput.writeShort(Common.version);
 			dataOutput.writeShort(type);
 			dataOutput.writeInt(data.getBytes().length);
@@ -151,137 +147,8 @@ public class Session
 		}
 		
 		return true;
-		
-		/*
-		try
-		{
-			//Write to socket base64 encoded with a newline on end
-			if (base64)
-				output.print(new String(Base64.encode(data.getBytes(), Base64.DEFAULT)) + "\n");
-			else {
-			//Or not
-				output.print(Common.version);
-				output.print(type);
-				output.print(length);
-				output.print(data);
-			}
-			
-			output.flush();
-			
-			return true;
-		}
-		catch (Exception e)
-		{
-			return false;
-		}
-		*/
+
 	}
-	
-	/*
-	//Send start of transmission tag
-	public void startTransmission()
-	{
-		send("<?xml version=\"1.0\" ?><transmission>", false);	  
-	}
-	
-	//Send start of response tag
-	public void startResponse()
-	{
-		send("<response>", false);
-	}
-	
-	//Send end of response tag
-	public void endResponse()
-	{
-		send("</response>", false);
-	}
-	
-	//Send error tag with contents
-	public void error(String error)
-	{
-		send("<error>", false);
-		send(error, true);
-		send("</error>", false);
-	}
-	
-	//Send error tag with no contents
-	public void noError()
-	{
-		send("<error />", false);
-	}
-	
-	//Send start of data tag
-	public void startData()
-	{
-		send("<data>", false);
-	}
-	
-	//Send end of data tag
-	public void endData()
-	{
-		send("</data>", false);
-	}
-	
-	//Send end of transmission tag and close socket
-	public void endTransmission()
-	{
-		//Send close of transmission
-		send("</transmission>", false);
-		
-		//Set connected to false so that server does not keep listening on this conn
-		// connected = false;
-		
-		//Kill socket
-		//try
-		//{
-		//	clientSocket.close();
-		//}
-		//catch (IOException e) {}
-	}
-	*/
-	
-	//Send a full transmission without worrying about structure
-	//Should only be used for small responses < 50KB
-//	public void sendFullTransmission(String response, String error)
-//	{
-		/*
-		
-		Sends the following structure:
-				
-		<transmission>
-	        <command>
-	            <section>provider</section>
-	            <function>query</function>
-	            <arguments>
-	                <selectionargs>ZWlzaA==</selectionargs>
-	                <selection>dzAwdHk=</selection>
-	                <projection>bG9sb2xsb2xvbG9sb2wgbG9sb2xvbG9s</projection>
-	                <URI>Y29udGVudDovL3Bldw==</URI>
-	                <sortorder>YXNj</sortorder>
-	            </arguments>
-	        </command>
-	    </transmission>
-		
-		*/
-/*		
-		startTransmission();
-		startResponse();
-		startData();
-		send(response, true);
-		endData();
-		
-		if (error == null)
-			error("Null error given");
-		else
-			if (error.length() > 0)
-				error(error);
-			else
-				noError();
-		
-		endResponse();
-		endTransmission();
-	}
-	*/
 		
 	// Send a full transmission without worrying about structure
 	// Should only be used for small responses < 50KB
@@ -298,7 +165,6 @@ public class Session
 		resp = builder.build();
 		
 		send(Base64.encodeToString(resp.toByteArray(), Base64.DEFAULT), false, Common.COMMAND_REPLY);
-		//send(resp.toByteArray(), false);
 	}
   
   

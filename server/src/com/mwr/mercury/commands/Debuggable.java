@@ -14,7 +14,6 @@ import com.google.protobuf.ByteString;
 import com.mwr.mercury.Common;
 import com.mwr.mercury.Message.DebugResponse;
 import com.mwr.mercury.Message.KVPair;
-import com.mwr.mercury.Message.NativeResponse;
 import com.mwr.mercury.Session;
 import com.mwr.mercury.Message.Response;
 

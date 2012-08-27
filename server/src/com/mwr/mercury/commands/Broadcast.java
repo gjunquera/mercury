@@ -6,7 +6,6 @@ import com.google.protobuf.ByteString;
 import com.mwr.mercury.Common;
 import com.mwr.mercury.Message.BroadcastResponse;
 import com.mwr.mercury.Message.KVPair;
-import com.mwr.mercury.Message.ProviderResponse;
 import com.mwr.mercury.Message.Response;
 import com.mwr.mercury.Session;
 
@@ -14,7 +13,6 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.content.pm.ServiceInfo;
 import android.util.Base64;
 
 import java.util.List;
