@@ -38,6 +38,21 @@ Credit: Glauco Junquera - Samsung SIDI"""
         response = session.executeCommand("broadcast", "info", request)
         content.broadcast.ParseFromString(str(response.data))
         
+        #Request Native Info
+        request = {'filter': None, 'output': None}
+        response = session.executeCommand("native", "info", request)
+        content.native.ParseFromString(str(response.data))
+        
+        #Request Debuggable Info
+        request = {'filter': None, 'output': None}
+        response = session.executeCommand("debuggable", "info", request)
+        content.debug.ParseFromString(str(response.data))
+
+#TODO
+        #Request Attack Surface Info
+#        request = {'packageName': None}        
+#        response = self.session.executeCommand("packages", "attacksurface", {'packageName':splitargs.packageName})
+        
         general_links = []
         general_links.append(MenuLink("Package Info", "#packageInfo"))
         
@@ -46,27 +61,32 @@ Credit: Glauco Junquera - Samsung SIDI"""
         components_links.append(MenuLink("Broadcast Receivers", "#receivers"))
         components_links.append(MenuLink("Content Providers", "#providers"))
         components_links.append(MenuLink("Services", "#services"))
+        components_links.append(MenuLink("Native Libraries", "#native"))
         
-        menu_sections = []
-        menu_sections.append(MenuSection("General Info", general_links))
-        menu_sections.append(MenuSection("Package Components", components_links))
+        general_sections = []
+        general_sections.append(MenuSection("General Info", general_links))
+        general_sections.append(MenuSection("Package Components", components_links))
 
         package_names = []
         #crate an html for each package
         for info in content.packages.info:
             package_names.append(str(info.packageName))
-            html = self.makePackageHtml(str(info.packageName), menu_sections, content, str(info.packageName))
+            html = self.makePackageHtml(str(info.packageName), general_sections, content, str(info.packageName))
             self.copyHtmlToFile(html, "report/" + str(info.packageName) + ".html")
             
         #create index page menu links
-        index_links = []
+        general_links = []
+        general_links.append(MenuLink("Debug Packages", "#debug"))
+        
+        package_links = []
         for package in package_names:
-            index_links.append(MenuLink(package, package + ".html"))
+            package_links.append(MenuLink(package, package + ".html"))
             
         index_sections = []
-        index_sections.append(MenuSection("Packages", index_links))
+        index_sections.append(MenuSection("Debug Packages", general_links))
+        index_sections.append(MenuSection("Packages", package_links))
         
-        html = self.makeGeneralHtml("Mercury Report", index_sections, "")
+        html = self.makeGeneralHtml("Mercury Report", index_sections, content)
         self.copyHtmlToFile(html, "report/report_index.html")        
         
     def makeGeneralHtml(self, title, menu_sections, content):
@@ -132,18 +152,22 @@ Credit: Glauco Junquera - Samsung SIDI"""
         html += self.makeBroadcastHtml(content.broadcast, package) + "\n"
         html += self.makeProviderHtml(content.provider, package) + "\n"
         html += self.makeServiceHtml(content.service, package) + "\n"
+        html += self.makeNativeHtml(content.native, package) + "\n"        
         html += "</div>"
         return html
     
     def makeGeneralContent(self, content):
-        return ""
+        html = "<div id=\"content\">\n"
+        html += self.makeDebugHtml(content.debug) + "\n"
+        html += "</div>"        
+        return html
     
     def makeServiceHtml(self, content, package=None):
         html = "<p id=\"services\">Services</p>\n"
         for info in content.info:
             if (package != None) and (package == str(info.packageName)):
                 lines = []
-                lines.append(["Package Name", str(info.packageName)])
+#                lines.append(["Package Name", str(info.packageName)])
                 lines.append(["Service", str(info.service)])
                 lines.append(["Required Permission", str(info.permission)])
                 html += self.makeTable(lines) + "\n"
@@ -154,8 +178,7 @@ Credit: Glauco Junquera - Samsung SIDI"""
         for info in content.info:
             if (package != None) and (package == str(info.packageName)):
                 lines = []
-                lines.append(["Package name", str(info.packageName)])
-                lines.append(["Activity", str(info.activity)])
+                lines.append([str(info.activity)])
                 html += self.makeTable(lines) + "\n"
         return html
     
@@ -164,7 +187,7 @@ Credit: Glauco Junquera - Samsung SIDI"""
         for info in content.info:
             if (package != None) and (package == str(info.packageName)):
                 lines = []
-                lines.append(["PackageName",  str(info.packageName)])
+#                lines.append(["PackageName",  str(info.packageName)])
                 lines.append(["Authority", str(info.authority)])
                 lines.append(["Read Permission", str(info.readPermission)])
                 lines.append(["Write Permission", str(info.writePermission)])
@@ -185,11 +208,35 @@ Credit: Glauco Junquera - Samsung SIDI"""
         for info in content.info:
             if (package != None) and (package == str(info.packageName)):
                 lines = []
-                lines.append(["Package name", str(info.packageName)])
+#                lines.append(["Package name", str(info.packageName)])
                 lines.append(["Receiver", str(info.receiver)])
                 lines.append(["Required Permission", str(info.permission)])
                 html += self.makeTable(lines) + "\n"
         return html
+    
+    def makeNativeHtml(self, content, package=None):
+        html = "<p id=\"native\">Native Libraries</p>\n"
+        for info in content.info:
+            if (package != None) and (package == str(info.packageName)):
+                lines = []
+#                lines.append(["Package name", str(info.packageName)])
+                for native in info.nativeLib:
+                    lines.append([native])
+                html += self.makeTable(lines) + "\n"
+        return html
+    
+    def makeDebugHtml(self, content, package=None):
+        html = "<p id=\"debug\">Debuggable Packages</p>\n"
+        for info in content.info:
+            lines = []
+            lines.append(["Package name", str(info.packageName)])
+            lines.append(["UID", str(int(info.uid))])
+            permission_str = ""
+            for permission in info.permission:
+                permission_str += str(permission) + "<br>\n"
+            lines.append(["Permissions", permission_str])
+            html += self.makeTable(lines) + "\n"            
+        return html    
     
     def makePackageGeneralInfoHtml(self, content, package=None):
         html = "<p id=\"packageInfo\">Package Info</p>\n"
@@ -211,8 +258,10 @@ Credit: Glauco Junquera - Samsung SIDI"""
                     lines.append(["Shared libraries", str(sharedLib)])
                 if info.sharedUserId is not None:
                     lines.append(["SharedUserId: ", str(info.sharedUserId) + " (" + str(info.uid) + ")"])
+                permission_str = ""
                 for permission in  info.permission:
-                    lines.append(["Permission", str(permission)])
+                    permission_str += str(permission) + "<br>\n"
+                lines.append(["Permission", permission_str])
                 html += self.makeTable(lines) + "\n"
         return html
     
@@ -241,3 +290,5 @@ class PackageContent:
         self.provider = Message_pb2.ProviderResponse()
         self.broadcast = Message_pb2.BroadcastResponse()
         self.service = Message_pb2.ServiceResponse()
+        self.native = Message_pb2.NativeResponse()
+        self.debug = Message_pb2.DebugResponse()
