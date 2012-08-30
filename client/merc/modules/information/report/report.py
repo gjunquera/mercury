@@ -1,5 +1,9 @@
+import shlex
+import os
+import shutil
 from merc.lib.modules import Module
 from merc.lib import Message_pb2
+from merc.lib.interface import BaseArgumentParser
 
 class Report(Module):
     """Description: Use Mercury Commands to create a HTML Report
@@ -10,41 +14,50 @@ Credit: Glauco Junquera - Samsung SIDI"""
         self.path = ["information", "report"]
 
     def execute(self, session, _arg):
+                
+        package_filter = _arg.get('filter')
+        dest_folder = _arg.get('destFolder')
+        if dest_folder is None:
+            dest_folder = ""
+        else:
+            dest_folder.replace('\\', '/')
+            if not dest_folder.endswith("/"):
+                dest_folder += "/"
         
         content = PackageContent()
         
         #Request packages info
-        request = {'filter': None, 'output': None, 'permissions': None}
+        request = {'filter': package_filter, 'output': None, 'permissions': None}
         response = session.executeCommand("packages", "info", request)
         content.packages.ParseFromString(str(response.data))
         
         #Request service info
-        request = {'filter': None, 'output': None, 'permissions': None}        
+        request = {'filter': package_filter, 'output': None, 'permissions': None}        
         response = session.executeCommand("service", "info", request)
         content.service.ParseFromString(str(response.data))
             
         #Request activity info
-        request = {'filter': None, 'output': None}                    
+        request = {'filter': package_filter, 'output': None}                    
         response = session.executeCommand("activity", "info", request)
         content.activity.ParseFromString(str(response.data))
             
         #Request provider info
-        request = {'filter': None, 'output': None, 'permissions': None}                    
+        request = {'filter': package_filter, 'output': None, 'permissions': None}                    
         response = session.executeCommand("provider", "info", request)
         content.provider.ParseFromString(str(response.data))
         
         #Request Broadcast Receiver info
-        request = {'filter': None, 'output': None, 'permissions': None}
+        request = {'filter': package_filter, 'output': None, 'permissions': None}
         response = session.executeCommand("broadcast", "info", request)
         content.broadcast.ParseFromString(str(response.data))
         
         #Request Native Info
-        request = {'filter': None, 'output': None}
+        request = {'filter': package_filter, 'output': None}
         response = session.executeCommand("native", "info", request)
         content.native.ParseFromString(str(response.data))
         
         #Request Debuggable Info
-        request = {'filter': None, 'output': None}
+        request = {'filter': package_filter, 'output': None}
         response = session.executeCommand("debuggable", "info", request)
         content.debug.ParseFromString(str(response.data))
 
@@ -70,32 +83,36 @@ Credit: Glauco Junquera - Samsung SIDI"""
         package_names = []
         #crate an html for each package
         for info in content.packages.info:
-            package_names.append(str(info.packageName))
-            html = self.makePackageHtml(str(info.packageName), general_sections, content, str(info.packageName))
-            self.copyHtmlToFile(html, "report/" + str(info.packageName) + ".html")
+            if package_filter == None or package_filter == str(info.packageName):
+                package_names.append(str(info.packageName))
+                html = self.makePackageHtml(str(info.packageName), general_sections, content, str(info.packageName))
+                self.copyHtmlToFile(html, dest_folder, str(info.packageName))
             
         #create index page menu links
         general_links = []
-        general_links.append(MenuLink("Debug Packages", "#debug"))
+        general_links.append(MenuLink("Debuggable Packages", "#debug"))
         
         package_links = []
         for package in package_names:
             package_links.append(MenuLink(package, package + ".html"))
             
         index_sections = []
-        index_sections.append(MenuSection("Debug Packages", general_links))
+        index_sections.append(MenuSection("Debug Info", general_links))
         index_sections.append(MenuSection("Packages", package_links))
         
-        html = self.makeGeneralHtml("Mercury Report", index_sections, content)
-        self.copyHtmlToFile(html, "report/report_index.html")        
+        if package_filter is None:
+            html = self.makeGeneralHtml("Mercury Report", index_sections, content)
+            self.copyHtmlToFile(html, dest_folder, "report_index")
+
+        self.copyCssToDestination(dest_folder)
         
     def makeGeneralHtml(self, title, menu_sections, content):
         html = "<html>\n"
         html += "<link rel=\"stylesheet\" href=\"report.css\">\n"
         html += "<body>\n"
-        html += self.makeHeader(title) + "\n"
+#        html += self.makeHeader(title) + "\n"
         html += self.makeMenu(menu_sections) + "\n"
-        html += self.makeGeneralContent(content) + "\n"
+        html += self.makeGeneralContent(content, title) + "\n"
         html += "</body>\n"
         html += "</html>"                
         return html
@@ -104,9 +121,9 @@ Credit: Glauco Junquera - Samsung SIDI"""
         html = "<html>\n"
         html += "<link rel=\"stylesheet\" href=\"report.css\">\n"
         html += "<body>\n"
-        html += self.makeHeader(title) + "\n"
+#        html += self.makeHeader(title) + "\n"
         html += self.makeMenu(menu_sections) + "\n"
-        html += self.makePackageContent(content, package) + "\n"
+        html += self.makePackageContent(content, package, title) + "\n"
         html += "</body>\n"
         html += "</html>"
         return html
@@ -145,8 +162,9 @@ Credit: Glauco Junquera - Samsung SIDI"""
         html += "</tr>"
         return html
     
-    def makePackageContent(self, content, package):
+    def makePackageContent(self, content, package, title):
         html = "<div id=\"content\">\n"
+        html += "<p id=\"title\">" + title + "</p>\n"
         html += self.makePackageGeneralInfoHtml(content.packages, package) + "\n"
         html += self.makeActivityHtml(content.activity, package) + "\n"
         html += self.makeBroadcastHtml(content.broadcast, package) + "\n"
@@ -156,14 +174,15 @@ Credit: Glauco Junquera - Samsung SIDI"""
         html += "</div>"
         return html
     
-    def makeGeneralContent(self, content):
+    def makeGeneralContent(self, content, title):
         html = "<div id=\"content\">\n"
+        html += "<p id=\"title\">" + title + "</p>\n"        
         html += self.makeDebugHtml(content.debug) + "\n"
         html += "</div>"        
         return html
     
     def makeServiceHtml(self, content, package=None):
-        html = "<p id=\"services\">Services</p>\n"
+        html = "<p id=\"services\" class=\"section_title\">Services</p>\n"
         for info in content.info:
             if (package != None) and (package == str(info.packageName)):
                 lines = []
@@ -174,7 +193,7 @@ Credit: Glauco Junquera - Samsung SIDI"""
         return html
     
     def makeActivityHtml(self, content, package=None):
-        html = "<p id=\"activities\">Activities</p>\n"
+        html = "<p id=\"activities\" class=\"section_title\">Activities</p>\n"
         for info in content.info:
             if (package != None) and (package == str(info.packageName)):
                 lines = []
@@ -183,7 +202,7 @@ Credit: Glauco Junquera - Samsung SIDI"""
         return html
     
     def makeProviderHtml(self, content, package=None):
-        html = "<p id=\"providers\">Content Providers</p>\n"
+        html = "<p id=\"providers\" class=\"section_title\">Content Providers</p>\n"
         for info in content.info:
             if (package != None) and (package == str(info.packageName)):
                 lines = []
@@ -204,7 +223,7 @@ Credit: Glauco Junquera - Samsung SIDI"""
         return html
     
     def makeBroadcastHtml(self, content, package=None):
-        html = "<p id=\"receivers\">Broadcast Receivers</p>\n"
+        html = "<p id=\"receivers\" class=\"section_title\">Broadcast Receivers</p>\n"
         for info in content.info:
             if (package != None) and (package == str(info.packageName)):
                 lines = []
@@ -215,7 +234,7 @@ Credit: Glauco Junquera - Samsung SIDI"""
         return html
     
     def makeNativeHtml(self, content, package=None):
-        html = "<p id=\"native\">Native Libraries</p>\n"
+        html = "<p id=\"native\" class=\"section_title\">Native Libraries</p>\n"
         for info in content.info:
             if (package != None) and (package == str(info.packageName)):
                 lines = []
@@ -226,7 +245,7 @@ Credit: Glauco Junquera - Samsung SIDI"""
         return html
     
     def makeDebugHtml(self, content, package=None):
-        html = "<p id=\"debug\">Debuggable Packages</p>\n"
+        html = "<p id=\"debug\" class=\"section_title\">Debuggable Packages</p>\n"
         for info in content.info:
             lines = []
             lines.append(["Package name", str(info.packageName)])
@@ -239,7 +258,7 @@ Credit: Glauco Junquera - Samsung SIDI"""
         return html    
     
     def makePackageGeneralInfoHtml(self, content, package=None):
-        html = "<p id=\"packageInfo\">Package Info</p>\n"
+        html = "<p id=\"packageInfo\" class=\"section_title\">Package Info</p>\n"
         for info in content.info:
             if (package != None) and (package == str(info.packageName)):
                 lines = []
@@ -261,14 +280,20 @@ Credit: Glauco Junquera - Samsung SIDI"""
                 permission_str = ""
                 for permission in  info.permission:
                     permission_str += str(permission) + "<br>\n"
-                lines.append(["Permission", permission_str])
+                lines.append(["Permissions", permission_str])
                 html += self.makeTable(lines) + "\n"
         return html
     
-    def copyHtmlToFile(self, html="", path="generated_report.html"):
-        f = open(path, 'w')
+    def copyHtmlToFile(self, html="", path="", filename="generated_html"):
+        if not os.path.exists(path + "report"):
+            os.makedirs(path + "report")
+        f = open(path + "report/" + filename + ".html", 'w')
         f.write(html)
         f.close()
+        
+    def copyCssToDestination(self, dest_path=""):
+        current_path = os.getcwd().replace("\\", "/")
+        shutil.copyfile(current_path + "/merc/modules/information/report/report.css", dest_path + "report/report.css")
             
 class MenuSection:
 
