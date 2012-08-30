@@ -1,9 +1,7 @@
-import shlex
 import os
 import shutil
 from merc.lib.modules import Module
 from merc.lib import Message_pb2
-from merc.lib.interface import BaseArgumentParser
 
 class Report(Module):
     """Description: Use Mercury Commands to create a HTML Report
@@ -20,9 +18,15 @@ Credit: Glauco Junquera - Samsung SIDI"""
         if dest_folder is None:
             dest_folder = ""
         else:
-            dest_folder.replace('\\', '/')
+            dest_folder.replace("\\", "/")
             if not dest_folder.endswith("/"):
                 dest_folder += "/"
+                
+        #return if the destination folder does not exist                
+        if (len(dest_folder) > 0) and (not os.path.exists(dest_folder)):
+            raise Exception("Destination folder does not exists")
+        
+        self.cleanFolder(dest_folder + "report")
         
         content = PackageContent()
         
@@ -87,20 +91,20 @@ Credit: Glauco Junquera - Samsung SIDI"""
                 package_names.append(str(info.packageName))
                 html = self.makePackageHtml(str(info.packageName), general_sections, content, str(info.packageName))
                 self.copyHtmlToFile(html, dest_folder, str(info.packageName))
+                
+        if package_filter is None:    
+            #create index page menu links
+            general_links = []
+            general_links.append(MenuLink("Debuggable Packages", "#debug"))
             
-        #create index page menu links
-        general_links = []
-        general_links.append(MenuLink("Debuggable Packages", "#debug"))
-        
-        package_links = []
-        for package in package_names:
-            package_links.append(MenuLink(package, package + ".html"))
+            package_links = []
+            for package in package_names:
+                package_links.append(MenuLink(package, package + ".html"))
+                
+            index_sections = []
+            index_sections.append(MenuSection("Debug Info", general_links))
+            index_sections.append(MenuSection("Packages", package_links))
             
-        index_sections = []
-        index_sections.append(MenuSection("Debug Info", general_links))
-        index_sections.append(MenuSection("Packages", package_links))
-        
-        if package_filter is None:
             html = self.makeGeneralHtml("Mercury Report", index_sections, content)
             self.copyHtmlToFile(html, dest_folder, "report_index")
 
@@ -294,6 +298,17 @@ Credit: Glauco Junquera - Samsung SIDI"""
     def copyCssToDestination(self, dest_path=""):
         current_path = os.getcwd().replace("\\", "/")
         shutil.copyfile(current_path + "/merc/modules/information/report/report.css", dest_path + "report/report.css")
+        
+    def cleanFolder(self, path):
+        #remove all files from report folder
+        if os.path.exists(path):
+            for the_file in os.listdir(path):
+                file_path = os.path.join(path, the_file)
+                try:
+                    if os.path.isfile(file_path):
+                        os.unlink(file_path)
+                except Exception, e:
+                    print e        
             
 class MenuSection:
 
