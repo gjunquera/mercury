@@ -95,6 +95,7 @@ Credit: Glauco Junquera - Samsung SIDI"""
         if package_filter is None:    
             #create index page menu links
             general_links = []
+            general_links.append(MenuLink("Unprotected Providers", "#unprotected"))
             general_links.append(MenuLink("Debuggable Packages", "#debug"))
             
             package_links = []
@@ -102,7 +103,7 @@ Credit: Glauco Junquera - Samsung SIDI"""
                 package_links.append(MenuLink(package, package + ".html"))
                 
             index_sections = []
-            index_sections.append(MenuSection("Debug Info", general_links))
+            index_sections.append(MenuSection("General Info", general_links))
             index_sections.append(MenuSection("Packages", package_links))
             
             html = self.makeGeneralHtml("Mercury Report", index_sections, content)
@@ -180,7 +181,8 @@ Credit: Glauco Junquera - Samsung SIDI"""
     
     def makeGeneralContent(self, content, title):
         html = "<div id=\"content\">\n"
-        html += "<p id=\"title\">" + title + "</p>\n"        
+        html += "<p id=\"title\">" + title + "</p>\n"
+        html += self.makeUnprotectedProviderHtml(content.provider) + "\n"     
         html += self.makeDebugHtml(content.debug) + "\n"
         html += "</div>"        
         return html
@@ -224,6 +226,32 @@ Credit: Glauco Junquera - Samsung SIDI"""
                     if len(pathPermission.writePermission) > 0:
                         lines.append(["Write Path Permission", str(pathPermission.writePermission) + " needs " + str(pathPermission.writeNeeds)])
                 html += self.makeTable(lines) + "\n"
+        return html
+    
+    def makeUnprotectedProviderHtml(self, content):
+        self.getUnprotectedProviders(content)
+        html = "<p id=\"unprotected\" class=\"section_title\">Unprotected Providers</p>\n"
+        for info in self.rw_unprotected:
+            lines = []
+            lines.append(["PackageName",  str(info.packageName)])
+            lines.append(["Authority", str(info.authority)])
+            lines.append(["No Read and Write Permissions"])
+            html += self.makeTable(lines) + "\n"
+            
+        for info in self.w_unprotected:
+            lines = []
+            lines.append(["PackageName",  str(info.packageName)])
+            lines.append(["Authority", str(info.authority)])
+            lines.append(["No Write Permission"])
+            html += self.makeTable(lines) + "\n"
+            
+        for info in self.r_unprotected:
+            lines = []
+            lines.append(["PackageName",  str(info.packageName)])
+            lines.append(["Authority", str(info.authority)])
+            lines.append(["No Read Permission"])
+            html += self.makeTable(lines) + "\n"                        
+
         return html
     
     def makeBroadcastHtml(self, content, package=None):
@@ -308,7 +336,19 @@ Credit: Glauco Junquera - Samsung SIDI"""
                     if os.path.isfile(file_path):
                         os.unlink(file_path)
                 except Exception, e:
-                    print e        
+                    print e
+
+    def getUnprotectedProviders(self, provider_info):
+        self.rw_unprotected = []
+        self.r_unprotected = []
+        self.w_unprotected = []
+        for info in provider_info.info:
+            if (not info.HasField("writePermission")) and (not info.HasField("readPermission")): 
+                    self.rw_unprotected.append(info)
+            elif (not info.HasField("readPermission")):
+                self.r_unprotected.append(info)
+            elif (not info.HasField("writePermission")):
+                self.w_unprotected.append(info)
             
 class MenuSection:
 
@@ -320,7 +360,7 @@ class MenuLink:
 
     def __init__(self, link_title="", link_id=""):
         self.title = link_title
-        self.id = link_id
+        self.id = link_id        
         
 class PackageContent:
 
