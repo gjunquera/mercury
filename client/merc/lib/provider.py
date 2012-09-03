@@ -388,7 +388,6 @@ Multiprocess allowed: false
         except Exception as e:
             pass
 
-
     def do_finduri(self, args):
         """
 Find content uri strings that are referenced in a package
@@ -425,6 +424,8 @@ content://com.google.settings/partner
             # Delete classes.dex that might be there from previously
             self.session.executeCommand("core", "delete", {'path':'/data/data/com.mwr.mercury/classes.dex'})
 
+            uris = []
+            
             # Iterate through paths returned
             for pair in path.structured_data:
                 for value in pair.value:
@@ -448,6 +449,7 @@ content://com.google.settings/partner
                                             value_str = str(value)
                                             if (("CONTENT://" in value_str.upper()) and ("CONTENT://" != value_str.upper())):
                                                 print value_str[value_str.upper().find("CONTENT"):]
+                                                uris.append(value_str[value_str.upper().find("CONTENT"):])
 
                             # Delete classes.dex
                             self.session.executeCommand("core", "delete", {'path':'/data/data/com.mwr.mercury/classes.dex'})
@@ -464,10 +466,14 @@ content://com.google.settings/partner
                                         for value in pair.value:
                                             value_str = str(value)
                                             if (("CONTENT://" in value_str.upper()) and ("CONTENT://" != value_str.upper())):
-                                                print value_str[value_str.upper().find("CONTENT"):] 
+                                                print value_str[value_str.upper().find("CONTENT"):]
+                                                uris.append(value_str[value_str.upper().find("CONTENT"):])
                                 print ""
 
 
         # FIXME: Choose specific exceptions to catch
         except Exception:
             pass
+        
+        #return the uris found
+        return uris

@@ -118,6 +118,7 @@ body {
 /*	margin-top:65px;*/
 	margin-left:26%;
 	float: left;
+	overflow-x: auto;
 }
 
 .section_title{

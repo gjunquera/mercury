@@ -12,9 +12,16 @@ Credit: Glauco Junquera - Samsung SIDI"""
         self.path = ["information", "report"]
 
     def execute(self, session, _arg):
-                
+
+        self.session = session
+                        
         package_filter = _arg.get('filter')
         dest_folder = _arg.get('destFolder')
+        query_value = _arg.get('queryProviders')
+        self.query = True
+        if (query_value is not None) and (query_value.lower() == "false"):
+            self.query = False
+            
         if dest_folder is None:
             dest_folder = ""
         else:
@@ -32,37 +39,37 @@ Credit: Glauco Junquera - Samsung SIDI"""
         
         #Request packages info
         request = {'filter': package_filter, 'output': None, 'permissions': None}
-        response = session.executeCommand("packages", "info", request)
+        response = self.session.executeCommand("packages", "info", request)
         content.packages.ParseFromString(str(response.data))
         
         #Request service info
         request = {'filter': package_filter, 'output': None, 'permissions': None}        
-        response = session.executeCommand("service", "info", request)
+        response = self.session.executeCommand("service", "info", request)
         content.service.ParseFromString(str(response.data))
             
         #Request activity info
         request = {'filter': package_filter, 'output': None}                    
-        response = session.executeCommand("activity", "info", request)
+        response = self.session.executeCommand("activity", "info", request)
         content.activity.ParseFromString(str(response.data))
             
         #Request provider info
         request = {'filter': package_filter, 'output': None, 'permissions': None}                    
-        response = session.executeCommand("provider", "info", request)
+        response = self.session.executeCommand("provider", "info", request)
         content.provider.ParseFromString(str(response.data))
         
         #Request Broadcast Receiver info
         request = {'filter': package_filter, 'output': None, 'permissions': None}
-        response = session.executeCommand("broadcast", "info", request)
+        response = self.session.executeCommand("broadcast", "info", request)
         content.broadcast.ParseFromString(str(response.data))
         
         #Request Native Info
         request = {'filter': package_filter, 'output': None}
-        response = session.executeCommand("native", "info", request)
+        response = self.session.executeCommand("native", "info", request)
         content.native.ParseFromString(str(response.data))
         
         #Request Debuggable Info
         request = {'filter': package_filter, 'output': None}
-        response = session.executeCommand("debuggable", "info", request)
+        response = self.session.executeCommand("debuggable", "info", request)
         content.debug.ParseFromString(str(response.data))
 
 #TODO
@@ -72,6 +79,9 @@ Credit: Glauco Junquera - Samsung SIDI"""
         
         general_links = []
         general_links.append(MenuLink("Package Info", "#packageInfo"))
+        general_links.append(MenuLink("Content Provider Uris", "#urisList"))
+        if self.query:
+            general_links.append(MenuLink("Content Provider Queries", "#uriQueries"))
         
         components_links = []
         components_links.append(MenuLink("Activities", "#activities"))
@@ -80,21 +90,24 @@ Credit: Glauco Junquera - Samsung SIDI"""
         components_links.append(MenuLink("Services", "#services"))
         components_links.append(MenuLink("Native Libraries", "#native"))
         
-        general_sections = []
-        general_sections.append(MenuSection("General Info", general_links))
-        general_sections.append(MenuSection("Package Components", components_links))
+        menu_sections = []
+        menu_sections.append(MenuSection("General Info", general_links))
+        menu_sections.append(MenuSection("Package Components", components_links))
 
         package_names = []
         #crate an html for each package
         for info in content.packages.info:
             if package_filter == None or package_filter == str(info.packageName):
                 package_names.append(str(info.packageName))
-                html = self.makePackageHtml(str(info.packageName), general_sections, content, str(info.packageName))
+                html = self.makePackageHtml(str(info.packageName), menu_sections, content, str(info.packageName))
                 self.copyHtmlToFile(html, dest_folder, str(info.packageName))
                 
         if package_filter is None:    
             #create index page menu links
             general_links = []
+            general_links.append(MenuLink("Device Info", "#deviceInfo"))
+            general_links.append(MenuLink("Build Properties", "#buildProp"))
+            general_links.append(MenuLink("System Properties", "#systemProp"))
             general_links.append(MenuLink("Unprotected Providers", "#unprotected"))
             general_links.append(MenuLink("Debuggable Packages", "#debug"))
             
@@ -115,7 +128,6 @@ Credit: Glauco Junquera - Samsung SIDI"""
         html = "<html>\n"
         html += "<link rel=\"stylesheet\" href=\"report.css\">\n"
         html += "<body>\n"
-#        html += self.makeHeader(title) + "\n"
         html += self.makeMenu(menu_sections) + "\n"
         html += self.makeGeneralContent(content, title) + "\n"
         html += "</body>\n"
@@ -126,7 +138,6 @@ Credit: Glauco Junquera - Samsung SIDI"""
         html = "<html>\n"
         html += "<link rel=\"stylesheet\" href=\"report.css\">\n"
         html += "<body>\n"
-#        html += self.makeHeader(title) + "\n"
         html += self.makeMenu(menu_sections) + "\n"
         html += self.makePackageContent(content, package, title) + "\n"
         html += "</body>\n"
@@ -168,21 +179,31 @@ Credit: Glauco Junquera - Samsung SIDI"""
         return html
     
     def makePackageContent(self, content, package, title):
+        uris = self.getPackageUris(package)
         html = "<div id=\"content\">\n"
         html += "<p id=\"title\">" + title + "</p>\n"
-        html += self.makePackageGeneralInfoHtml(content.packages, package) + "\n"
+        html += self.makePackageInfoHtml(content.packages, package) + "\n"
+        html += self.makeUrisList(package, uris) + "\n"
+        if self.query:
+            html += self.makeQueryUris(uris) + "\n"
         html += self.makeActivityHtml(content.activity, package) + "\n"
         html += self.makeBroadcastHtml(content.broadcast, package) + "\n"
         html += self.makeProviderHtml(content.provider, package) + "\n"
         html += self.makeServiceHtml(content.service, package) + "\n"
-        html += self.makeNativeHtml(content.native, package) + "\n"        
+        html += self.makeNativeHtml(content.native, package) + "\n"
         html += "</div>"
         return html
     
     def makeGeneralContent(self, content, title):
+        build_prop = self.getBuildProperties()
+        system_prop = self.getProperties()
+        kernel = self.getKernelVersion()
         html = "<div id=\"content\">\n"
         html += "<p id=\"title\">" + title + "</p>\n"
-        html += self.makeUnprotectedProviderHtml(content.provider) + "\n"     
+        html += self.makeDeviceInfoHtml(kernel, build_prop) + "\n"
+        html += self.makeBuildPropHtml(build_prop) + "\n"
+        html += self.makeSystemPropHtml(system_prop) + "\n"
+        html += self.makeUnprotectedProviderHtml(content.provider) + "\n"
         html += self.makeDebugHtml(content.debug) + "\n"
         html += "</div>"        
         return html
@@ -272,7 +293,7 @@ Credit: Glauco Junquera - Samsung SIDI"""
                 lines = []
 #                lines.append(["Package name", str(info.packageName)])
                 for native in info.nativeLib:
-                    lines.append([native])
+                    lines.append([str(native)])
                 html += self.makeTable(lines) + "\n"
         return html
     
@@ -287,9 +308,64 @@ Credit: Glauco Junquera - Samsung SIDI"""
                 permission_str += str(permission) + "<br>\n"
             lines.append(["Permissions", permission_str])
             html += self.makeTable(lines) + "\n"            
-        return html    
+        return html
     
-    def makePackageGeneralInfoHtml(self, content, package=None):
+    def makeDeviceInfoHtml(self, kernel_version, build_prop):
+        html = "<p id=\"deviceInfo\" class=\"section_title\">Device Info</p>\n"
+        lines = []
+        lines.append(['Device Brand', self.getFromDictionary(build_prop, 'ro.product.brand')])
+        lines.append(['Device Model', self.getFromDictionary(build_prop, 'ro.product.model')])
+        lines.append(['Android Version', self.getFromDictionary(build_prop, 'ro.build.version.release')])
+        lines.append(['Build ID', self.getFromDictionary(build_prop, 'ro.build.display.id')])
+        lines.append(['Kernel Version', kernel_version])
+        html += self.makeTable(lines) + "\n"
+        return html
+    
+    def makeBuildPropHtml(self, properties):
+        return "<p id=\"buildProp\" class=\"section_title\">Build Properties</p>\n" + self.makeTableFromDict(properties) 
+        
+    def makeSystemPropHtml(self, properties):
+        return "<p id=\"systemProp\" class=\"section_title\">System Properties</p>\n" + self.makeTableFromDict(properties)
+    
+    def makeTableFromDict(self, dictionary):
+        lines = []
+        for k in dictionary.keys():
+            lines.append([k, dictionary[k]])
+        return self.makeTable(lines)
+        
+    def makeUrisList(self, package, uris):
+        html = "<p id=\"urisList\" class=\"section_title\">Content Provider Uris</p>\n"
+        lines = []
+        for uri in uris:
+            lines.append([uri])
+        html += self.makeTable(lines) + "\n"            
+        return html
+    
+    def makeQueryUris(self, uris):
+        html = "<p id=\"uriQueries\" class=\"section_title\">Content Provider Queries</p>\n"
+        for uri in uris:
+            request = {'selectionArgs': None, 'selection': None, 'projection': None, 'showColumns': None, 'Uri': uri, 'sortOrder': None, 'output': None}
+            response = self.session.executeCommand("provider", "query", request)
+            lines = []
+            lines.append(["Uri Queried", uri])
+            html += self.makeTable(lines) + "\n"
+            lines = []
+            if str(response.error) == "OK":
+                for pair in response.structured_data:
+                    line = []
+                    for value in pair.value:
+                        line.append(str(value))
+                    lines.append(line)
+                html += self.makeTable(lines) + "\n"   
+            else:
+                if (response.HasField("error")):
+                    lines.append([str(response.error)])
+                else:
+                    lines.append(["Unknown Error"])
+                html += self.makeTable(lines) + "\n" 
+        return html
+    
+    def makePackageInfoHtml(self, content, package=None):
         html = "<p id=\"packageInfo\" class=\"section_title\">Package Info</p>\n"
         for info in content.info:
             if (package != None) and (package == str(info.packageName)):
@@ -343,12 +419,102 @@ Credit: Glauco Junquera - Samsung SIDI"""
         self.r_unprotected = []
         self.w_unprotected = []
         for info in provider_info.info:
-            if (not info.HasField("writePermission")) and (not info.HasField("readPermission")): 
+            if (not info.HasField("writePermission")) and (not info.HasField("readPermission")):
                     self.rw_unprotected.append(info)
             elif (not info.HasField("readPermission")):
                 self.r_unprotected.append(info)
             elif (not info.HasField("writePermission")):
-                self.w_unprotected.append(info)
+                self.w_unprotected.append(info)                    
+    
+    def queryUri(self, uri):
+        response = self.session.executeCommand("provider", "query", {"Uri":uri})
+        
+        return response
+    
+    #TODO call merc.lib,provider directly
+    def getPackageUris(self, package):
+        # Delete classes.dex that might be there from previously
+        path = self.session.executeCommand("packages", "path", {'packageName':package})            
+        self.session.executeCommand("core", "delete", {'path':'/data/data/com.mwr.mercury/classes.dex'})
+    
+        uris = []
+        
+        # Iterate through paths returned
+        for pair in path.structured_data:
+            for value in pair.value:
+                line = str(value)
+                
+                if (".apk" in line):
+                    if str(self.session.executeCommand("core", "unzip", {'filename':'classes.dex', 'path':line, 'destination':'/data/data/com.mwr.mercury/'}).error) == "OK":
+                        response = self.session.executeCommand("provider", "finduri", {'path':'/data/data/com.mwr.mercury/classes.dex'})
+                        
+                        if str(response.error) == "OK":
+                            for pair in response.structured_data:
+                                if pair.key == "uri":
+                                    for value in pair.value:
+                                        value_str = str(value)
+                                        if (("CONTENT://" in value_str.upper()) and ("CONTENT://" != value_str.upper())):
+                                            uris.append(value_str[value_str.upper().find("CONTENT"):])
+                        # Delete classes.dex
+                        self.session.executeCommand("core", "delete", {'path':'/data/data/com.mwr.mercury/classes.dex'})
+    
+                if (".odex" in line):
+                    response_odex = self.session.executeCommand("provider", "finduri", {'path':line})
+                    if str(response_odex.error) == "OK":
+                            for pair in response_odex.structured_data:
+                                if pair.key == "uri":
+                                    for value in pair.value:
+                                        value_str = str(value)
+                                        if (("CONTENT://" in value_str.upper()) and ("CONTENT://" != value_str.upper())):
+                                            uris.append(value_str[value_str.upper().find("CONTENT"):])
+        return uris
+    
+    def getBuildProperties(self):
+        properties = {}
+        response = self.session.executeCommand("shell", "executeSingleCommand", {'args':'cat /system/build.prop'})
+        if str(response.error) == "OK":
+            data = str(response.data).split('\n')
+            for element in data:
+                if (not len(element) == 0) and (not element[0] == '#'):
+                    parts = element.split('=')
+                    if len(parts) >= 2:
+                        properties[parts[0]] = parts[1]
+        return properties
+
+    def getProperties(self):
+        properties = {}
+        response = self.session.executeCommand("shell", "executeSingleCommand", {'args':'getprop'})        
+        if str(response.error) == "OK":
+            data = str(response.data).split('\n')
+            for element in data:
+                parts = element.split(':')
+                if len(parts) >= 2:
+                    parts[0] = parts[0].replace('[', '', 1);
+                    parts[0] = self.rreplace(parts[0], ']', '', 1);
+                    parts[1] = parts[1].replace('[', '', 1);
+                    parts[1] = parts[1].replace(' ', '', 1);
+                    parts[1] = self.rreplace(parts[1], ']', '', 1);
+                    properties[parts[0]] = parts[1]
+        return properties
+    
+    def getKernelVersion(self):
+        response = self.session.executeCommand("shell", "executeSingleCommand", {'args':'cat /proc/version'})
+        if str(response.error) == "OK":
+            data = str(response.data)
+            return data.partition('Linux version')[2].split(' ')[1]
+        else:
+            return 'Unknown'
+
+    def rreplace(self, s, old, new, occurrence):
+        li = s.rsplit(old, occurrence)
+        return new.join(li)
+    
+    def getFromDictionary(self, dictionary, key):
+        if dictionary.has_key(key):
+            return dictionary[key]
+        else:
+            return ""
+        
             
 class MenuSection:
 
@@ -360,7 +526,7 @@ class MenuLink:
 
     def __init__(self, link_title="", link_id=""):
         self.title = link_title
-        self.id = link_id        
+        self.id = link_id
         
 class PackageContent:
 
