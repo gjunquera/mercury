@@ -179,7 +179,7 @@ Credit: Glauco Junquera - Samsung SIDI"""
         return html
     
     def makePackageContent(self, content, package, title):
-        uris = self.getPackageUris(package)
+        uris = self.getPackageUris(package, content.provider)
         html = "<div id=\"content\">\n"
         html += "<p id=\"title\">" + title + "</p>\n"
         html += self.makePackageInfoHtml(content.packages, package) + "\n"
@@ -233,7 +233,6 @@ Credit: Glauco Junquera - Samsung SIDI"""
         for info in content.info:
             if (package != None) and (package == str(info.packageName)):
                 lines = []
-#                lines.append(["PackageName",  str(info.packageName)])
                 lines.append(["Authority", str(info.authority)])
                 lines.append(["Read Permission", str(info.readPermission)])
                 lines.append(["Write Permission", str(info.writePermission)])
@@ -428,16 +427,20 @@ Credit: Glauco Junquera - Samsung SIDI"""
     
     def queryUri(self, uri):
         response = self.session.executeCommand("provider", "query", {"Uri":uri})
-        
         return response
     
     #TODO call merc.lib,provider directly
-    def getPackageUris(self, package):
+    def getPackageUris(self, package, providers_info):
+        
+        uris = []
+        
+        for info in providers_info.info:
+            if package == str(info.packageName):
+                uris.append("content://" + str(info.authority))
+                    
         # Delete classes.dex that might be there from previously
         path = self.session.executeCommand("packages", "path", {'packageName':package})            
         self.session.executeCommand("core", "delete", {'path':'/data/data/com.mwr.mercury/classes.dex'})
-    
-        uris = []
         
         # Iterate through paths returned
         for pair in path.structured_data:
@@ -454,7 +457,9 @@ Credit: Glauco Junquera - Samsung SIDI"""
                                     for value in pair.value:
                                         value_str = str(value)
                                         if (("CONTENT://" in value_str.upper()) and ("CONTENT://" != value_str.upper())):
-                                            uris.append(value_str[value_str.upper().find("CONTENT"):])
+                                            uri = value_str[value_str.upper().find("CONTENT"):]
+                                            if uri not in uris:
+                                                uris.append(uri)
                         # Delete classes.dex
                         self.session.executeCommand("core", "delete", {'path':'/data/data/com.mwr.mercury/classes.dex'})
     
@@ -466,7 +471,9 @@ Credit: Glauco Junquera - Samsung SIDI"""
                                     for value in pair.value:
                                         value_str = str(value)
                                         if (("CONTENT://" in value_str.upper()) and ("CONTENT://" != value_str.upper())):
-                                            uris.append(value_str[value_str.upper().find("CONTENT"):])
+                                            uri = value_str[value_str.upper().find("CONTENT"):]
+                                            if uri not in uris:
+                                                uris.append(uri)
         return uris
     
     def getBuildProperties(self):
