@@ -110,6 +110,7 @@ Credit: Glauco Junquera - Samsung SIDI"""
             general_links.append(MenuLink("System Properties", "#systemProp"))
             general_links.append(MenuLink("Unprotected Providers", "#unprotected"))
             general_links.append(MenuLink("Unprotected Broadcast Receivers", "#unprotectedBroadcast"))
+            general_links.append(MenuLink("Unprotected Services", "#unprotectedService"))
             general_links.append(MenuLink("Debuggable Packages", "#debug"))
             
             package_links = []
@@ -206,6 +207,7 @@ Credit: Glauco Junquera - Samsung SIDI"""
         html += self.makeSystemPropHtml(system_prop) + "\n"
         html += self.makeUnprotectedProviderHtml(content.provider) + "\n"
         html += self.makeUnprotectedBroadcastHtml(content.broadcast) + "\n"
+        html += self.makeUnprotectedServiceHtml(content.service) + "\n"
         html += self.makeDebugHtml(content.debug) + "\n"
         html += "</div>"        
         return html
@@ -290,12 +292,12 @@ Credit: Glauco Junquera - Samsung SIDI"""
                     lines = []                        
                     receivers_str = str(info.receiver)
                     lines.append(["Package Name", str(info.packageName)])
-                    lines.append(["Receivers", receivers_str])
+                    lines.append(["Unprotected Receivers", receivers_str])
                     previousPackage = currentPackage
                     first = False
                 else:
                     receivers_str += "<br>\n" + str(info.receiver)
-                    lines[1] = ["Receivers", receivers_str]
+                    lines[1] = ["Unprotected Receivers", receivers_str]
         html += self.makeTable(lines) + "\n"
         return html
     
@@ -311,14 +313,14 @@ Credit: Glauco Junquera - Samsung SIDI"""
                     if not first:
                         html += self.makeTable(lines) + "\n"
                     lines = []                        
-                    receivers_str = str(info.receiver)
+                    services_str = str(info.service)
                     lines.append(["Package Name", str(info.packageName)])
-                    lines.append(["Receivers", receivers_str])
+                    lines.append(["Unprotected Services", services_str])
                     previousPackage = currentPackage
                     first = False
                 else:
-                    receivers_str += "<br>\n" + str(info.receiver)
-                    lines[1] = ["Receivers", receivers_str]
+                    services_str += "<br>\n" + str(info.service)
+                    lines[1] = ["Unprotected Services", services_str]
         html += self.makeTable(lines) + "\n"
         return html    
     
