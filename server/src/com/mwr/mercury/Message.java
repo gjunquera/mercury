@@ -9104,6 +9104,11 @@ public final class Message {
       // optional string permission = 3;
       boolean hasPermission();
       String getPermission();
+      
+      // repeated string action = 4;
+      java.util.List<String> getActionList();
+      int getActionCount();
+      String getAction(int index);
     }
     public static final class Info extends
         com.google.protobuf.GeneratedMessage
@@ -9230,10 +9235,25 @@ public final class Message {
         }
       }
       
+      // repeated string action = 4;
+      public static final int ACTION_FIELD_NUMBER = 4;
+      private com.google.protobuf.LazyStringList action_;
+      public java.util.List<String>
+          getActionList() {
+        return action_;
+      }
+      public int getActionCount() {
+        return action_.size();
+      }
+      public String getAction(int index) {
+        return action_.get(index);
+      }
+      
       private void initFields() {
         packageName_ = "";
         receiver_ = "";
         permission_ = "";
+        action_ = com.google.protobuf.LazyStringArrayList.EMPTY;
       }
       private byte memoizedIsInitialized = -1;
       public final boolean isInitialized() {
@@ -9256,6 +9276,9 @@ public final class Message {
         if (((bitField0_ & 0x00000004) == 0x00000004)) {
           output.writeBytes(3, getPermissionBytes());
         }
+        for (int i = 0; i < action_.size(); i++) {
+          output.writeBytes(4, action_.getByteString(i));
+        }
         getUnknownFields().writeTo(output);
       }
       
@@ -9276,6 +9299,15 @@ public final class Message {
         if (((bitField0_ & 0x00000004) == 0x00000004)) {
           size += com.google.protobuf.CodedOutputStream
             .computeBytesSize(3, getPermissionBytes());
+        }
+        {
+          int dataSize = 0;
+          for (int i = 0; i < action_.size(); i++) {
+            dataSize += com.google.protobuf.CodedOutputStream
+              .computeBytesSizeNoTag(action_.getByteString(i));
+          }
+          size += dataSize;
+          size += 1 * getActionList().size();
         }
         size += getUnknownFields().getSerializedSize();
         memoizedSerializedSize = size;
@@ -9407,6 +9439,8 @@ public final class Message {
           bitField0_ = (bitField0_ & ~0x00000002);
           permission_ = "";
           bitField0_ = (bitField0_ & ~0x00000004);
+          action_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+          bitField0_ = (bitField0_ & ~0x00000008);
           return this;
         }
         
@@ -9457,6 +9491,12 @@ public final class Message {
             to_bitField0_ |= 0x00000004;
           }
           result.permission_ = permission_;
+          if (((bitField0_ & 0x00000008) == 0x00000008)) {
+            action_ = new com.google.protobuf.UnmodifiableLazyStringList(
+                action_);
+            bitField0_ = (bitField0_ & ~0x00000008);
+          }
+          result.action_ = action_;
           result.bitField0_ = to_bitField0_;
           onBuilt();
           return result;
@@ -9481,6 +9521,16 @@ public final class Message {
           }
           if (other.hasPermission()) {
             setPermission(other.getPermission());
+          }
+          if (!other.action_.isEmpty()) {
+            if (action_.isEmpty()) {
+              action_ = other.action_;
+              bitField0_ = (bitField0_ & ~0x00000008);
+            } else {
+              ensureActionIsMutable();
+              action_.addAll(other.action_);
+            }
+            onChanged();
           }
           this.mergeUnknownFields(other.getUnknownFields());
           return this;
@@ -9526,6 +9576,11 @@ public final class Message {
               case 26: {
                 bitField0_ |= 0x00000004;
                 permission_ = input.readBytes();
+                break;
+              }
+              case 34: {
+                ensureActionIsMutable();
+                action_.add(input.readBytes());
                 break;
               }
             }
@@ -9639,6 +9694,62 @@ public final class Message {
         void setPermission(com.google.protobuf.ByteString value) {
           bitField0_ |= 0x00000004;
           permission_ = value;
+          onChanged();
+        }
+        
+        // repeated string action = 4;
+        private com.google.protobuf.LazyStringList action_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+        private void ensureActionIsMutable() {
+          if (!((bitField0_ & 0x00000008) == 0x00000008)) {
+            action_ = new com.google.protobuf.LazyStringArrayList(action_);
+            bitField0_ |= 0x00000008;
+           }
+        }
+        public java.util.List<String>
+            getActionList() {
+          return java.util.Collections.unmodifiableList(action_);
+        }
+        public int getActionCount() {
+          return action_.size();
+        }
+        public String getAction(int index) {
+          return action_.get(index);
+        }
+        public Builder setAction(
+            int index, String value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureActionIsMutable();
+          action_.set(index, value);
+          onChanged();
+          return this;
+        }
+        public Builder addAction(String value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureActionIsMutable();
+          action_.add(value);
+          onChanged();
+          return this;
+        }
+        public Builder addAllAction(
+            java.lang.Iterable<String> values) {
+          ensureActionIsMutable();
+          super.addAll(values, action_);
+          onChanged();
+          return this;
+        }
+        public Builder clearAction() {
+          action_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+          bitField0_ = (bitField0_ & ~0x00000008);
+          onChanged();
+          return this;
+        }
+        void addAction(com.google.protobuf.ByteString value) {
+          ensureActionIsMutable();
+          action_.add(value);
           onChanged();
         }
         
@@ -12432,16 +12543,17 @@ public final class Message {
       "w\n\020ActivityResponse\0224\n\004info\030\001 \003(\0132&.com." +
       "mwr.mercury.ActivityResponse.Info\032-\n\004Inf" +
       "o\022\023\n\013packageName\030\001 \001(\t\022\020\n\010activity\030\003 \001(\t" +
-      "\"\215\001\n\021BroadcastResponse\0225\n\004info\030\001 \003(\0132\'.c" +
-      "om.mwr.mercury.BroadcastResponse.Info\032A\n" +
+      "\"\235\001\n\021BroadcastResponse\0225\n\004info\030\001 \003(\0132\'.c" +
+      "om.mwr.mercury.BroadcastResponse.Info\032Q\n" +
       "\004Info\022\023\n\013packageName\030\001 \001(\t\022\020\n\010receiver\030\002" +
-      " \001(\t\022\022\n\npermission\030\003 \001(\t\"\200\001\n\rDebugRespon" +
-      "se\0221\n\004info\030\001 \003(\0132#.com.mwr.mercury.Debug" +
-      "Response.Info\032<\n\004Info\022\023\n\013packageName\030\001 \001",
-      "(\t\022\013\n\003uid\030\002 \001(\005\022\022\n\npermission\030\003 \003(\t\"t\n\016N" +
-      "ativeResponse\0222\n\004info\030\001 \003(\0132$.com.mwr.me" +
-      "rcury.NativeResponse.Info\032.\n\004Info\022\023\n\013pac" +
-      "kageName\030\001 \001(\t\022\021\n\tnativeLib\030\002 \003(\t"
+      " \001(\t\022\022\n\npermission\030\003 \001(\t\022\016\n\006action\030\004 \003(\t" +
+      "\"\200\001\n\rDebugResponse\0221\n\004info\030\001 \003(\0132#.com.m" +
+      "wr.mercury.DebugResponse.Info\032<\n\004Info\022\023\n",
+      "\013packageName\030\001 \001(\t\022\013\n\003uid\030\002 \001(\005\022\022\n\npermi" +
+      "ssion\030\003 \003(\t\"t\n\016NativeResponse\0222\n\004info\030\001 " +
+      "\003(\0132$.com.mwr.mercury.NativeResponse.Inf" +
+      "o\032.\n\004Info\022\023\n\013packageName\030\001 \001(\t\022\021\n\tnative" +
+      "Lib\030\002 \003(\t"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -12565,7 +12677,7 @@ public final class Message {
           internal_static_com_mwr_mercury_BroadcastResponse_Info_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_mwr_mercury_BroadcastResponse_Info_descriptor,
-              new java.lang.String[] { "PackageName", "Receiver", "Permission", },
+              new java.lang.String[] { "PackageName", "Receiver", "Permission", "Action", },
               com.mwr.mercury.Message.BroadcastResponse.Info.class,
               com.mwr.mercury.Message.BroadcastResponse.Info.Builder.class);
           internal_static_com_mwr_mercury_DebugResponse_descriptor =

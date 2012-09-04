@@ -99,8 +99,8 @@ Credit: Glauco Junquera - Samsung SIDI"""
         for info in content.packages.info:
             if package_filter == None or package_filter == str(info.packageName):
                 package_names.append(str(info.packageName))
-                html = self.makePackageHtml(str(info.packageName), menu_sections, content, str(info.packageName))
-                self.copyHtmlToFile(html, dest_folder, str(info.packageName))
+#                html = self.makePackageHtml(str(info.packageName), menu_sections, content, str(info.packageName))
+#                self.copyHtmlToFile(html, dest_folder, str(info.packageName))
                 
         if package_filter is None:    
             #create index page menu links
@@ -109,6 +109,7 @@ Credit: Glauco Junquera - Samsung SIDI"""
             general_links.append(MenuLink("Build Properties", "#buildProp"))
             general_links.append(MenuLink("System Properties", "#systemProp"))
             general_links.append(MenuLink("Unprotected Providers", "#unprotected"))
+            general_links.append(MenuLink("Unprotected Broadcast Receivers", "#unprotectedBroadcast"))
             general_links.append(MenuLink("Debuggable Packages", "#debug"))
             
             package_links = []
@@ -204,6 +205,7 @@ Credit: Glauco Junquera - Samsung SIDI"""
         html += self.makeBuildPropHtml(build_prop) + "\n"
         html += self.makeSystemPropHtml(system_prop) + "\n"
         html += self.makeUnprotectedProviderHtml(content.provider) + "\n"
+        html += self.makeUnprotectedBroadcastHtml(content.broadcast) + "\n"
         html += self.makeDebugHtml(content.debug) + "\n"
         html += "</div>"        
         return html
@@ -274,6 +276,52 @@ Credit: Glauco Junquera - Samsung SIDI"""
 
         return html
     
+    def makeUnprotectedBroadcastHtml(self, content):
+        html = "<p id=\"unprotectedBroadcast\" class=\"section_title\">Unprotected Broadcast Receivers</p>\n"
+        previousPackage = ""
+        first = True
+        lines = []
+        for info in content.info:
+            currentPackage = str(info.packageName)
+            if str(info.permission) == "null":
+                if previousPackage != currentPackage:
+                    if not first:
+                        html += self.makeTable(lines) + "\n"
+                    lines = []                        
+                    receivers_str = str(info.receiver)
+                    lines.append(["Package Name", str(info.packageName)])
+                    lines.append(["Receivers", receivers_str])
+                    previousPackage = currentPackage
+                    first = False
+                else:
+                    receivers_str += "<br>\n" + str(info.receiver)
+                    lines[1] = ["Receivers", receivers_str]
+        html += self.makeTable(lines) + "\n"
+        return html
+    
+    def makeUnprotectedServiceHtml(self, content):
+        html = "<p id=\"unprotectedService\" class=\"section_title\">Unprotected Services</p>\n"
+        previousPackage = ""
+        first = True
+        lines = []
+        for info in content.info:
+            currentPackage = str(info.packageName)
+            if str(info.permission) == "null":
+                if previousPackage != currentPackage:
+                    if not first:
+                        html += self.makeTable(lines) + "\n"
+                    lines = []                        
+                    receivers_str = str(info.receiver)
+                    lines.append(["Package Name", str(info.packageName)])
+                    lines.append(["Receivers", receivers_str])
+                    previousPackage = currentPackage
+                    first = False
+                else:
+                    receivers_str += "<br>\n" + str(info.receiver)
+                    lines[1] = ["Receivers", receivers_str]
+        html += self.makeTable(lines) + "\n"
+        return html    
+    
     def makeBroadcastHtml(self, content, package=None):
         html = "<p id=\"receivers\" class=\"section_title\">Broadcast Receivers</p>\n"
         for info in content.info:
@@ -282,6 +330,10 @@ Credit: Glauco Junquera - Samsung SIDI"""
 #                lines.append(["Package name", str(info.packageName)])
                 lines.append(["Receiver", str(info.receiver)])
                 lines.append(["Required Permission", str(info.permission)])
+                action_str = ""
+                for action in info.action:
+                    action_str += str(action) + "<br>\n"
+                lines.append(["Intent Filter Action", action_str])
                 html += self.makeTable(lines) + "\n"
         return html
     

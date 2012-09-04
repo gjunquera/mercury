@@ -70,6 +70,8 @@ Required Permission: null
             for info in broadcst_response.info:
                 print "Package name: " + info.packageName
                 print "Receiver: " + info.receiver
+                for action in info.action:
+                    print "Intent Filter Action:" + action
                 print "Required Permission: " + info.permission + "\n"
                 
         # FIXME: Choose specific exceptions to catch
