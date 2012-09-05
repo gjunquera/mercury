@@ -13,13 +13,18 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ProviderInfo;
 import android.content.pm.ServiceInfo;
+import android.content.res.AssetManager;
+import android.content.res.XmlResourceParser;
 import android.util.Base64;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.xmlpull.v1.XmlPullParser;
 
 public class Packages
 {
@@ -129,7 +134,7 @@ public class Packages
 					if (requestedPermissionsArray != null)
 						for (String permission : requestedPermissionsArray)
 							infoBuilder.addPermission(permission);
-	
+					getSecretCodes(packageName, infoBuilder, currentSession);
 					packageBuilder.addInfo(infoBuilder);
 				}
 			}
@@ -303,7 +308,6 @@ public class Packages
 	public static void path(List<KVPair> argsArray,
 			Session currentSession)
 	{
-		// Assign filter and permissions if they came in the arguments
 		String packageName = Common.getParamString(argsArray, "packageName");
 
 		Response.Builder responseBuilder = Response.newBuilder();
@@ -335,13 +339,35 @@ public class Packages
 		// Check if an odex file exists for the package
 		if (new File(packagePath.replace(".apk", ".odex")).exists())
 			pathList.add(packagePath.replace(".apk", ".odex"));
-			//packagePath += "\n" + packagePath.replace(".apk", ".odex");
 
 		// Send to client
 		responseBuilder.setError(ByteString.copyFrom(Common.ERROR_OK.getBytes()));
 		responseBuilder.addStructuredData(Common.createKVPair("path", pathList));
 		currentSession.send(Base64.encodeToString(responseBuilder.build().toByteArray(), Base64.DEFAULT), false, Common.COMMAND_REPLY);		
-//		currentSession.newSendFullTransmission(packagePath, Common.ERROR_OK);
+	}
+	
+	private static void getSecretCodes(String packageName, PackageResponse.Info.Builder info, Session currentSession) 
+	{
+		
+		// Get all packages from packagemanager
+        List<String> reslist = new ArrayList<String>();
+		
+        try {
+	        AssetManager am = currentSession.applicationContext.createPackageContext(packageName, 0).getAssets();
+	        XmlResourceParser xml = am.openXmlResourceParser("AndroidManifest.xml");
+	        
+	        while (xml.next() != XmlPullParser.END_DOCUMENT) {
+	        	if (xml.getEventType() == XmlPullParser.START_TAG && xml.getName().equals("data")) {
+	    			if (xml.getAttributeCount() == 2 && xml.getAttributeValue(0).equals("android_secret_code"))
+	    				reslist.add(xml.getAttributeValue(1));
+	        	}
+	        }
+        } catch(Exception e) {
+        	info.addAllSecretCode(new ArrayList<String>());
+        	return;
+        }
+		// Send to client
+		info.addAllSecretCode(reslist);
 	}
 
 }

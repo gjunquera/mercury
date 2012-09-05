@@ -71,17 +71,13 @@ Credit: Glauco Junquera - Samsung SIDI"""
         request = {'filter': package_filter, 'output': None}
         response = self.session.executeCommand("debuggable", "info", request)
         content.debug.ParseFromString(str(response.data))
-
-#TODO
-        #Request Attack Surface Info
-#        request = {'packageName': None}        
-#        response = self.session.executeCommand("packages", "attacksurface", {'packageName':splitargs.packageName})
         
         general_links = []
         general_links.append(MenuLink("Package Info", "#packageInfo"))
         general_links.append(MenuLink("Content Provider Uris", "#urisList"))
         if self.query:
             general_links.append(MenuLink("Content Provider Queries", "#uriQueries"))
+        general_links.append(MenuLink("Secret Codes", "#secretCodes"))            
         
         components_links = []
         components_links.append(MenuLink("Activities", "#activities"))
@@ -99,8 +95,8 @@ Credit: Glauco Junquera - Samsung SIDI"""
         for info in content.packages.info:
             if package_filter == None or package_filter == str(info.packageName):
                 package_names.append(str(info.packageName))
-#                html = self.makePackageHtml(str(info.packageName), menu_sections, content, str(info.packageName))
-#                self.copyHtmlToFile(html, dest_folder, str(info.packageName))
+                html = self.makePackageHtml(str(info.packageName), menu_sections, content, str(info.packageName))
+                self.copyHtmlToFile(html, dest_folder, str(info.packageName))
                 
         if package_filter is None:    
             #create index page menu links
@@ -111,6 +107,7 @@ Credit: Glauco Junquera - Samsung SIDI"""
             general_links.append(MenuLink("Unprotected Providers", "#unprotected"))
             general_links.append(MenuLink("Unprotected Broadcast Receivers", "#unprotectedBroadcast"))
             general_links.append(MenuLink("Unprotected Services", "#unprotectedService"))
+            general_links.append(MenuLink("Secret Codes", "#secretCodes"))
             general_links.append(MenuLink("Debuggable Packages", "#debug"))
             
             package_links = []
@@ -186,6 +183,7 @@ Credit: Glauco Junquera - Samsung SIDI"""
         html += "<p id=\"title\">" + title + "</p>\n"
         html += self.makePackageInfoHtml(content.packages, package) + "\n"
         html += self.makeUrisList(package, uris) + "\n"
+        html += self.makeSecretCodesHtml(content.packages, package) + "\n"
         if self.query:
             html += self.makeQueryUris(uris) + "\n"
         html += self.makeActivityHtml(content.activity, package) + "\n"
@@ -208,6 +206,7 @@ Credit: Glauco Junquera - Samsung SIDI"""
         html += self.makeUnprotectedProviderHtml(content.provider) + "\n"
         html += self.makeUnprotectedBroadcastHtml(content.broadcast) + "\n"
         html += self.makeUnprotectedServiceHtml(content.service) + "\n"
+        html += self.makeSecretCodesHtml(content.packages, None) + "\n"
         html += self.makeDebugHtml(content.debug) + "\n"
         html += "</div>"        
         return html
@@ -418,6 +417,16 @@ Credit: Glauco Junquera - Samsung SIDI"""
                 html += self.makeTable(lines) + "\n" 
         return html
     
+    def makeSecretCodesHtml(self, content, package):
+        html = "<p id=\"secretCodes\" class=\"section_title\">Secret Codes</p>\n"
+        lines = []
+        for info in content.info:
+            if (package == None) or (package == str(info.packageName)):
+                for secretCode in info.secretCode:
+                    lines.append([str(secretCode)])
+        html += self.makeTable(lines) + "\n"
+        return html                        
+            
     def makePackageInfoHtml(self, content, package=None):
         html = "<p id=\"packageInfo\" class=\"section_title\">Package Info</p>\n"
         for info in content.info:

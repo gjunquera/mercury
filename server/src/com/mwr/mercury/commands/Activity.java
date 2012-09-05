@@ -40,7 +40,9 @@ public class Activity
             	activities = currentSession.applicationContext.getPackageManager().getPackageInfo(pack.packageName, PackageManager.GET_ACTIVITIES).activities;
             }
             catch (Exception e) {
-            	responseBuilder.setError(ByteString.copyFrom(Common.ERROR_UNKNOWN.getBytes()));
+            	responseBuilder.setError(ByteString.copyFrom(e.getMessage().getBytes()));
+        		currentSession.send(Base64.encodeToString(responseBuilder.build().toByteArray(), Base64.DEFAULT), false, Common.COMMAND_REPLY);
+        		return ;
             }
             
         	if (activities != null)
@@ -61,10 +63,10 @@ public class Activity
 						}
 					}
 				}
-            	responseBuilder.setError(ByteString.copyFrom(Common.ERROR_OK.getBytes()));
 			}
         }
-		Response response = Response.newBuilder().setData(activityBuilder.build().toByteString()).build();
+    	responseBuilder.setError(ByteString.copyFrom(Common.ERROR_OK.getBytes()));
+		Response response = responseBuilder.setData(activityBuilder.build().toByteString()).build();
 		currentSession.send(Base64.encodeToString(response.toByteArray(), Base64.DEFAULT), false, Common.COMMAND_REPLY);
 	}
 

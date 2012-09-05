@@ -11,7 +11,7 @@ from google.protobuf import descriptor_pb2
 DESCRIPTOR = descriptor.FileDescriptor(
   name='Message.proto',
   package='com.mwr.mercury',
-  serialized_pb='\n\rMessage.proto\x12\x0f\x63om.mwr.mercury\"S\n\x07Request\x12\x0f\n\x07section\x18\x01 \x01(\t\x12\x10\n\x08\x66unction\x18\x02 \x01(\t\x12%\n\x04\x61rgs\x18\x03 \x03(\x0b\x32\x17.com.mwr.mercury.KVPair\"Y\n\x08Response\x12\x0c\n\x04\x64\x61ta\x18\x01 \x01(\x0c\x12\r\n\x05\x65rror\x18\x02 \x01(\x0c\x12\x30\n\x0fstructured_data\x18\x03 \x03(\x0b\x32\x17.com.mwr.mercury.KVPair\"$\n\x06KVPair\x12\x0b\n\x03key\x18\x01 \x02(\t\x12\r\n\x05value\x18\x02 \x03(\x0c\"\xbc\x03\n\x10ProviderResponse\x12\x34\n\x04info\x18\x01 \x03(\x0b\x32&.com.mwr.mercury.ProviderResponse.Info\x1a\xf1\x02\n\x04Info\x12\x11\n\tauthority\x18\x01 \x01(\t\x12\x13\n\x0bpackageName\x18\x02 \x01(\t\x12\x16\n\x0ereadPermission\x18\x03 \x01(\t\x12\x1d\n\x15uriPermissionPatterns\x18\x04 \x03(\t\x12\x17\n\x0fwritePermission\x18\x05 \x01(\t\x12Q\n\x0fpathPermissions\x18\x06 \x03(\x0b\x32\x38.com.mwr.mercury.ProviderResponse.Info.PatternPermission\x12\x14\n\x0cmultiprocess\x18\x07 \x01(\x08\x12\x1b\n\x13grantUriPermissions\x18\x08 \x01(\x08\x1ak\n\x11PatternPermission\x12\x17\n\x0fwritePermission\x18\x01 \x01(\t\x12\x16\n\x0ereadPermission\x18\x02 \x01(\t\x12\x12\n\nwriteNeeds\x18\x03 \x01(\t\x12\x11\n\treadNeeds\x18\x04 \x01(\t\"\x94\x03\n\x0fPackageResponse\x12\x33\n\x04info\x18\x01 \x03(\x0b\x32%.com.mwr.mercury.PackageResponse.Info\x12=\n\tsharedUid\x18\x02 \x03(\x0b\x32*.com.mwr.mercury.PackageResponse.SharedUid\x1a\xc7\x01\n\x04Info\x12\x13\n\x0bpackageName\x18\x01 \x01(\t\x12\x13\n\x0bprocessName\x18\x02 \x01(\t\x12\x0f\n\x07version\x18\x03 \x01(\t\x12\x15\n\rdataDirectory\x18\x04 \x01(\t\x12\x0f\n\x07\x61pkPath\x18\x05 \x01(\t\x12\x0b\n\x03uid\x18\x06 \x01(\x05\x12\x0c\n\x04guid\x18\x07 \x03(\x05\x12\x14\n\x0csharedUserId\x18\x08 \x01(\t\x12\x17\n\x0fsharedLibraries\x18\t \x03(\t\x12\x12\n\npermission\x18\n \x03(\t\x1a\x43\n\tSharedUid\x12\x14\n\x0cpackageNames\x18\x01 \x03(\t\x12\x0b\n\x03uid\x18\x02 \x01(\x05\x12\x13\n\x0bpermissions\x18\x03 \x03(\t\"\x88\x01\n\x0fServiceResponse\x12\x33\n\x04info\x18\x01 \x03(\x0b\x32%.com.mwr.mercury.ServiceResponse.Info\x1a@\n\x04Info\x12\x13\n\x0bpackageName\x18\x01 \x01(\t\x12\x0f\n\x07service\x18\x02 \x01(\t\x12\x12\n\npermission\x18\x03 \x01(\t\"w\n\x10\x41\x63tivityResponse\x12\x34\n\x04info\x18\x01 \x03(\x0b\x32&.com.mwr.mercury.ActivityResponse.Info\x1a-\n\x04Info\x12\x13\n\x0bpackageName\x18\x01 \x01(\t\x12\x10\n\x08\x61\x63tivity\x18\x03 \x01(\t\"\x9d\x01\n\x11\x42roadcastResponse\x12\x35\n\x04info\x18\x01 \x03(\x0b\x32\'.com.mwr.mercury.BroadcastResponse.Info\x1aQ\n\x04Info\x12\x13\n\x0bpackageName\x18\x01 \x01(\t\x12\x10\n\x08receiver\x18\x02 \x01(\t\x12\x12\n\npermission\x18\x03 \x01(\t\x12\x0e\n\x06\x61\x63tion\x18\x04 \x03(\t\"\x80\x01\n\rDebugResponse\x12\x31\n\x04info\x18\x01 \x03(\x0b\x32#.com.mwr.mercury.DebugResponse.Info\x1a<\n\x04Info\x12\x13\n\x0bpackageName\x18\x01 \x01(\t\x12\x0b\n\x03uid\x18\x02 \x01(\x05\x12\x12\n\npermission\x18\x03 \x03(\t\"t\n\x0eNativeResponse\x12\x32\n\x04info\x18\x01 \x03(\x0b\x32$.com.mwr.mercury.NativeResponse.Info\x1a.\n\x04Info\x12\x13\n\x0bpackageName\x18\x01 \x01(\t\x12\x11\n\tnativeLib\x18\x02 \x03(\t')
+  serialized_pb='\n\rMessage.proto\x12\x0f\x63om.mwr.mercury\"S\n\x07Request\x12\x0f\n\x07section\x18\x01 \x01(\t\x12\x10\n\x08\x66unction\x18\x02 \x01(\t\x12%\n\x04\x61rgs\x18\x03 \x03(\x0b\x32\x17.com.mwr.mercury.KVPair\"Y\n\x08Response\x12\x0c\n\x04\x64\x61ta\x18\x01 \x01(\x0c\x12\r\n\x05\x65rror\x18\x02 \x01(\x0c\x12\x30\n\x0fstructured_data\x18\x03 \x03(\x0b\x32\x17.com.mwr.mercury.KVPair\"$\n\x06KVPair\x12\x0b\n\x03key\x18\x01 \x02(\t\x12\r\n\x05value\x18\x02 \x03(\x0c\"\xbc\x03\n\x10ProviderResponse\x12\x34\n\x04info\x18\x01 \x03(\x0b\x32&.com.mwr.mercury.ProviderResponse.Info\x1a\xf1\x02\n\x04Info\x12\x11\n\tauthority\x18\x01 \x01(\t\x12\x13\n\x0bpackageName\x18\x02 \x01(\t\x12\x16\n\x0ereadPermission\x18\x03 \x01(\t\x12\x1d\n\x15uriPermissionPatterns\x18\x04 \x03(\t\x12\x17\n\x0fwritePermission\x18\x05 \x01(\t\x12Q\n\x0fpathPermissions\x18\x06 \x03(\x0b\x32\x38.com.mwr.mercury.ProviderResponse.Info.PatternPermission\x12\x14\n\x0cmultiprocess\x18\x07 \x01(\x08\x12\x1b\n\x13grantUriPermissions\x18\x08 \x01(\x08\x1ak\n\x11PatternPermission\x12\x17\n\x0fwritePermission\x18\x01 \x01(\t\x12\x16\n\x0ereadPermission\x18\x02 \x01(\t\x12\x12\n\nwriteNeeds\x18\x03 \x01(\t\x12\x11\n\treadNeeds\x18\x04 \x01(\t\"\xa8\x03\n\x0fPackageResponse\x12\x33\n\x04info\x18\x01 \x03(\x0b\x32%.com.mwr.mercury.PackageResponse.Info\x12=\n\tsharedUid\x18\x02 \x03(\x0b\x32*.com.mwr.mercury.PackageResponse.SharedUid\x1a\xdb\x01\n\x04Info\x12\x13\n\x0bpackageName\x18\x01 \x01(\t\x12\x13\n\x0bprocessName\x18\x02 \x01(\t\x12\x0f\n\x07version\x18\x03 \x01(\t\x12\x15\n\rdataDirectory\x18\x04 \x01(\t\x12\x0f\n\x07\x61pkPath\x18\x05 \x01(\t\x12\x0b\n\x03uid\x18\x06 \x01(\x05\x12\x0c\n\x04guid\x18\x07 \x03(\x05\x12\x14\n\x0csharedUserId\x18\x08 \x01(\t\x12\x17\n\x0fsharedLibraries\x18\t \x03(\t\x12\x12\n\npermission\x18\n \x03(\t\x12\x12\n\nsecretCode\x18\x0b \x03(\t\x1a\x43\n\tSharedUid\x12\x14\n\x0cpackageNames\x18\x01 \x03(\t\x12\x0b\n\x03uid\x18\x02 \x01(\x05\x12\x13\n\x0bpermissions\x18\x03 \x03(\t\"\x88\x01\n\x0fServiceResponse\x12\x33\n\x04info\x18\x01 \x03(\x0b\x32%.com.mwr.mercury.ServiceResponse.Info\x1a@\n\x04Info\x12\x13\n\x0bpackageName\x18\x01 \x01(\t\x12\x0f\n\x07service\x18\x02 \x01(\t\x12\x12\n\npermission\x18\x03 \x01(\t\"w\n\x10\x41\x63tivityResponse\x12\x34\n\x04info\x18\x01 \x03(\x0b\x32&.com.mwr.mercury.ActivityResponse.Info\x1a-\n\x04Info\x12\x13\n\x0bpackageName\x18\x01 \x01(\t\x12\x10\n\x08\x61\x63tivity\x18\x03 \x01(\t\"\x9d\x01\n\x11\x42roadcastResponse\x12\x35\n\x04info\x18\x01 \x03(\x0b\x32\'.com.mwr.mercury.BroadcastResponse.Info\x1aQ\n\x04Info\x12\x13\n\x0bpackageName\x18\x01 \x01(\t\x12\x10\n\x08receiver\x18\x02 \x01(\t\x12\x12\n\npermission\x18\x03 \x01(\t\x12\x0e\n\x06\x61\x63tion\x18\x04 \x03(\t\"\x80\x01\n\rDebugResponse\x12\x31\n\x04info\x18\x01 \x03(\x0b\x32#.com.mwr.mercury.DebugResponse.Info\x1a<\n\x04Info\x12\x13\n\x0bpackageName\x18\x01 \x01(\t\x12\x0b\n\x03uid\x18\x02 \x01(\x05\x12\x12\n\npermission\x18\x03 \x03(\t\"t\n\x0eNativeResponse\x12\x32\n\x04info\x18\x01 \x03(\x0b\x32$.com.mwr.mercury.NativeResponse.Info\x1a.\n\x04Info\x12\x13\n\x0bpackageName\x18\x01 \x01(\t\x12\x11\n\tnativeLib\x18\x02 \x03(\t')
 
 
 
@@ -364,6 +364,13 @@ _PACKAGERESPONSE_INFO = descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
+    descriptor.FieldDescriptor(
+      name='secretCode', full_name='com.mwr.mercury.PackageResponse.Info.secretCode', index=10,
+      number=11, type=9, cpp_type=9, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
   ],
   extensions=[
   ],
@@ -374,7 +381,7 @@ _PACKAGERESPONSE_INFO = descriptor.Descriptor(
   is_extendable=False,
   extension_ranges=[],
   serialized_start=832,
-  serialized_end=1031,
+  serialized_end=1051,
 )
 
 _PACKAGERESPONSE_SHAREDUID = descriptor.Descriptor(
@@ -414,8 +421,8 @@ _PACKAGERESPONSE_SHAREDUID = descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=1033,
-  serialized_end=1100,
+  serialized_start=1053,
+  serialized_end=1120,
 )
 
 _PACKAGERESPONSE = descriptor.Descriptor(
@@ -449,7 +456,7 @@ _PACKAGERESPONSE = descriptor.Descriptor(
   is_extendable=False,
   extension_ranges=[],
   serialized_start=696,
-  serialized_end=1100,
+  serialized_end=1120,
 )
 
 
@@ -490,8 +497,8 @@ _SERVICERESPONSE_INFO = descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=1175,
-  serialized_end=1239,
+  serialized_start=1195,
+  serialized_end=1259,
 )
 
 _SERVICERESPONSE = descriptor.Descriptor(
@@ -517,8 +524,8 @@ _SERVICERESPONSE = descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=1103,
-  serialized_end=1239,
+  serialized_start=1123,
+  serialized_end=1259,
 )
 
 
@@ -552,8 +559,8 @@ _ACTIVITYRESPONSE_INFO = descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=1315,
-  serialized_end=1360,
+  serialized_start=1335,
+  serialized_end=1380,
 )
 
 _ACTIVITYRESPONSE = descriptor.Descriptor(
@@ -579,8 +586,8 @@ _ACTIVITYRESPONSE = descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=1241,
-  serialized_end=1360,
+  serialized_start=1261,
+  serialized_end=1380,
 )
 
 
@@ -628,8 +635,8 @@ _BROADCASTRESPONSE_INFO = descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=1439,
-  serialized_end=1520,
+  serialized_start=1459,
+  serialized_end=1540,
 )
 
 _BROADCASTRESPONSE = descriptor.Descriptor(
@@ -655,8 +662,8 @@ _BROADCASTRESPONSE = descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=1363,
-  serialized_end=1520,
+  serialized_start=1383,
+  serialized_end=1540,
 )
 
 
@@ -697,8 +704,8 @@ _DEBUGRESPONSE_INFO = descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=1591,
-  serialized_end=1651,
+  serialized_start=1611,
+  serialized_end=1671,
 )
 
 _DEBUGRESPONSE = descriptor.Descriptor(
@@ -724,8 +731,8 @@ _DEBUGRESPONSE = descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=1523,
-  serialized_end=1651,
+  serialized_start=1543,
+  serialized_end=1671,
 )
 
 
@@ -759,8 +766,8 @@ _NATIVERESPONSE_INFO = descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=1723,
-  serialized_end=1769,
+  serialized_start=1743,
+  serialized_end=1789,
 )
 
 _NATIVERESPONSE = descriptor.Descriptor(
@@ -786,8 +793,8 @@ _NATIVERESPONSE = descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=1653,
-  serialized_end=1769,
+  serialized_start=1673,
+  serialized_end=1789,
 )
 
 _REQUEST.fields_by_name['args'].message_type = _KVPAIR

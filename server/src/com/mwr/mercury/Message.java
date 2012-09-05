@@ -4395,6 +4395,11 @@ public final class Message {
       java.util.List<String> getPermissionList();
       int getPermissionCount();
       String getPermission(int index);
+      
+      // repeated string secretCode = 11;
+      java.util.List<String> getSecretCodeList();
+      int getSecretCodeCount();
+      String getSecretCode(int index);
     }
     public static final class Info extends
         com.google.protobuf.GeneratedMessage
@@ -4669,6 +4674,20 @@ public final class Message {
         return permission_.get(index);
       }
       
+      // repeated string secretCode = 11;
+      public static final int SECRETCODE_FIELD_NUMBER = 11;
+      private com.google.protobuf.LazyStringList secretCode_;
+      public java.util.List<String>
+          getSecretCodeList() {
+        return secretCode_;
+      }
+      public int getSecretCodeCount() {
+        return secretCode_.size();
+      }
+      public String getSecretCode(int index) {
+        return secretCode_.get(index);
+      }
+      
       private void initFields() {
         packageName_ = "";
         processName_ = "";
@@ -4680,6 +4699,7 @@ public final class Message {
         sharedUserId_ = "";
         sharedLibraries_ = com.google.protobuf.LazyStringArrayList.EMPTY;
         permission_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+        secretCode_ = com.google.protobuf.LazyStringArrayList.EMPTY;
       }
       private byte memoizedIsInitialized = -1;
       public final boolean isInitialized() {
@@ -4722,6 +4742,9 @@ public final class Message {
         }
         for (int i = 0; i < permission_.size(); i++) {
           output.writeBytes(10, permission_.getByteString(i));
+        }
+        for (int i = 0; i < secretCode_.size(); i++) {
+          output.writeBytes(11, secretCode_.getByteString(i));
         }
         getUnknownFields().writeTo(output);
       }
@@ -4786,6 +4809,15 @@ public final class Message {
           }
           size += dataSize;
           size += 1 * getPermissionList().size();
+        }
+        {
+          int dataSize = 0;
+          for (int i = 0; i < secretCode_.size(); i++) {
+            dataSize += com.google.protobuf.CodedOutputStream
+              .computeBytesSizeNoTag(secretCode_.getByteString(i));
+          }
+          size += dataSize;
+          size += 1 * getSecretCodeList().size();
         }
         size += getUnknownFields().getSerializedSize();
         memoizedSerializedSize = size;
@@ -4931,6 +4963,8 @@ public final class Message {
           bitField0_ = (bitField0_ & ~0x00000100);
           permission_ = com.google.protobuf.LazyStringArrayList.EMPTY;
           bitField0_ = (bitField0_ & ~0x00000200);
+          secretCode_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+          bitField0_ = (bitField0_ & ~0x00000400);
           return this;
         }
         
@@ -5014,6 +5048,12 @@ public final class Message {
             bitField0_ = (bitField0_ & ~0x00000200);
           }
           result.permission_ = permission_;
+          if (((bitField0_ & 0x00000400) == 0x00000400)) {
+            secretCode_ = new com.google.protobuf.UnmodifiableLazyStringList(
+                secretCode_);
+            bitField0_ = (bitField0_ & ~0x00000400);
+          }
+          result.secretCode_ = secretCode_;
           result.bitField0_ = to_bitField0_;
           onBuilt();
           return result;
@@ -5078,6 +5118,16 @@ public final class Message {
             } else {
               ensurePermissionIsMutable();
               permission_.addAll(other.permission_);
+            }
+            onChanged();
+          }
+          if (!other.secretCode_.isEmpty()) {
+            if (secretCode_.isEmpty()) {
+              secretCode_ = other.secretCode_;
+              bitField0_ = (bitField0_ & ~0x00000400);
+            } else {
+              ensureSecretCodeIsMutable();
+              secretCode_.addAll(other.secretCode_);
             }
             onChanged();
           }
@@ -5169,6 +5219,11 @@ public final class Message {
               case 82: {
                 ensurePermissionIsMutable();
                 permission_.add(input.readBytes());
+                break;
+              }
+              case 90: {
+                ensureSecretCodeIsMutable();
+                secretCode_.add(input.readBytes());
                 break;
               }
             }
@@ -5568,6 +5623,62 @@ public final class Message {
         void addPermission(com.google.protobuf.ByteString value) {
           ensurePermissionIsMutable();
           permission_.add(value);
+          onChanged();
+        }
+        
+        // repeated string secretCode = 11;
+        private com.google.protobuf.LazyStringList secretCode_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+        private void ensureSecretCodeIsMutable() {
+          if (!((bitField0_ & 0x00000400) == 0x00000400)) {
+            secretCode_ = new com.google.protobuf.LazyStringArrayList(secretCode_);
+            bitField0_ |= 0x00000400;
+           }
+        }
+        public java.util.List<String>
+            getSecretCodeList() {
+          return java.util.Collections.unmodifiableList(secretCode_);
+        }
+        public int getSecretCodeCount() {
+          return secretCode_.size();
+        }
+        public String getSecretCode(int index) {
+          return secretCode_.get(index);
+        }
+        public Builder setSecretCode(
+            int index, String value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureSecretCodeIsMutable();
+          secretCode_.set(index, value);
+          onChanged();
+          return this;
+        }
+        public Builder addSecretCode(String value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureSecretCodeIsMutable();
+          secretCode_.add(value);
+          onChanged();
+          return this;
+        }
+        public Builder addAllSecretCode(
+            java.lang.Iterable<String> values) {
+          ensureSecretCodeIsMutable();
+          super.addAll(values, secretCode_);
+          onChanged();
+          return this;
+        }
+        public Builder clearSecretCode() {
+          secretCode_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+          bitField0_ = (bitField0_ & ~0x00000400);
+          onChanged();
+          return this;
+        }
+        void addSecretCode(com.google.protobuf.ByteString value) {
+          ensureSecretCodeIsMutable();
+          secretCode_.add(value);
           onChanged();
         }
         
@@ -12526,34 +12637,34 @@ public final class Message {
       "rantUriPermissions\030\010 \001(\010\032k\n\021PatternPermi" +
       "ssion\022\027\n\017writePermission\030\001 \001(\t\022\026\n\016readPe" +
       "rmission\030\002 \001(\t\022\022\n\nwriteNeeds\030\003 \001(\t\022\021\n\tre" +
-      "adNeeds\030\004 \001(\t\"\224\003\n\017PackageResponse\0223\n\004inf" +
+      "adNeeds\030\004 \001(\t\"\250\003\n\017PackageResponse\0223\n\004inf" +
       "o\030\001 \003(\0132%.com.mwr.mercury.PackageRespons" +
       "e.Info\022=\n\tsharedUid\030\002 \003(\0132*.com.mwr.merc",
-      "ury.PackageResponse.SharedUid\032\307\001\n\004Info\022\023" +
+      "ury.PackageResponse.SharedUid\032\333\001\n\004Info\022\023" +
       "\n\013packageName\030\001 \001(\t\022\023\n\013processName\030\002 \001(\t" +
       "\022\017\n\007version\030\003 \001(\t\022\025\n\rdataDirectory\030\004 \001(\t" +
       "\022\017\n\007apkPath\030\005 \001(\t\022\013\n\003uid\030\006 \001(\005\022\014\n\004guid\030\007" +
       " \003(\005\022\024\n\014sharedUserId\030\010 \001(\t\022\027\n\017sharedLibr" +
-      "aries\030\t \003(\t\022\022\n\npermission\030\n \003(\t\032C\n\tShare" +
-      "dUid\022\024\n\014packageNames\030\001 \003(\t\022\013\n\003uid\030\002 \001(\005\022" +
-      "\023\n\013permissions\030\003 \003(\t\"\210\001\n\017ServiceResponse" +
-      "\0223\n\004info\030\001 \003(\0132%.com.mwr.mercury.Service" +
-      "Response.Info\032@\n\004Info\022\023\n\013packageName\030\001 \001",
-      "(\t\022\017\n\007service\030\002 \001(\t\022\022\n\npermission\030\003 \001(\t\"" +
-      "w\n\020ActivityResponse\0224\n\004info\030\001 \003(\0132&.com." +
-      "mwr.mercury.ActivityResponse.Info\032-\n\004Inf" +
-      "o\022\023\n\013packageName\030\001 \001(\t\022\020\n\010activity\030\003 \001(\t" +
-      "\"\235\001\n\021BroadcastResponse\0225\n\004info\030\001 \003(\0132\'.c" +
-      "om.mwr.mercury.BroadcastResponse.Info\032Q\n" +
-      "\004Info\022\023\n\013packageName\030\001 \001(\t\022\020\n\010receiver\030\002" +
-      " \001(\t\022\022\n\npermission\030\003 \001(\t\022\016\n\006action\030\004 \003(\t" +
-      "\"\200\001\n\rDebugResponse\0221\n\004info\030\001 \003(\0132#.com.m" +
-      "wr.mercury.DebugResponse.Info\032<\n\004Info\022\023\n",
-      "\013packageName\030\001 \001(\t\022\013\n\003uid\030\002 \001(\005\022\022\n\npermi" +
-      "ssion\030\003 \003(\t\"t\n\016NativeResponse\0222\n\004info\030\001 " +
-      "\003(\0132$.com.mwr.mercury.NativeResponse.Inf" +
-      "o\032.\n\004Info\022\023\n\013packageName\030\001 \001(\t\022\021\n\tnative" +
-      "Lib\030\002 \003(\t"
+      "aries\030\t \003(\t\022\022\n\npermission\030\n \003(\t\022\022\n\nsecre" +
+      "tCode\030\013 \003(\t\032C\n\tSharedUid\022\024\n\014packageNames" +
+      "\030\001 \003(\t\022\013\n\003uid\030\002 \001(\005\022\023\n\013permissions\030\003 \003(\t" +
+      "\"\210\001\n\017ServiceResponse\0223\n\004info\030\001 \003(\0132%.com" +
+      ".mwr.mercury.ServiceResponse.Info\032@\n\004Inf",
+      "o\022\023\n\013packageName\030\001 \001(\t\022\017\n\007service\030\002 \001(\t\022" +
+      "\022\n\npermission\030\003 \001(\t\"w\n\020ActivityResponse\022" +
+      "4\n\004info\030\001 \003(\0132&.com.mwr.mercury.Activity" +
+      "Response.Info\032-\n\004Info\022\023\n\013packageName\030\001 \001" +
+      "(\t\022\020\n\010activity\030\003 \001(\t\"\235\001\n\021BroadcastRespon" +
+      "se\0225\n\004info\030\001 \003(\0132\'.com.mwr.mercury.Broad" +
+      "castResponse.Info\032Q\n\004Info\022\023\n\013packageName" +
+      "\030\001 \001(\t\022\020\n\010receiver\030\002 \001(\t\022\022\n\npermission\030\003" +
+      " \001(\t\022\016\n\006action\030\004 \003(\t\"\200\001\n\rDebugResponse\0221" +
+      "\n\004info\030\001 \003(\0132#.com.mwr.mercury.DebugResp",
+      "onse.Info\032<\n\004Info\022\023\n\013packageName\030\001 \001(\t\022\013" +
+      "\n\003uid\030\002 \001(\005\022\022\n\npermission\030\003 \003(\t\"t\n\016Nativ" +
+      "eResponse\0222\n\004info\030\001 \003(\0132$.com.mwr.mercur" +
+      "y.NativeResponse.Info\032.\n\004Info\022\023\n\013package" +
+      "Name\030\001 \001(\t\022\021\n\tnativeLib\030\002 \003(\t"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -12621,7 +12732,7 @@ public final class Message {
           internal_static_com_mwr_mercury_PackageResponse_Info_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_mwr_mercury_PackageResponse_Info_descriptor,
-              new java.lang.String[] { "PackageName", "ProcessName", "Version", "DataDirectory", "ApkPath", "Uid", "Guid", "SharedUserId", "SharedLibraries", "Permission", },
+              new java.lang.String[] { "PackageName", "ProcessName", "Version", "DataDirectory", "ApkPath", "Uid", "Guid", "SharedUserId", "SharedLibraries", "Permission", "SecretCode", },
               com.mwr.mercury.Message.PackageResponse.Info.class,
               com.mwr.mercury.Message.PackageResponse.Info.Builder.class);
           internal_static_com_mwr_mercury_PackageResponse_SharedUid_descriptor =

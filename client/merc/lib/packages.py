@@ -100,7 +100,9 @@ Permissions: com.android.vending.billing.IN_APP_NOTIFY.permission.C2D_MESSAGE; c
                 if info.sharedUserId is not None:
                     print "SharedUserId: " + info.sharedUserId + " (" + str(info.uid) + ")"
                 for permission in  info.permission:
-                    print "Permissions: " + permission             
+                    print "Permissions: " + permission
+                for secretCode in info.secretCode:
+                    print "Secret Code: " + secretCode            
                 print "\n"
 
         # FIXME: Choose specific exceptions to catch
@@ -225,3 +227,36 @@ Example - finding the attack surface of the built-in browser
         # FIXME: Choose specific exceptions to catch
         except Exception:
             pass
+        
+        
+    def do_secretcodes(self, args):
+        """
+Return the secret codes found on the device
+usage: secretcodes
+        """
+        # Define command-line arguments using argparse
+        parser = BaseArgumentParser(prog = 'secretcodes', add_help = False)
+        
+        parser.setOutputToFileOption()
+
+        try:
+
+            # Split arguments using shlex - this means that parameters with spaces can be used - escape " characters inside with \
+            splitargs = parser.parse_args(shlex.split(args))
+
+            # Compile stated arguments to send to executeCommand
+            request = vars(splitargs)
+            
+            response = self.session.executeCommand("packages", "secretcodes", request)
+            if response.error == "OK":
+                for pair in response.structured_data:
+                    if pair.key == "secretCodes":
+                        for value in pair.value:
+                            print str(value)
+                print ""
+            else:
+                print str(response.error)
+        # FIXME: Choose specific exceptions to catch
+        except Exception:
+            pass                 
+        

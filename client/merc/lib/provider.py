@@ -367,23 +367,24 @@ Multiprocess allowed: false
             request = vars(splitargs)
 
             response = self.session.executeCommand("provider", "info", request)
-            provider_response = Message_pb2.ProviderResponse()
-            provider_response.ParseFromString(str(response.data))
-            for info in provider_response.info:
-                print "PackageName: " + info.packageName
-                print "Authority: " + info.authority
-                print "Required Permission - Read: " + info.readPermission
-                print "Required Permission - Write: " + info.writePermission
-                print "Grant Uri Permissions: " + str(info.grantUriPermissions)
-                print "Multiprocess allowed: " + str(info.multiprocess)
-                for uri in info.uriPermissionPatterns:
-                    print "URI Permission Pattern: " + uri
-                for pathPermission in  info.pathPermissions:
-                    if len(pathPermission.readPermission) > 0:
-                        print "Path Permission - Read: " + pathPermission.readPermission + " needs " + pathPermission.readNeeds
-                    if len(pathPermission.writePermission) > 0:
-                        print "Path Permission - Write: " + pathPermission.writePermission + " needs " + pathPermission.writeNeeds
-                print "\n"
+            if str(response.error) == "OK":
+                provider_response = Message_pb2.ProviderResponse()
+                provider_response.ParseFromString(str(response.data))
+                for info in provider_response.info:
+                    print "PackageName: " + info.packageName
+                    print "Authority: " + info.authority
+                    print "Required Permission - Read: " + info.readPermission
+                    print "Required Permission - Write: " + info.writePermission
+                    print "Grant Uri Permissions: " + str(info.grantUriPermissions)
+                    print "Multiprocess allowed: " + str(info.multiprocess)
+                    for uri in info.uriPermissionPatterns:
+                        print "URI Permission Pattern: " + uri
+                    for pathPermission in  info.pathPermissions:
+                        if len(pathPermission.readPermission) > 0:
+                            print "Path Permission - Read: " + pathPermission.readPermission + " needs " + pathPermission.readNeeds
+                        if len(pathPermission.writePermission) > 0:
+                            print "Path Permission - Write: " + pathPermission.writePermission + " needs " + pathPermission.writeNeeds
+                    print "\n"
         # FIXME: Choose specific exceptions to catch
         except Exception as e:
             pass

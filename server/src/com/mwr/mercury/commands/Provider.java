@@ -40,6 +40,8 @@ public class Provider
 						PackageManager.GET_URI_PERMISSION_PATTERNS,
 						PackageManager.GET_URI_PERMISSION_PATTERNS);
 
+		Response.Builder responseBuilder = Response.newBuilder();
+		responseBuilder.setError(ByteString.copyFrom(Common.ERROR_OK.getBytes()));
 		ProviderResponse.Builder providerBuilder = ProviderResponse.newBuilder();
 		// Iterate through content providers
 		for (int i = 0; i < providers.size(); i++)
@@ -148,7 +150,7 @@ public class Provider
 			}
 		}
 		
-		Response response = Response.newBuilder().setData(providerBuilder.build().toByteString()).build();
+		Response response = responseBuilder.setData(providerBuilder.build().toByteString()).build();
 		currentSession.send(Base64.encodeToString(response.toByteArray(), Base64.DEFAULT), false, Common.COMMAND_REPLY);
 		
 	}

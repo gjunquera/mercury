@@ -65,14 +65,15 @@ Required Permission: null
             request = vars(splitargs)
 
             response = self.session.executeCommand("broadcast", "info", request)
-            broadcst_response = Message_pb2.BroadcastResponse()
-            broadcst_response.ParseFromString(str(response.data))
-            for info in broadcst_response.info:
-                print "Package name: " + info.packageName
-                print "Receiver: " + info.receiver
-                for action in info.action:
-                    print "Intent Filter Action:" + action
-                print "Required Permission: " + info.permission + "\n"
+            if str(response.error) == "OK":
+                broadcst_response = Message_pb2.BroadcastResponse()
+                broadcst_response.ParseFromString(str(response.data))
+                for info in broadcst_response.info:
+                    print "Package name: " + info.packageName
+                    print "Receiver: " + info.receiver
+                    for action in info.action:
+                        print "Intent Filter Action: " + action
+                    print "Required Permission: " + info.permission + "\n"
                 
         # FIXME: Choose specific exceptions to catch
         except Exception:

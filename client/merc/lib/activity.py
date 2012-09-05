@@ -246,11 +246,12 @@ Activity: com.android.browser.AddBookmarkPage
             splitargs = parser.parse_args(shlex.split(args))
 
             response = self.session.executeCommand("activity", "info", {'filter':splitargs.filter} if splitargs.filter else None)
-            activity_response = Message_pb2.ActivityResponse()
-            activity_response.ParseFromString(str(response.data))
-            for info in activity_response.info:
-                print "Package name: " + info.packageName
-                print "Activity: " + info.activity + "\n"
+            if str(response.error) == "OK":
+                activity_response = Message_pb2.ActivityResponse()
+                activity_response.ParseFromString(str(response.data))
+                for info in activity_response.info:
+                    print "Package name: " + info.packageName
+                    print "Activity: " + info.activity + "\n"
         # FIXME: Choose specific exceptions to catch
         except Exception:
             pass

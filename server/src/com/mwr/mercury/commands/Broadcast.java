@@ -39,6 +39,7 @@ public class Broadcast
 		List <PackageInfo> packages = pm.getInstalledPackages(PackageManager.GET_RECEIVERS | PackageManager.GET_PERMISSIONS);
 		
 		Response.Builder responseBuilder = Response.newBuilder();
+    	responseBuilder.setError(ByteString.copyFrom(Common.ERROR_OK.getBytes()));
 		BroadcastResponse.Builder broadcastBuilder = BroadcastResponse.newBuilder();
 		//Iterate through packages
 		for (PackageInfo package_:packages)
@@ -95,14 +96,13 @@ public class Broadcast
 							infoBuilder.setPermission("null");							
 						else
 							infoBuilder.setPermission(receivers[i].permission);
-				    	responseBuilder.setError(ByteString.copyFrom(Common.ERROR_OK.getBytes()));
 						broadcastBuilder.addInfo(infoBuilder);
 					}
 				}
 			}
 		}
 		
-		Response response = Response.newBuilder().setData(broadcastBuilder.build().toByteString()).build();
+		Response response = responseBuilder.setData(broadcastBuilder.build().toByteString()).build();
 		currentSession.send(Base64.encodeToString(response.toByteArray(), Base64.DEFAULT), false, Common.COMMAND_REPLY);
 	}
 
@@ -216,20 +216,6 @@ public class Broadcast
 			}
 		}
 		return "";
-	}
-	
-	private static XmlResourceParser searchXmlTag(XmlResourceParser xml, String tagName) throws XmlPullParserException, IOException 
-	{
-		//iterate inside receiver TAG
-		while (xml.next() != XmlPullParser.END_TAG) 
-		{
-			if (xml.getEventType() == XmlPullParser.START_TAG &&
-					tagName.equals(xml.getName()))
-			{
-				return xml;
-			}
-		}
-		return xml;
 	}
 
 }

@@ -53,6 +53,7 @@ message PackageResponse {
 		optional string sharedUserId = 8;
 		repeated string sharedLibraries = 9;
 		repeated string permission = 10;
+		repeated string secretCode = 11;
 	}
 	
 	message SharedUid {
