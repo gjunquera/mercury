@@ -5,11 +5,13 @@ from merc.lib import Message_pb2
 
 class Report(Module):
     """Description: Use Mercury Commands to create a HTML Report
+usage: [destFolder="folder"] [filter="package name"
 Credit: Glauco Junquera - Samsung SIDI"""
 
     def __init__(self, *args, **kwargs):
         Module.__init__(self, *args, **kwargs)
         self.path = ["information", "report"]
+        self.uris_list = []
 
     def execute(self, session, _arg):
 
@@ -76,7 +78,7 @@ Credit: Glauco Junquera - Samsung SIDI"""
         general_links.append(MenuLink("Package Info", "#packageInfo"))
         general_links.append(MenuLink("Content Provider Uris", "#urisList"))
         if self.query:
-            general_links.append(MenuLink("Content Provider Queries", "#uriQueries"))
+            general_links.append(MenuLink("Content Provider Uris Queries", "#uriQueries"))
         general_links.append(MenuLink("Secret Codes", "#secretCodes"))            
         
         components_links = []
@@ -104,9 +106,11 @@ Credit: Glauco Junquera - Samsung SIDI"""
             general_links.append(MenuLink("Device Info", "#deviceInfo"))
             general_links.append(MenuLink("Build Properties", "#buildProp"))
             general_links.append(MenuLink("System Properties", "#systemProp"))
-            general_links.append(MenuLink("Unprotected Providers", "#unprotected"))
+            general_links.append(MenuLink("Unprotected Content Providers", "#unprotected"))
             general_links.append(MenuLink("Unprotected Broadcast Receivers", "#unprotectedBroadcast"))
             general_links.append(MenuLink("Unprotected Services", "#unprotectedService"))
+            general_links.append(MenuLink("Content Providers Uris", "#urisList"))
+            general_links.append(MenuLink("Content Provider Uris Queries", "#uriQueries"))            
             general_links.append(MenuLink("Secret Codes", "#secretCodes"))
             general_links.append(MenuLink("Debuggable Packages", "#debug"))
             
@@ -182,7 +186,7 @@ Credit: Glauco Junquera - Samsung SIDI"""
         html = "<div id=\"content\">\n"
         html += "<p id=\"title\">" + title + "</p>\n"
         html += self.makePackageInfoHtml(content.packages, package) + "\n"
-        html += self.makeUrisList(package, uris) + "\n"
+        html += self.makeUrisList(uris) + "\n"
         html += self.makeSecretCodesHtml(content.packages, package) + "\n"
         if self.query:
             html += self.makeQueryUris(uris) + "\n"
@@ -206,6 +210,9 @@ Credit: Glauco Junquera - Samsung SIDI"""
         html += self.makeUnprotectedProviderHtml(content.provider) + "\n"
         html += self.makeUnprotectedBroadcastHtml(content.broadcast) + "\n"
         html += self.makeUnprotectedServiceHtml(content.service) + "\n"
+        html += self.makeUrisList(self.uris_list) + "\n"
+        if self.query:
+            html += self.makeQueryUris(self.uris_list) + "\n"
         html += self.makeSecretCodesHtml(content.packages, None) + "\n"
         html += self.makeDebugHtml(content.debug) + "\n"
         html += "</div>"        
@@ -385,8 +392,8 @@ Credit: Glauco Junquera - Samsung SIDI"""
             lines.append([k, dictionary[k]])
         return self.makeTable(lines)
         
-    def makeUrisList(self, package, uris):
-        html = "<p id=\"urisList\" class=\"section_title\">Content Provider Uris</p>\n"
+    def makeUrisList(self, uris):
+        html = "<p id=\"urisList\" class=\"section_title\">Content Provider Uris Found</p>\n"
         lines = []
         for uri in uris:
             lines.append([uri])
@@ -394,7 +401,7 @@ Credit: Glauco Junquera - Samsung SIDI"""
         return html
     
     def makeQueryUris(self, uris):
-        html = "<p id=\"uriQueries\" class=\"section_title\">Content Provider Queries</p>\n"
+        html = "<p id=\"uriQueries\" class=\"section_title\">Content Provider Uris Queries</p>\n"
         for uri in uris:
             request = {'selectionArgs': None, 'selection': None, 'projection': None, 'showColumns': None, 'Uri': uri, 'sortOrder': None, 'output': None}
             response = self.session.executeCommand("provider", "query", request)
@@ -537,6 +544,10 @@ Credit: Glauco Junquera - Samsung SIDI"""
                                             uri = value_str[value_str.upper().find("CONTENT"):]
                                             if uri not in uris:
                                                 uris.append(uri)
+        #populate list with all uris                                                
+        for uri in uris:
+            if uri not in self.uris_list:
+                self.uris_list.append(uri)
         return uris
     
     def getBuildProperties(self):
