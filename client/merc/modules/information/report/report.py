@@ -73,9 +73,15 @@ Credit: Glauco Junquera - Samsung SIDI"""
         request = {'filter': package_filter, 'output': None}
         response = self.session.executeCommand("debuggable", "info", request)
         content.debug.ParseFromString(str(response.data))
+
+        #Request Attack Surface Info
+        request = {}        
+        response = self.session.executeCommand("packages", "attacksurface", request)
+        content.attacksurface.ParseFromString(str(response.data))
         
         general_links = []
         general_links.append(MenuLink("Package Info", "#packageInfo"))
+        general_links.append(MenuLink("Attack Surface", "#attackSurface"))
         general_links.append(MenuLink("Content Provider Uris", "#urisList"))
         if self.query:
             general_links.append(MenuLink("Content Provider Uris Queries", "#uriQueries"))
@@ -186,6 +192,7 @@ Credit: Glauco Junquera - Samsung SIDI"""
         html = "<div id=\"content\">\n"
         html += "<p id=\"title\">" + title + "</p>\n"
         html += self.makePackageInfoHtml(content.packages, package) + "\n"
+        html += self.makeAttackSurfaceHtml(content.attacksurface, package) + "\n"
         html += self.makeUrisList(uris) + "\n"
         html += self.makeSecretCodesHtml(content.packages, package) + "\n"
         if self.query:
@@ -225,7 +232,26 @@ Credit: Glauco Junquera - Samsung SIDI"""
                 lines = []
 #                lines.append(["Package Name", str(info.packageName)])
                 lines.append(["Service", str(info.service)])
-                lines.append(["Required Permission", str(info.permission)])
+                if str(info.permission) == "null":
+                    lines.append(["Required Permission", "UNPROTECTED SERVICE"])
+                else:                    
+                    lines.append(["Required Permission", str(info.permission)])
+                action_str = ""
+                for action in info.action:
+                    action_str += str(action) + "<br>\n"
+                lines.append(["Intent Filter Action", action_str])                    
+                html += self.makeTable(lines) + "\n"
+        return html
+    
+    def makeAttackSurfaceHtml(self, content, package=None):
+        html = "<p id=\"attackSurface\" class=\"section_title\">Attack Surface</p>\n"
+        for info in content.attackSurface:
+            if (package != None) and (package == str(info.packageName)):
+                lines = []
+                lines.append(["Unprotected Activities", str(info.activities)])
+                lines.append(["Unprotected Receivers", str(info.receivers)])
+                lines.append(["Unprotected Content Providers", str(info.providers)])
+                lines.append(["Unprotected Content Services", str(info.services)])                
                 html += self.makeTable(lines) + "\n"
         return html
     
@@ -619,3 +645,5 @@ class PackageContent:
         self.service = Message_pb2.ServiceResponse()
         self.native = Message_pb2.NativeResponse()
         self.debug = Message_pb2.DebugResponse()
+        self.attacksurface = Message_pb2.PackageResponse()
+

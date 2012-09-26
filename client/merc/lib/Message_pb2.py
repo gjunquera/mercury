@@ -11,7 +11,7 @@ from google.protobuf import descriptor_pb2
 DESCRIPTOR = descriptor.FileDescriptor(
   name='Message.proto',
   package='com.mwr.mercury',
-  serialized_pb='\n\rMessage.proto\x12\x0f\x63om.mwr.mercury\"S\n\x07Request\x12\x0f\n\x07section\x18\x01 \x01(\t\x12\x10\n\x08\x66unction\x18\x02 \x01(\t\x12%\n\x04\x61rgs\x18\x03 \x03(\x0b\x32\x17.com.mwr.mercury.KVPair\"Y\n\x08Response\x12\x0c\n\x04\x64\x61ta\x18\x01 \x01(\x0c\x12\r\n\x05\x65rror\x18\x02 \x01(\x0c\x12\x30\n\x0fstructured_data\x18\x03 \x03(\x0b\x32\x17.com.mwr.mercury.KVPair\"$\n\x06KVPair\x12\x0b\n\x03key\x18\x01 \x02(\t\x12\r\n\x05value\x18\x02 \x03(\x0c\"\xbc\x03\n\x10ProviderResponse\x12\x34\n\x04info\x18\x01 \x03(\x0b\x32&.com.mwr.mercury.ProviderResponse.Info\x1a\xf1\x02\n\x04Info\x12\x11\n\tauthority\x18\x01 \x01(\t\x12\x13\n\x0bpackageName\x18\x02 \x01(\t\x12\x16\n\x0ereadPermission\x18\x03 \x01(\t\x12\x1d\n\x15uriPermissionPatterns\x18\x04 \x03(\t\x12\x17\n\x0fwritePermission\x18\x05 \x01(\t\x12Q\n\x0fpathPermissions\x18\x06 \x03(\x0b\x32\x38.com.mwr.mercury.ProviderResponse.Info.PatternPermission\x12\x14\n\x0cmultiprocess\x18\x07 \x01(\x08\x12\x1b\n\x13grantUriPermissions\x18\x08 \x01(\x08\x1ak\n\x11PatternPermission\x12\x17\n\x0fwritePermission\x18\x01 \x01(\t\x12\x16\n\x0ereadPermission\x18\x02 \x01(\t\x12\x12\n\nwriteNeeds\x18\x03 \x01(\t\x12\x11\n\treadNeeds\x18\x04 \x01(\t\"\xa8\x03\n\x0fPackageResponse\x12\x33\n\x04info\x18\x01 \x03(\x0b\x32%.com.mwr.mercury.PackageResponse.Info\x12=\n\tsharedUid\x18\x02 \x03(\x0b\x32*.com.mwr.mercury.PackageResponse.SharedUid\x1a\xdb\x01\n\x04Info\x12\x13\n\x0bpackageName\x18\x01 \x01(\t\x12\x13\n\x0bprocessName\x18\x02 \x01(\t\x12\x0f\n\x07version\x18\x03 \x01(\t\x12\x15\n\rdataDirectory\x18\x04 \x01(\t\x12\x0f\n\x07\x61pkPath\x18\x05 \x01(\t\x12\x0b\n\x03uid\x18\x06 \x01(\x05\x12\x0c\n\x04guid\x18\x07 \x03(\x05\x12\x14\n\x0csharedUserId\x18\x08 \x01(\t\x12\x17\n\x0fsharedLibraries\x18\t \x03(\t\x12\x12\n\npermission\x18\n \x03(\t\x12\x12\n\nsecretCode\x18\x0b \x03(\t\x1a\x43\n\tSharedUid\x12\x14\n\x0cpackageNames\x18\x01 \x03(\t\x12\x0b\n\x03uid\x18\x02 \x01(\x05\x12\x13\n\x0bpermissions\x18\x03 \x03(\t\"\x88\x01\n\x0fServiceResponse\x12\x33\n\x04info\x18\x01 \x03(\x0b\x32%.com.mwr.mercury.ServiceResponse.Info\x1a@\n\x04Info\x12\x13\n\x0bpackageName\x18\x01 \x01(\t\x12\x0f\n\x07service\x18\x02 \x01(\t\x12\x12\n\npermission\x18\x03 \x01(\t\"w\n\x10\x41\x63tivityResponse\x12\x34\n\x04info\x18\x01 \x03(\x0b\x32&.com.mwr.mercury.ActivityResponse.Info\x1a-\n\x04Info\x12\x13\n\x0bpackageName\x18\x01 \x01(\t\x12\x10\n\x08\x61\x63tivity\x18\x03 \x01(\t\"\x9d\x01\n\x11\x42roadcastResponse\x12\x35\n\x04info\x18\x01 \x03(\x0b\x32\'.com.mwr.mercury.BroadcastResponse.Info\x1aQ\n\x04Info\x12\x13\n\x0bpackageName\x18\x01 \x01(\t\x12\x10\n\x08receiver\x18\x02 \x01(\t\x12\x12\n\npermission\x18\x03 \x01(\t\x12\x0e\n\x06\x61\x63tion\x18\x04 \x03(\t\"\x80\x01\n\rDebugResponse\x12\x31\n\x04info\x18\x01 \x03(\x0b\x32#.com.mwr.mercury.DebugResponse.Info\x1a<\n\x04Info\x12\x13\n\x0bpackageName\x18\x01 \x01(\t\x12\x0b\n\x03uid\x18\x02 \x01(\x05\x12\x12\n\npermission\x18\x03 \x03(\t\"t\n\x0eNativeResponse\x12\x32\n\x04info\x18\x01 \x03(\x0b\x32$.com.mwr.mercury.NativeResponse.Info\x1a.\n\x04Info\x12\x13\n\x0bpackageName\x18\x01 \x01(\t\x12\x11\n\tnativeLib\x18\x02 \x03(\t')
+  serialized_pb='\n\rMessage.proto\x12\x0f\x63om.mwr.mercury\"S\n\x07Request\x12\x0f\n\x07section\x18\x01 \x01(\t\x12\x10\n\x08\x66unction\x18\x02 \x01(\t\x12%\n\x04\x61rgs\x18\x03 \x03(\x0b\x32\x17.com.mwr.mercury.KVPair\"Y\n\x08Response\x12\x0c\n\x04\x64\x61ta\x18\x01 \x01(\x0c\x12\r\n\x05\x65rror\x18\x02 \x01(\x0c\x12\x30\n\x0fstructured_data\x18\x03 \x03(\x0b\x32\x17.com.mwr.mercury.KVPair\"$\n\x06KVPair\x12\x0b\n\x03key\x18\x01 \x02(\t\x12\r\n\x05value\x18\x02 \x03(\x0c\"\xbc\x03\n\x10ProviderResponse\x12\x34\n\x04info\x18\x01 \x03(\x0b\x32&.com.mwr.mercury.ProviderResponse.Info\x1a\xf1\x02\n\x04Info\x12\x11\n\tauthority\x18\x01 \x01(\t\x12\x13\n\x0bpackageName\x18\x02 \x01(\t\x12\x16\n\x0ereadPermission\x18\x03 \x01(\t\x12\x1d\n\x15uriPermissionPatterns\x18\x04 \x03(\t\x12\x17\n\x0fwritePermission\x18\x05 \x01(\t\x12Q\n\x0fpathPermissions\x18\x06 \x03(\x0b\x32\x38.com.mwr.mercury.ProviderResponse.Info.PatternPermission\x12\x14\n\x0cmultiprocess\x18\x07 \x01(\x08\x12\x1b\n\x13grantUriPermissions\x18\x08 \x01(\x08\x1ak\n\x11PatternPermission\x12\x17\n\x0fwritePermission\x18\x01 \x01(\t\x12\x16\n\x0ereadPermission\x18\x02 \x01(\t\x12\x12\n\nwriteNeeds\x18\x03 \x01(\t\x12\x11\n\treadNeeds\x18\x04 \x01(\t\"\x8c\x05\n\x0fPackageResponse\x12\x33\n\x04info\x18\x01 \x03(\x0b\x32%.com.mwr.mercury.PackageResponse.Info\x12=\n\tsharedUid\x18\x02 \x03(\x0b\x32*.com.mwr.mercury.PackageResponse.SharedUid\x12\x45\n\rattackSurface\x18\x03 \x03(\x0b\x32..com.mwr.mercury.PackageResponse.AttackSurface\x1a\xdb\x01\n\x04Info\x12\x13\n\x0bpackageName\x18\x01 \x01(\t\x12\x13\n\x0bprocessName\x18\x02 \x01(\t\x12\x0f\n\x07version\x18\x03 \x01(\t\x12\x15\n\rdataDirectory\x18\x04 \x01(\t\x12\x0f\n\x07\x61pkPath\x18\x05 \x01(\t\x12\x0b\n\x03uid\x18\x06 \x01(\x05\x12\x0c\n\x04guid\x18\x07 \x03(\x05\x12\x14\n\x0csharedUserId\x18\x08 \x01(\t\x12\x17\n\x0fsharedLibraries\x18\t \x03(\t\x12\x12\n\npermission\x18\n \x03(\t\x12\x12\n\nsecretCode\x18\x0b \x03(\t\x1a\x43\n\tSharedUid\x12\x14\n\x0cpackageNames\x18\x01 \x03(\t\x12\x0b\n\x03uid\x18\x02 \x01(\x05\x12\x13\n\x0bpermissions\x18\x03 \x03(\t\x1a\x9a\x01\n\rAttackSurface\x12\x13\n\x0bpackageName\x18\x01 \x02(\t\x12\x12\n\nactivities\x18\x02 \x01(\x05\x12\x11\n\treceivers\x18\x03 \x01(\x05\x12\x11\n\tproviders\x18\x04 \x01(\x05\x12\x10\n\x08services\x18\x05 \x01(\x05\x12\x12\n\ndebuggable\x18\x06 \x01(\x08\x12\x14\n\x0csharedUserId\x18\x07 \x01(\t\"\x98\x01\n\x0fServiceResponse\x12\x33\n\x04info\x18\x01 \x03(\x0b\x32%.com.mwr.mercury.ServiceResponse.Info\x1aP\n\x04Info\x12\x13\n\x0bpackageName\x18\x01 \x01(\t\x12\x0f\n\x07service\x18\x02 \x01(\t\x12\x12\n\npermission\x18\x03 \x01(\t\x12\x0e\n\x06\x61\x63tion\x18\x04 \x03(\t\"w\n\x10\x41\x63tivityResponse\x12\x34\n\x04info\x18\x01 \x03(\x0b\x32&.com.mwr.mercury.ActivityResponse.Info\x1a-\n\x04Info\x12\x13\n\x0bpackageName\x18\x01 \x01(\t\x12\x10\n\x08\x61\x63tivity\x18\x03 \x01(\t\"\x9d\x01\n\x11\x42roadcastResponse\x12\x35\n\x04info\x18\x01 \x03(\x0b\x32\'.com.mwr.mercury.BroadcastResponse.Info\x1aQ\n\x04Info\x12\x13\n\x0bpackageName\x18\x01 \x01(\t\x12\x10\n\x08receiver\x18\x02 \x01(\t\x12\x12\n\npermission\x18\x03 \x01(\t\x12\x0e\n\x06\x61\x63tion\x18\x04 \x03(\t\"\x80\x01\n\rDebugResponse\x12\x31\n\x04info\x18\x01 \x03(\x0b\x32#.com.mwr.mercury.DebugResponse.Info\x1a<\n\x04Info\x12\x13\n\x0bpackageName\x18\x01 \x01(\t\x12\x0b\n\x03uid\x18\x02 \x01(\x05\x12\x12\n\npermission\x18\x03 \x03(\t\"t\n\x0eNativeResponse\x12\x32\n\x04info\x18\x01 \x03(\x0b\x32$.com.mwr.mercury.NativeResponse.Info\x1a.\n\x04Info\x12\x13\n\x0bpackageName\x18\x01 \x01(\t\x12\x11\n\tnativeLib\x18\x02 \x03(\t')
 
 
 
@@ -380,8 +380,8 @@ _PACKAGERESPONSE_INFO = descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=832,
-  serialized_end=1051,
+  serialized_start=903,
+  serialized_end=1122,
 )
 
 _PACKAGERESPONSE_SHAREDUID = descriptor.Descriptor(
@@ -421,8 +421,77 @@ _PACKAGERESPONSE_SHAREDUID = descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=1053,
-  serialized_end=1120,
+  serialized_start=1124,
+  serialized_end=1191,
+)
+
+_PACKAGERESPONSE_ATTACKSURFACE = descriptor.Descriptor(
+  name='AttackSurface',
+  full_name='com.mwr.mercury.PackageResponse.AttackSurface',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    descriptor.FieldDescriptor(
+      name='packageName', full_name='com.mwr.mercury.PackageResponse.AttackSurface.packageName', index=0,
+      number=1, type=9, cpp_type=9, label=2,
+      has_default_value=False, default_value=unicode("", "utf-8"),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    descriptor.FieldDescriptor(
+      name='activities', full_name='com.mwr.mercury.PackageResponse.AttackSurface.activities', index=1,
+      number=2, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    descriptor.FieldDescriptor(
+      name='receivers', full_name='com.mwr.mercury.PackageResponse.AttackSurface.receivers', index=2,
+      number=3, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    descriptor.FieldDescriptor(
+      name='providers', full_name='com.mwr.mercury.PackageResponse.AttackSurface.providers', index=3,
+      number=4, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    descriptor.FieldDescriptor(
+      name='services', full_name='com.mwr.mercury.PackageResponse.AttackSurface.services', index=4,
+      number=5, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    descriptor.FieldDescriptor(
+      name='debuggable', full_name='com.mwr.mercury.PackageResponse.AttackSurface.debuggable', index=5,
+      number=6, type=8, cpp_type=7, label=1,
+      has_default_value=False, default_value=False,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    descriptor.FieldDescriptor(
+      name='sharedUserId', full_name='com.mwr.mercury.PackageResponse.AttackSurface.sharedUserId', index=6,
+      number=7, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=unicode("", "utf-8"),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  serialized_start=1194,
+  serialized_end=1348,
 )
 
 _PACKAGERESPONSE = descriptor.Descriptor(
@@ -446,17 +515,24 @@ _PACKAGERESPONSE = descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
+    descriptor.FieldDescriptor(
+      name='attackSurface', full_name='com.mwr.mercury.PackageResponse.attackSurface', index=2,
+      number=3, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
   ],
   extensions=[
   ],
-  nested_types=[_PACKAGERESPONSE_INFO, _PACKAGERESPONSE_SHAREDUID, ],
+  nested_types=[_PACKAGERESPONSE_INFO, _PACKAGERESPONSE_SHAREDUID, _PACKAGERESPONSE_ATTACKSURFACE, ],
   enum_types=[
   ],
   options=None,
   is_extendable=False,
   extension_ranges=[],
   serialized_start=696,
-  serialized_end=1120,
+  serialized_end=1348,
 )
 
 
@@ -488,6 +564,13 @@ _SERVICERESPONSE_INFO = descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
+    descriptor.FieldDescriptor(
+      name='action', full_name='com.mwr.mercury.ServiceResponse.Info.action', index=3,
+      number=4, type=9, cpp_type=9, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
   ],
   extensions=[
   ],
@@ -497,8 +580,8 @@ _SERVICERESPONSE_INFO = descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=1195,
-  serialized_end=1259,
+  serialized_start=1423,
+  serialized_end=1503,
 )
 
 _SERVICERESPONSE = descriptor.Descriptor(
@@ -524,8 +607,8 @@ _SERVICERESPONSE = descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=1123,
-  serialized_end=1259,
+  serialized_start=1351,
+  serialized_end=1503,
 )
 
 
@@ -559,8 +642,8 @@ _ACTIVITYRESPONSE_INFO = descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=1335,
-  serialized_end=1380,
+  serialized_start=1579,
+  serialized_end=1624,
 )
 
 _ACTIVITYRESPONSE = descriptor.Descriptor(
@@ -586,8 +669,8 @@ _ACTIVITYRESPONSE = descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=1261,
-  serialized_end=1380,
+  serialized_start=1505,
+  serialized_end=1624,
 )
 
 
@@ -635,8 +718,8 @@ _BROADCASTRESPONSE_INFO = descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=1459,
-  serialized_end=1540,
+  serialized_start=1703,
+  serialized_end=1784,
 )
 
 _BROADCASTRESPONSE = descriptor.Descriptor(
@@ -662,8 +745,8 @@ _BROADCASTRESPONSE = descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=1383,
-  serialized_end=1540,
+  serialized_start=1627,
+  serialized_end=1784,
 )
 
 
@@ -704,8 +787,8 @@ _DEBUGRESPONSE_INFO = descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=1611,
-  serialized_end=1671,
+  serialized_start=1855,
+  serialized_end=1915,
 )
 
 _DEBUGRESPONSE = descriptor.Descriptor(
@@ -731,8 +814,8 @@ _DEBUGRESPONSE = descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=1543,
-  serialized_end=1671,
+  serialized_start=1787,
+  serialized_end=1915,
 )
 
 
@@ -766,8 +849,8 @@ _NATIVERESPONSE_INFO = descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=1743,
-  serialized_end=1789,
+  serialized_start=1987,
+  serialized_end=2033,
 )
 
 _NATIVERESPONSE = descriptor.Descriptor(
@@ -793,8 +876,8 @@ _NATIVERESPONSE = descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=1673,
-  serialized_end=1789,
+  serialized_start=1917,
+  serialized_end=2033,
 )
 
 _REQUEST.fields_by_name['args'].message_type = _KVPAIR
@@ -805,8 +888,10 @@ _PROVIDERRESPONSE_INFO.containing_type = _PROVIDERRESPONSE;
 _PROVIDERRESPONSE.fields_by_name['info'].message_type = _PROVIDERRESPONSE_INFO
 _PACKAGERESPONSE_INFO.containing_type = _PACKAGERESPONSE;
 _PACKAGERESPONSE_SHAREDUID.containing_type = _PACKAGERESPONSE;
+_PACKAGERESPONSE_ATTACKSURFACE.containing_type = _PACKAGERESPONSE;
 _PACKAGERESPONSE.fields_by_name['info'].message_type = _PACKAGERESPONSE_INFO
 _PACKAGERESPONSE.fields_by_name['sharedUid'].message_type = _PACKAGERESPONSE_SHAREDUID
+_PACKAGERESPONSE.fields_by_name['attackSurface'].message_type = _PACKAGERESPONSE_ATTACKSURFACE
 _SERVICERESPONSE_INFO.containing_type = _SERVICERESPONSE;
 _SERVICERESPONSE.fields_by_name['info'].message_type = _SERVICERESPONSE_INFO
 _ACTIVITYRESPONSE_INFO.containing_type = _ACTIVITYRESPONSE;
@@ -878,6 +963,12 @@ class PackageResponse(message.Message):
     DESCRIPTOR = _PACKAGERESPONSE_SHAREDUID
     
     # @@protoc_insertion_point(class_scope:com.mwr.mercury.PackageResponse.SharedUid)
+  
+  class AttackSurface(message.Message):
+    __metaclass__ = reflection.GeneratedProtocolMessageType
+    DESCRIPTOR = _PACKAGERESPONSE_ATTACKSURFACE
+    
+    # @@protoc_insertion_point(class_scope:com.mwr.mercury.PackageResponse.AttackSurface)
   DESCRIPTOR = _PACKAGERESPONSE
   
   # @@protoc_insertion_point(class_scope:com.mwr.mercury.PackageResponse)

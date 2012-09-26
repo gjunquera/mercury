@@ -21,6 +21,9 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+
 import com.google.protobuf.ByteString;
 import com.mwr.mercury.Message.KVPair;
 
@@ -28,6 +31,10 @@ import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.res.AssetManager;
+import android.content.res.XmlResourceParser;
 import android.database.Cursor;
 import android.net.Uri;
 import android.util.Log;
@@ -437,6 +444,113 @@ public class Common
 		pairBuilder.setKey(key);
 		pairBuilder.addValue(value);
 		return pairBuilder.build();
+	}
+	
+	// Added in order to get the actions of each broadcast receiver
+	// Change added by Luander Ribeiro <luander.r@samsung.com>
+	// in Aug 27 - 2012
+	/**
+	 * Get a list of actions of a given receiver
+	 * @param currentSession the session for current request
+	 * @param receivers An ActivityInfo with information about the receiver
+	 * @param parentTag Name of the tag where intent filter actions will be searched inside
+	 * @return A list of strings containing the actions of a receiver or an empty list, if there is no action
+	 */
+	public static List<String> findIntentFilterActions(Session currentSession, ActivityInfo receiver, String parentTag) {
+		return findIntentFilterActions(currentSession, receiver.packageName, receiver.name, parentTag);
+	}
+	
+	// Added in order to get the actions of each broadcast receiver
+	// Change added by Luander Ribeiro <luander.r@samsung.com>
+	// in Aug 27 - 2012
+	/**
+	 * Get a list of actions of a given receiver
+	 * @param currentSession the session for current request
+	 * @param receivers An ActivityInfo with information
+	 * @param parentTag Name of the tag where intent filter actions will be searched inside
+	 * @return A list of strings containing the actions of a receiver or an empty list, if there is no action
+	 */
+	public static List<String> findIntentFilterActions(Session currentSession, String packageName, String className, String parentTag)
+	{
+		List<String> actions = new ArrayList<String>();
+		try
+		{
+			AssetManager am = currentSession.applicationContext.createPackageContext(packageName, 0).getAssets();
+			XmlResourceParser xml = am.openXmlResourceParser("AndroidManifest.xml");
+
+			//XML parsing
+			while (xml.next() != XmlPullParser.END_DOCUMENT) {
+				switch (xml.getEventType()) {
+				case XmlPullParser.START_TAG:
+					// Find receiver tag to start looking for intent filters
+					if (parentTag.equals(xml.getName()))
+					{
+						String receiverName = searchXmlAttr(xml, "android:name");
+						if (receiverName.length() == 0)
+						{
+							receiverName = searchXmlAttr(xml, "name");
+						}
+						// If the tag name matches with receiver, search for its intent filters
+						if (receiverName.length() > 0 &&
+								className.endsWith(receiverName))
+						{
+							//iterate until receiver END_TAG
+							while(xml.next() != XmlPullParser.END_TAG) {
+								if (xml.getEventType() == XmlPullParser.START_TAG &&
+										"intent-filter".equals(xml.getName()))
+								{
+									//iterate until intent-filter END_TAG
+									while(xml.next() != XmlPullParser.END_TAG) {
+										if (xml.getEventType() == XmlPullParser.START_TAG &&
+												"action".equals(xml.getName()))
+										{
+											String action = searchXmlAttr(xml, "android:name");
+											if (action.length() == 0)
+												action = searchXmlAttr(xml, "name");
+											if (action.length() > 0)
+												actions.add(action);
+											//iterate until action END_TAG
+											while(xml.next() != XmlPullParser.END_TAG);										
+										}
+									} 
+								}
+							}
+						}
+					}
+					break;
+				case XmlPullParser.END_TAG:
+					break;
+				case XmlPullParser.TEXT:
+					break;
+				default:
+					break;
+				}
+			}
+		}
+		catch (NameNotFoundException e){}
+		catch (IOException e){}
+		catch (XmlPullParserException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return actions;
+	}
+	
+	//Searches for an attribute in "XML tag"
+	private static String searchXmlAttr(XmlResourceParser xml, String attrName) 
+	{
+		for (int j = 0; j < xml.getAttributeCount(); j++)
+		{
+			String name = xml.getAttributeName(j);
+			String value = xml.getAttributeValue(j);
+			// If the tag name matches with receiver, search for its intent filters
+			if (attrName.equals(name)) 
+			{
+				return value;
+			}
+		}
+		return "";
 	}
 
 }

@@ -229,80 +229,103 @@ public class Packages
 			Session currentSession)
 	{
 		// Get all the parameters
-		String packageName = Common.getParamString(argsArray, "packageName");
+		String packageName = Common.getParamString(argsArray, "filter");
 		Response.Builder responseBuilder = Response.newBuilder();
+		PackageResponse.Builder packageBuilder = PackageResponse.newBuilder();
+		
+		// Get all packages from packagemanager
+		List<String> packageNames = new ArrayList<String>();
+		if (packageName == null || (packageName.length() == 0))
+		{
+			// Get all packages from packagemanager
+			PackageManager pm = currentSession.applicationContext
+					.getPackageManager();
+			List<PackageInfo> packages = pm
+					.getInstalledPackages(PackageManager.GET_CONFIGURATIONS);
+			for (PackageInfo pkg : packages)
+				packageNames.add(pkg.packageName);
+		}
+		else
+		{
+			// Add just original package if not wildcard
+			packageNames.add(packageName);
+		}
 		
 		try
 		{
-
-			// Check number of exported activities
-			int numActivities = 0;
-
-			ActivityInfo[] activities = currentSession.applicationContext
-					.getPackageManager().getPackageInfo(packageName,
-							PackageManager.GET_ACTIVITIES).activities;
-			if (activities != null)
-				for (int i = 0; i < activities.length; i++)
-					if (activities[i].exported)
-						numActivities++;
-
-			// Check number of exported receivers
-			int numReceivers = 0;
-			ActivityInfo[] receivers = currentSession.applicationContext
-					.getPackageManager().getPackageInfo(packageName,
-							PackageManager.GET_RECEIVERS).receivers;
-			if (receivers != null)
-				for (int i = 0; i < receivers.length; i++)
-					if (receivers[i].exported)
-						numReceivers++;
-
-			// Check number of exported providers
-			int numProviders = 0;
-			ProviderInfo[] providers = currentSession.applicationContext
-					.getPackageManager().getPackageInfo(packageName,
-							PackageManager.GET_PROVIDERS).providers;
-			if (providers != null)
-				for (int i = 0; i < providers.length; i++)
-					if (providers[i].exported)
-						numProviders++;
-
-			// Check number of exported services
-			int numServices = 0;
-			ServiceInfo[] services = currentSession.applicationContext
-					.getPackageManager().getPackageInfo(packageName,
-							PackageManager.GET_SERVICES).services;
-			if (services != null)
-				for (int i = 0; i < services.length; i++)
-					if (services[i].exported)
-						numServices++;
-
-			responseBuilder.addStructuredData(Common.createKVPair("activities", new Integer(numActivities).toString()));
-			responseBuilder.addStructuredData(Common.createKVPair("receivers", new Integer(numReceivers).toString()));
-			responseBuilder.addStructuredData(Common.createKVPair("providers", new Integer(numProviders).toString()));
-			responseBuilder.addStructuredData(Common.createKVPair("services", new Integer(numServices).toString()));			
-
-			if ((currentSession.applicationContext.getPackageManager()
-					.getPackageInfo(packageName, 0).applicationInfo.flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0)
-				responseBuilder.addStructuredData(Common.createKVPair("debuggable", "true"));
-
-			String shared = currentSession.applicationContext
-					.getPackageManager().getPackageInfo(packageName, 0).sharedUserId;
-
-			if (shared != null)
+			for (String pkgName : packageNames)
 			{
-				responseBuilder.addStructuredData(Common.createKVPair("shared_uid", shared));
-				responseBuilder.addStructuredData(Common.createKVPair("uid",new Integer
-						(currentSession.applicationContext.getPackageManager()
-						.getPackageInfo(packageName, 0).applicationInfo.uid).toString()));
+				// Check number of exported activities
+				int numActivities = 0;
+	
+				ActivityInfo[] activities = currentSession.applicationContext
+							.getPackageManager().getPackageInfo(pkgName,
+								PackageManager.GET_ACTIVITIES).activities;
+				if (activities != null)
+					for (int i = 0; i < activities.length; i++)
+						if (activities[i].exported)
+							numActivities++;
+	
+				// Check number of exported receivers
+				int numReceivers = 0;
+				ActivityInfo[] receivers = currentSession.applicationContext
+							.getPackageManager().getPackageInfo(pkgName,
+								PackageManager.GET_RECEIVERS).receivers;
+				if (receivers != null)
+					for (int i = 0; i < receivers.length; i++)
+						if (receivers[i].exported)
+							numReceivers++;
+	
+				// Check number of exported providers
+				int numProviders = 0;
+				ProviderInfo[] providers = currentSession.applicationContext
+							.getPackageManager().getPackageInfo(pkgName,
+								PackageManager.GET_PROVIDERS).providers;
+				if (providers != null)
+					for (int i = 0; i < providers.length; i++)
+						if (providers[i].exported)
+							numProviders++;
+	
+				// Check number of exported services
+				int numServices = 0;
+				ServiceInfo[] services = currentSession.applicationContext
+							.getPackageManager().getPackageInfo(pkgName,
+								PackageManager.GET_SERVICES).services;
+				if (services != null)
+					for (int i = 0; i < services.length; i++)
+						if (services[i].exported)
+							numServices++;
+	
+					PackageResponse.AttackSurface.Builder attackSurfaceBuilder = PackageResponse.AttackSurface.newBuilder();
+					attackSurfaceBuilder.setPackageName(pkgName);
+					attackSurfaceBuilder.setActivities(numActivities);
+					attackSurfaceBuilder.setReceivers(numReceivers);
+					attackSurfaceBuilder.setProviders(numProviders);
+					attackSurfaceBuilder.setServices(numServices);
+	
+				if ((currentSession.applicationContext.getPackageManager()
+							.getPackageInfo(pkgName, 0).applicationInfo.flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0)
+						attackSurfaceBuilder.setDebuggable(true);
+					else
+						attackSurfaceBuilder.setDebuggable(false);
+	
+				String shared = currentSession.applicationContext
+							.getPackageManager().getPackageInfo(pkgName, 0).sharedUserId;
+	
+				if (shared != null)
+				{
+					attackSurfaceBuilder.setSharedUserId(shared);
+				}
+				packageBuilder.addAttackSurface(attackSurfaceBuilder);
 			}
 			responseBuilder.setError(ByteString.copyFrom(Common.ERROR_OK.getBytes()));
-		}
-		catch (Throwable t)
+		} catch (Throwable t)
 		{
 			responseBuilder.setError(ByteString.copyFrom(t.getMessage().getBytes()));
 		}
 		
-		currentSession.send(Base64.encodeToString(responseBuilder.build().toByteArray(), Base64.DEFAULT), false, Common.COMMAND_REPLY);
+		Response response = responseBuilder.setData(packageBuilder.build().toByteString()).build();
+		currentSession.send(Base64.encodeToString(response.toByteArray(), Base64.DEFAULT), false, Common.COMMAND_REPLY);
 	}
 
 	public static void path(List<KVPair> argsArray,

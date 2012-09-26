@@ -74,7 +74,11 @@ public class Service
 					//Apply filter and only look @ exported providers
 					if (((bothFiltersPresent && bothFiltersRelevant) || (!bothFiltersPresent && (relevantFilter || relevantPermissions)) || (!bothFiltersPresent && noFilters)) && services[i].exported)
 					{
+						List<String> actions = Common.findIntentFilterActions(currentSession, services[i].packageName, services[i].name, "service");
+						
 						ServiceResponse.Info.Builder infoBuilder = ServiceResponse.Info.newBuilder();
+						for (String action: actions)
+							infoBuilder.addAction(action);
 						infoBuilder.setPackageName(services[i].packageName);
 						infoBuilder.setService(services[i].name);
 						//To avoid NullPointerException

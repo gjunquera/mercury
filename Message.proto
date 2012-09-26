@@ -62,9 +62,19 @@ message PackageResponse {
 		repeated string permissions = 3;
 	}
 	
+	message AttackSurface {
+		required string packageName = 1;
+		optional int32 activities = 2;
+		optional int32 receivers = 3;
+		optional int32 providers = 4;
+		optional int32 services = 5;
+		optional bool debuggable = 6;
+		optional string sharedUserId = 7;
+	}
+	
 	repeated Info info = 1;
 	repeated SharedUid sharedUid = 2;
-	
+	repeated AttackSurface attackSurface = 3;
 }
 
 message ServiceResponse {
@@ -73,6 +83,7 @@ message ServiceResponse {
 		optional string packageName = 1;
 		optional string service = 2;
 		optional string permission = 3;
+		repeated string action = 4;
 	}
 	
 	repeated Info info = 1;

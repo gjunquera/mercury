@@ -58,6 +58,8 @@ Required Permission: null
                     print "PackageName: " + info.packageName
                     print "Service: " + info.service
                     print "Required Permission: " + info.permission
+                    for action in info.action:
+                        print "Intent Filter Action: " + action                    
                     print ""
             else:
                 print str(response.error)

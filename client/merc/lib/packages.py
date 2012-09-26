@@ -187,40 +187,57 @@ Example - finding the attack surface of the built-in browser
 
         # Define command-line arguments using argparse
         parser = BaseArgumentParser(prog = 'attacksurface', add_help = False)
-        parser.add_argument('packageName')
+        parser.add_argument('--filter', '-f', metavar = '<filter>')
         
         parser.setOutputToFileOption()
+        
+        
 
         try:
-
             # Split arguments using shlex - this means that parameters with spaces can be used - escape " characters inside with \
             splitargs = parser.parse_args(shlex.split(args))
+            
+            # Compile stated arguments to send to executeCommand
+            request = vars(splitargs)
 
 #            print self.session.executeCommand("packages", "attacksurface", {'packageName':splitargs.packageName}).getPaddedErrorOrData()
-            response = self.session.executeCommand("packages", "attacksurface", {'packageName':splitargs.packageName})
+            response = self.session.executeCommand("packages", "attacksurface", request)
             if response.error == "OK":
-                for pair in response.structured_data:
-                    if pair.key == "activities":
-                        value = str(pair.value).translate(None, "[']")
-                        print value + " activities exported"
-                    elif pair.key == "receivers":
-                        value = str(pair.value).translate(None, "[']")
-                        print value + " broadcast receivers exported"
-                    elif pair.key == "providers":
-                        value = str(pair.value).translate(None, "[']")
-                        print value + " content providers exported"
-                    elif pair.key == "services":
-                        value = str(pair.value).translate(None, "[']")
-                        print value + " services exported"
-                    elif pair.key == "debuggable":
-                        print "Debuggable: " + str(pair.value)
-                    elif pair.key == "uid":
-                        uid = str(pair.value)
-                    elif pair.key == "shared_uid":
-                        shared_uid = str(pair.value)
-                        
-                if (uid is not None) and (shared_uid is not None):
-                    print "shared user-id = " + uid + " (" + shared_uid + ")\n"
+                package_response = Message_pb2.PackageResponse()
+                package_response.ParseFromString(str(response.data))    
+                for attackSurface in package_response.attackSurface:
+                    print "Package name: " + attackSurface.packageName
+                    print "Activities exported..........: " + str(attackSurface.activities)
+                    print "Broadcast Receivers exported.: " + str(attackSurface.receivers)
+                    print "Content Providers exported...: " + str(attackSurface.providers)
+                    print "Services exported............: " + str(attackSurface.services)
+                    if attackSurface.debuggable is not None:
+                        print "Debuggable: " + str(attackSurface.debuggable)
+                    if attackSurface.sharedUserId is not None:
+                        print "SharedUserId: " + attackSurface.sharedUserId
+                    print "\n"
+                
+#                for pair in response.structured_data:
+#                    if pair.key == "activities":
+#                        value = str(pair.value).translate(None, "[']")
+#                        print value + " activities exported"
+#                    elif pair.key == "receivers":
+#                        value = str(pair.value).translate(None, "[']")
+#                        print value + " broadcast receivers exported"
+#                    elif pair.key == "providers":
+#                        value = str(pair.value).translate(None, "[']")
+#                        print value + " content providers exported"
+#                    elif pair.key == "services":
+#                        value = str(pair.value).translate(None, "[']")
+#                        print value + " services exported"
+#                    elif pair.key == "debuggable":
+#                        print "Debuggable: " + str(pair.value)
+#                    elif pair.key == "uid":
+#                        uid = str(pair.value)
+#                    elif pair.key == "shared_uid":
+#                        shared_uid = str(pair.value)                        
+#                if (uid is not None) and (shared_uid is not None):
+#                    print "shared user-id = " + uid + " (" + shared_uid + ")\n"
             else:
                 print str(response.error)
                 
