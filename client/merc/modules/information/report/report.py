@@ -104,7 +104,7 @@ Credit: Glauco Junquera - Samsung SIDI"""
             if package_filter == None or package_filter == str(info.packageName):
                 package_names.append(str(info.packageName))
                 html = self.makePackageHtml(str(info.packageName), menu_sections, content, str(info.packageName))
-                self.copyHtmlToFile(html, dest_folder, str(info.packageName))
+                self.createHtmlFile(html, dest_folder, str(info.packageName))
                 
         if package_filter is None:    
             #create index page menu links
@@ -128,17 +128,17 @@ Credit: Glauco Junquera - Samsung SIDI"""
             index_sections.append(MenuSection("General Info", general_links))
             index_sections.append(MenuSection("Packages", package_links))
             
-            html = self.makeGeneralHtml("Mercury Report", index_sections, content)
-            self.copyHtmlToFile(html, dest_folder, "report_index")
+            html = self.makeIndexHtml("Mercury Report", index_sections, content)
+            self.createHtmlFile(html, dest_folder, "report_index")
 
         self.copyCssToDestination(dest_folder)
         
-    def makeGeneralHtml(self, title, menu_sections, content):
+    def makeIndexHtml(self, title, menu_sections, content):
         html = "<html>\n"
         html += "<link rel=\"stylesheet\" href=\"report.css\">\n"
         html += "<body>\n"
         html += self.makeMenu(menu_sections) + "\n"
-        html += self.makeGeneralContent(content, title) + "\n"
+        html += self.makeIndexContent(content, title) + "\n"
         html += "</body>\n"
         html += "</html>"                
         return html
@@ -205,7 +205,7 @@ Credit: Glauco Junquera - Samsung SIDI"""
         html += "</div>"
         return html
     
-    def makeGeneralContent(self, content, title):
+    def makeIndexContent(self, content, title):
         build_prop = self.getBuildProperties()
         system_prop = self.getProperties()
         kernel = self.getKernelVersion()
@@ -248,10 +248,10 @@ Credit: Glauco Junquera - Samsung SIDI"""
         for info in content.attackSurface:
             if (package != None) and (package == str(info.packageName)):
                 lines = []
-                lines.append(["Unprotected Activities", str(info.activities)])
-                lines.append(["Unprotected Receivers", str(info.receivers)])
-                lines.append(["Unprotected Content Providers", str(info.providers)])
-                lines.append(["Unprotected Content Services", str(info.services)])                
+                lines.append(["Exported Activities", str(info.activities)])
+                lines.append(["Exported Receivers", str(info.receivers)])
+                lines.append(["Exported Content Providers", str(info.providers)])
+                lines.append(["Exported Content Services", str(info.services)])                
                 html += self.makeTable(lines) + "\n"
         return html
     
@@ -487,7 +487,7 @@ Credit: Glauco Junquera - Samsung SIDI"""
                 html += self.makeTable(lines) + "\n"
         return html
     
-    def copyHtmlToFile(self, html="", path="", filename="generated_html"):
+    def createHtmlFile(self, html="", path="", filename="generated_html"):
         if not os.path.exists(path + "report"):
             os.makedirs(path + "report")
         f = open(path + "report/" + filename + ".html", 'w')
@@ -624,7 +624,6 @@ Credit: Glauco Junquera - Samsung SIDI"""
         
             
 class MenuSection:
-
     def __init__(self, section_title="", section_links=[]):
         self.title = section_title
         self.links = section_links

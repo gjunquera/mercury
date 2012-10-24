@@ -351,11 +351,12 @@ public class Packages
 			ApplicationInfo app = package_.applicationInfo;
 
 			// Check for package name
-			if (app.packageName.equals(packageName))
+			if (app.packageName.equals(packageName) || packageName.length() == 0)
 			{
 				packagePath = app.publicSourceDir;
 				pathList.add(app.publicSourceDir);
-				break;
+				if (packageName.length() != 0)
+					break;
 			}
 		}
 
