@@ -7,10 +7,45 @@ class sslscanner(Module):
     """Description: Find SSL related code on apk"""
 
     SSL_FOLDER = "ssl"
+    DECOMPILED_APK_FOLDER = ""
     REPORT_FOLDER = os.path.join("ssl", "report")
     
-    SSL_PATTERNS = ["SSLContext", "SSLSocketFactory", "SSLContextFactory"]
-    
+    SSL_PATTERNS = ["SSLContext", "SSLSocketFactory", "SSLSession", "TrustManager", "AllowAllHostnameVerifier", "HttpsURLConnection", 
+                     "SSLEngine", "SSLParameters", "X509ExtendedKeyManager"]
+    #indicate when the app implements a SSL server
+    #SSLServerSocket, SSLServerSocketFactory
+#client related patterns: KeyManager, X509KeyManager
+#patterns to be aware: 
+#AbstractVerifier    Abstract base class for all standard X509HostnameVerifier implementations. 
+#AllowAllHostnameVerifier    The ALLOW_ALL HostnameVerifier essentially turns hostname verification off. 
+#BrowserCompatHostnameVerifier    The HostnameVerifier that works the same way as Curl and Firefox. 
+#StrictHostnameVerifier    The Strict HostnameVerifier works the same way as Sun Java 1.4, Sun Java 5, Sun Java 6-rc. 
+#HandshakeCompletedListener    The listener to be implemented to receive event notifications on completion of SSL handshake on an SSL connection. 
+#HostnameVerifier    The interface to be used to provide hostname verification functionality. 
+#KeyManager    This is the interface to implement in order to mark a class as a JSSE key managers so that key managers can be easily grouped. 
+#ManagerFactoryParameters    The marker interface for key manager factory parameters. 
+#X509HostnameVerifier    Interface for checking if a hostname matches the names stored inside the server's X.509 certificate.
+
+#package javax.net.ssl
+#CertPathTrustManagerParameters    Certification path parameters to provide to certification path based TrustManager. 
+#HandshakeCompletedEvent    The event object encapsulating the information about a completed SSL handshake on a SSL connection. 
+#KeyManagerFactory    The public API for KeyManagerFactory implementations. 
+#KeyManagerFactorySpi    The Service Provider Interface (SPI) for the KeyManagerFactory class. 
+#KeyStoreBuilderParameters    The parameters for KeyManagers.   
+#SSLEngineResult    The result object describing the state of the SSLEngine produced by the wrap() and unwrap() operations. 
+#SSLPermission    Legacy security code; do not use.   
+#SSLSessionBindingEvent    The event sent to an SSLSessionBindingListener when the listener object is bound (putValue(String, Object)) or unbound (removeValue(String)) to an SSLSession. 
+#SSLSocket    The extension of Socket providing secure protocols like SSL (Secure Sockets Layer) or TLS (Transport Layer Security). 
+#Enums
+#SSLEngineResult.HandshakeStatus    The enum describing the state of the current handshake. 
+#SSLEngineResult.Status    The enum describing the result of the SSLEngine operation. 
+#Exceptions
+#SSLException    The base class for all SSL related exceptions. 
+#SSLHandshakeException    The exception that is thrown when a handshake could not be completed successfully. 
+#SSLKeyException    The exception that is thrown when an invalid SSL key is encountered. 
+#SSLPeerUnverifiedException    The exception that is thrown when the identity of a peer has not beed verified. 
+#SSLProtocolException    The exception that is thrown when an error in the operation of the SSL protocol is encountered.
+      
     cert_extensions = [".pem", ".crt", ".cer", ".der", ".bks", ".pfx", ".p12", ".p7b", ".p7r", ".spc", ".sst", ".stl", ".key"]
     
     def __init__(self, *args, **kwargs):
@@ -24,10 +59,23 @@ class sslscanner(Module):
         self.session = session
         package_filter = _arg.get('filter')
         decompile_str = _arg.get('decompile')
-        
+        decompiled_apks_dir = _arg.get('decompiledFolder')
+        report_folder = _arg.get('reportFolder')
+            
         decompile = False
         if (decompile_str != None) and (decompile_str == "true"):
             decompile = True
+
+        if (decompiled_apks_dir is not None) and (len(decompiled_apks_dir) > 0):
+            self.DECOMPILED_APK_FOLDER =  decompiled_apks_dir
+            decompile = False
+        else:
+            self.DECOMPILED_APK_FOLDER = self.SSL_FOLDER
+            
+        if (report_folder is not None) and (len(report_folder) > 0):
+            self.REPORT_FOLDER = report_folder
+        else:
+            self.REPORT_FOLDER = os.path.join("ssl", "report")
             
         request = {'packageName': package_filter}
         #get the apks path
@@ -53,9 +101,9 @@ class sslscanner(Module):
             #pull the apks from the phone
             apk_name = self.getApkName(path)
             folder_name = self.getFolderName(apk_name)
-            if not os.path.exists(self.SSL_FOLDER):
-                os.mkdir(self.SSL_FOLDER)
-            os.chdir(self.SSL_FOLDER)
+            if not os.path.exists(self.DECOMPILED_APK_FOLDER):
+                os.mkdir(self.DECOMPILED_APK_FOLDER)
+            os.chdir(self.DECOMPILED_APK_FOLDER)
             
             if decompile:
                 if not os.path.exists(folder_name):
@@ -84,14 +132,13 @@ class sslscanner(Module):
                         if not os.path.isfile(dir_name):
                             self.rm_rf(dir_name)
 
-            if os.path.exists(folder_name):                            
+            if os.path.exists(folder_name):
                 os.chdir(folder_name)
                 matches_list = []
                 certificates_list = []
                 tm_data_list = []
                 ssl_data_list = []
 
-                #find SSL related patterns 
                 for root,dirs,files in os.walk(os.path.join(".")):
                     for file in files:
                         if file.endswith(".java"):
@@ -117,7 +164,10 @@ class sslscanner(Module):
                             if SSLData.checkSSLReference(file_content, "extends SSLSocketFactory"):
                                 if data is None:
                                     data = SSLData(os.path.join(root, file), file_content, [])
-                                data.vulnerable = X509TMData.checkVulnerableServerTrusted(file_content)
+                                #check if method checkServerTrusted is re-implemented
+                                if SSLData.checkSSLReference(file_content, "void checkClientTrusted"):
+                                    #check if method checkServeTrusted is vulnerable
+                                    data.vulnerable = X509TMData.checkVulnerableServerTrusted(file_content)
                                                                     
                             if data != None:
                                 ssl_data_list.append(data)
@@ -142,8 +192,12 @@ class sslscanner(Module):
                 #back to the initial directory
                 os.chdir(initial_path)
         
-        report = Report(apks_data)        
-        report.generateReport()
+        report = Report(apks_data)
+        
+        generate_index = True
+        if (package_filter != None) and (len(package_filter) > 0):
+            generate_index = False
+        report.generateReport(self.REPORT_FOLDER, generate_index)
              
     def getApkName(self, path):
         path_split = path.split("/")
@@ -217,7 +271,7 @@ class Report:
     def __init__(self, apks_data=[]):
         self.apks_data = apks_data
         
-    def generateReport(self):
+    def generateReport(self, dest_folder=os.path.join("ssl", "report"), generate_index=True):
         
         index_summary_links = []
         index_summary_links.append(Report.MenuLink("Vulnerable Apks", "#vulnApks"))
@@ -236,9 +290,11 @@ class Report:
         index_sections.append(Report.MenuSection("Scanned Apks", index_scanned_links))
         
         index_html = self.makeIndexHtml("SSL Report", index_sections, "")
-        if not os.path.exists(sslscanner.REPORT_FOLDER):
-            os.mkdir(sslscanner.REPORT_FOLDER)
-        self.createHtmlFile(index_html, os.path.join(os.getcwd(), sslscanner.REPORT_FOLDER), "index")
+        if not os.path.exists(dest_folder):
+            os.makedirs(dest_folder)
+            
+        if generate_index:
+            self.createHtmlFile(index_html, os.path.join(os.getcwd(), dest_folder), "index")
         
         for apk_data in self.apks_data:
             #creating the links for package files
@@ -255,9 +311,9 @@ class Report:
             
             package_html = self.makeApkHtml(apk_data.apk_name, apk_sections, apk_data, apk_data.apk_name)
             file_name = apk_data.apk_name.split(".apk")[0]
-            self.createHtmlFile(package_html, os.path.join(os.getcwd(), sslscanner.REPORT_FOLDER), file_name)
+            self.createHtmlFile(package_html, os.path.join(os.getcwd(), dest_folder), file_name)
 
-        self.copyCssToDestination(sslscanner.REPORT_FOLDER)            
+        self.copyCssToDestination(dest_folder)            
         
         
     def makeIndexHtml(self, title, menu_sections, content):
@@ -377,13 +433,16 @@ class Report:
     def makeSSLListHtml(self, data):
         html = "<p id=\"SSLList\" class=\"section_title\">Files with SSL References</p>\n"
         lines = []
-        lines.append(["<b>Files</b>", "<b>Patterns Found</b>"])
+        lines.append(["<b>Files</b>", "<b>Patterns Found</b>", "<b>Comments</b>"])
         for ssl_data in data:
             pattern_html = ""
             for pattern in ssl_data.patterns:
                 pattern_html += pattern + "<br>"
             file_link = "<a href=\"#" + ssl_data.name + "\">" + ssl_data.name + "</a>"
-            lines.append([file_link, pattern_html])
+            if ssl_data.vulnerable:
+                lines.append([file_link, pattern_html, "This class is VULNERABLE to MITM"])
+            else:
+                lines.append([file_link, pattern_html, ""])
         html += self.makeTable(lines) + "\n"
         return html    
 
