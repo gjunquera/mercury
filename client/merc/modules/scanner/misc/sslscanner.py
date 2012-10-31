@@ -4,48 +4,25 @@ import re
 import shutil
 
 class sslscanner(Module):
-    """Description: Find SSL related code on apk"""
-
+    """Description: Find SSL related and vulnerable code on apk and generates a report"""
+    
     SSL_FOLDER = "ssl"
     DECOMPILED_APK_FOLDER = ""
     REPORT_FOLDER = os.path.join("ssl", "report")
     
     SSL_PATTERNS = ["SSLContext", "SSLSocketFactory", "SSLSession", "TrustManager", "AllowAllHostnameVerifier", "HttpsURLConnection", 
                      "SSLEngine", "SSLParameters", "X509ExtendedKeyManager"]
-    #indicate when the app implements a SSL server
-    #SSLServerSocket, SSLServerSocketFactory
-#client related patterns: KeyManager, X509KeyManager
-#patterns to be aware: 
-#AbstractVerifier    Abstract base class for all standard X509HostnameVerifier implementations. 
-#AllowAllHostnameVerifier    The ALLOW_ALL HostnameVerifier essentially turns hostname verification off. 
-#BrowserCompatHostnameVerifier    The HostnameVerifier that works the same way as Curl and Firefox. 
-#StrictHostnameVerifier    The Strict HostnameVerifier works the same way as Sun Java 1.4, Sun Java 5, Sun Java 6-rc. 
-#HandshakeCompletedListener    The listener to be implemented to receive event notifications on completion of SSL handshake on an SSL connection. 
-#HostnameVerifier    The interface to be used to provide hostname verification functionality. 
-#KeyManager    This is the interface to implement in order to mark a class as a JSSE key managers so that key managers can be easily grouped. 
-#ManagerFactoryParameters    The marker interface for key manager factory parameters. 
-#X509HostnameVerifier    Interface for checking if a hostname matches the names stored inside the server's X.509 certificate.
-
-#package javax.net.ssl
-#CertPathTrustManagerParameters    Certification path parameters to provide to certification path based TrustManager. 
-#HandshakeCompletedEvent    The event object encapsulating the information about a completed SSL handshake on a SSL connection. 
-#KeyManagerFactory    The public API for KeyManagerFactory implementations. 
-#KeyManagerFactorySpi    The Service Provider Interface (SPI) for the KeyManagerFactory class. 
-#KeyStoreBuilderParameters    The parameters for KeyManagers.   
-#SSLEngineResult    The result object describing the state of the SSLEngine produced by the wrap() and unwrap() operations. 
-#SSLPermission    Legacy security code; do not use.   
-#SSLSessionBindingEvent    The event sent to an SSLSessionBindingListener when the listener object is bound (putValue(String, Object)) or unbound (removeValue(String)) to an SSLSession. 
-#SSLSocket    The extension of Socket providing secure protocols like SSL (Secure Sockets Layer) or TLS (Transport Layer Security). 
-#Enums
-#SSLEngineResult.HandshakeStatus    The enum describing the state of the current handshake. 
-#SSLEngineResult.Status    The enum describing the result of the SSLEngine operation. 
-#Exceptions
-#SSLException    The base class for all SSL related exceptions. 
-#SSLHandshakeException    The exception that is thrown when a handshake could not be completed successfully. 
-#SSLKeyException    The exception that is thrown when an invalid SSL key is encountered. 
-#SSLPeerUnverifiedException    The exception that is thrown when the identity of a peer has not beed verified. 
-#SSLProtocolException    The exception that is thrown when an error in the operation of the SSL protocol is encountered.
-      
+    
+    X509TM_IMPL_PATTERN = [ [True, "(.*implements *X509TrustManager.*)"], [False, "(.*public void checkServerTrusted.*{.*checkServerTrusted.*})"] ]
+    X509TM_NEW_PATTERN = [ [True, "(.*new *X509TrustManager.*)"], [False, "(.*public void checkServerTrusted.*{.*checkServerTrusted.*})"] ]
+    SSLSOCKFAC_EXT_PATTERN = [ [True, "(.*extends SSLSocketFactory.*)"], [True, "(.*void checkServerTrusted.*)"], [False, "(.*public void checkServerTrusted.*{.*checkServerTrusted.*})"] ]    
+    ALLOWALLHOSTS_PATTERN = [ [True, "(.*setHostnameVerifier\((AllowAllHostnameVerifier|new *AllowAllHostnameVerifier)\).*)"] ]
+    VULNERABLE_PATTERNS = [ X509TM_IMPL_PATTERN, X509TM_NEW_PATTERN, SSLSOCKFAC_EXT_PATTERN]
+    
+    TOTAL_SCANNED = 0.0
+    TOTAL_VULNERABLE = 0.0
+    TOTAL_SSL_REFS = 0.0
+          
     cert_extensions = [".pem", ".crt", ".cer", ".der", ".bks", ".pfx", ".p12", ".p7b", ".p7r", ".spc", ".sst", ".stl", ".key"]
     
     def __init__(self, *args, **kwargs):
@@ -54,6 +31,10 @@ class sslscanner(Module):
 
     def execute(self, session, _arg):
 
+        sslscanner.TOTAL_SCANNED = 0.0
+        sslscanner.TOTAL_VULNERABLE = 0.0
+        sslscanner.TOTAL_SSL_REFS = 0.0
+
         initial_path = os.getcwd()
 
         self.session = session
@@ -61,44 +42,44 @@ class sslscanner(Module):
         decompile_str = _arg.get('decompile')
         decompiled_apks_dir = _arg.get('decompiledFolder')
         report_folder = _arg.get('reportFolder')
-            
+        
         decompile = False
         if (decompile_str != None) and (decompile_str == "true"):
             decompile = True
-
         if (decompiled_apks_dir is not None) and (len(decompiled_apks_dir) > 0):
             self.DECOMPILED_APK_FOLDER =  decompiled_apks_dir
             decompile = False
         else:
             self.DECOMPILED_APK_FOLDER = self.SSL_FOLDER
-            
         if (report_folder is not None) and (len(report_folder) > 0):
             self.REPORT_FOLDER = report_folder
         else:
             self.REPORT_FOLDER = os.path.join("ssl", "report")
             
-        request = {'packageName': package_filter}
-        #get the apks path
-        ret = self.session.executeCommand("packages", "path", request)
-        path_list = []
-        if os.path.exists("result_ssl.txt"):
-            os.remove("result_ssl.txt")
         
-        # Iterate through paths returned
-        for pair in ret.structured_data:
-            for value in pair.value:
-                line = str(value)
-                #just a workaround to avoid decompile the framework apk 
-                if self.getApkName(line) != "framework-res.apk":
-                    path_list.append(line)
+        path_list = []
+        if decompile:
+            #get the apks path on the device to pull and decompile later
+            request = {'packageName': package_filter}
+            ret = self.session.executeCommand("packages", "path", request)    
+            # Iterate through paths returned
+            for pair in ret.structured_data:
+                for value in pair.value:
+                    line = str(value)
+                    #just a workaround to avoid decompile the framework apk 
+                    if self.getApkName(line) != "framework-res.apk":
+                        path_list.append(line)            
+        else:
+            #get the directories for the folder passed as parameter
+            directories = os.listdir(self.DECOMPILED_APK_FOLDER)
+            for element in directories:
+                if os.path.isdir(os.path.join(self.DECOMPILED_APK_FOLDER, element)):
+                    path_list.append(element)
 
         #list that contains the data required for the report
         apks_data = []
         
-        #pull the apks from the phone
-        for path in path_list:
-            
-            #pull the apks from the phone
+        for path in path_list:            
             apk_name = self.getApkName(path)
             folder_name = self.getFolderName(apk_name)
             if not os.path.exists(self.DECOMPILED_APK_FOLDER):
@@ -106,69 +87,53 @@ class sslscanner(Module):
             os.chdir(self.DECOMPILED_APK_FOLDER)
             
             if decompile:
-                if not os.path.exists(folder_name):
-                    os.mkdir(folder_name)
-    
-                os.system("adb pull " + path + " " + folder_name + "/.")
-            
-                #Decompile the apk and create a jar
-                #d2j-dex2jar.bat -f -o %1-dex2jar.jar %1.apk
-                os.chdir(folder_name)
-                jar_name = folder_name + "-dex2jar.jar"
-                os.system("d2j-dex2jar.bat -f -o " + jar_name + " " + apk_name)
-            
-                #create java files from jar
-                if not os.path.exists("java"):
-                    os.mkdir("java")
-                os.system("move " + folder_name + "-dex2jar.jar java/.")
-                os.chdir("java")
-                os.system("jar xf " + folder_name + "-dex2jar.jar")
-                os.system("jad -o -r -sjava -dsrc **/*.class")
-                
-                #clean unused files
-                dir_list = os.listdir(os.path.join("."))
-                for dir_name in dir_list:
-                    if dir_name != "src":
-                        if not os.path.isfile(dir_name):
-                            self.rm_rf(dir_name)
+                self.decompile(folder_name, path, apk_name)
 
             if os.path.exists(folder_name):
+                
+                sslscanner.TOTAL_SCANNED += 1
+                match_ssl_pattern = False
+                match_vulnerable = False
+                
                 os.chdir(folder_name)
-                matches_list = []
                 certificates_list = []
-                tm_data_list = []
+                vuln_data_list = []
                 ssl_data_list = []
 
                 for root,dirs,files in os.walk(os.path.join(".")):
                     for file in files:
+                        #if the file is a .java scan it
                         if file.endswith(".java"):
                             file_path = os.path.join(root, file)
                             f = open(file_path, 'r')
                             file_content = f.read()
                             f.close()
-                            #check if the file implements X509TrustManager
-                            if X509TMData.checkX509TrustManager(file_content):
-                                data = X509TMData(os.path.join(root, file), file_content)
-                                matches_list.append(file_path)
-                                data.vulnerable = X509TMData.checkVulnerableServerTrusted(file_content)
-                                tm_data_list.append(data)
-                                
+                            
+                            data = None
+                            #check for vulnerable patterns
+                            if VulnerableData.checkVulberablePatterns(file_content):
+                                match_vulnerable = True
+                                data = VulnerableData(os.path.join(root, file), file_content)
+                                data.vulnerable = True
+                                vuln_data_list.append(data)
+                                                            
                             #check for SSL references
                             data = None
+                            old_file_content = file_content
                             for pattern in self.SSL_PATTERNS:
-                                if SSLData.checkSSLReference(file_content, pattern):
+                                new_file_content, ids = SSLData.checkSSLReferenceAndCreateId(old_file_content, pattern, file_path)
+                                if new_file_content != None:
+                                    match_ssl_pattern = True
+                                    old_file_content = new_file_content
                                     if data is None:
-                                        data = SSLData(os.path.join(root, file), file_content, [])
-                                    data.patterns.append(pattern)
-                                    
-                            if SSLData.checkSSLReference(file_content, "extends SSLSocketFactory"):
-                                if data is None:
-                                    data = SSLData(os.path.join(root, file), file_content, [])
-                                #check if method checkServerTrusted is re-implemented
-                                if SSLData.checkSSLReference(file_content, "void checkClientTrusted"):
-                                    #check if method checkServeTrusted is vulnerable
-                                    data.vulnerable = X509TMData.checkVulnerableServerTrusted(file_content)
-                                                                    
+                                        data = SSLData(os.path.join(root, file), new_file_content, [])
+                                    else:
+                                        data.content = new_file_content
+                                    num_ids = 0
+                                    for id in ids:
+                                        data.patterns.append("<a href=#" + id + ">" + pattern + " - " + str(num_ids) + "</a>")
+                                        num_ids += 1
+                                                                                                
                             if data != None:
                                 ssl_data_list.append(data)
 
@@ -178,31 +143,59 @@ class sslscanner(Module):
                                 if file.endswith(ext):
                                     certificates_list.append(file)
 
-                apks_data.append(ApkData(apk_name=apk_name, tm_data=tm_data_list, certificate_files=certificates_list, ssl_data=ssl_data_list))                                             
+                if match_ssl_pattern:
+                    sslscanner.TOTAL_SSL_REFS += 1
+                if match_vulnerable:
+                    sslscanner.TOTAL_VULNERABLE += 1
+                apks_data.append(ApkData(apk_name=apk_name, vuln_data=vuln_data_list, certificate_files=certificates_list, ssl_data=ssl_data_list))                                             
                 #back to the initial directory
                 os.chdir(initial_path)
                 
-                #write result to file
-                #result_file = open("result_ssl.txt", "a")
-                #result_file.write("\nFiles found on " + folder_name + ":\n")
-                #for match in matches_list:
-                #    result_file.write("    " + match + "\n")
-                #result_file.close()
             else:
                 #back to the initial directory
                 os.chdir(initial_path)
         
+        #generate the report
         report = Report(apks_data)
-        
         generate_index = True
         if (package_filter != None) and (len(package_filter) > 0):
             generate_index = False
         report.generateReport(self.REPORT_FOLDER, generate_index)
-             
+        
+    def decompile(self, folder_name, path, apk_name):
+        if not os.path.exists(folder_name):
+            os.mkdir(folder_name)
+        os.system("adb pull " + path + " " + folder_name + "/.")
+        #Decompile the apk and create a jar
+        #d2j-dex2jar.bat -f -o %1-dex2jar.jar %1.apk
+        os.chdir(folder_name)
+        jar_name = folder_name + "-dex2jar.jar"
+        os.system("d2j-dex2jar.bat -f -o " + jar_name + " " + apk_name)
+        #create java files from jar
+        if not os.path.exists("java"):
+            os.mkdir("java")
+        os.system("move " + folder_name + "-dex2jar.jar java/.")
+        os.chdir("java")
+        os.system("jar xf " + folder_name + "-dex2jar.jar")
+        os.system("jad -o -r -sjava -dsrc **/*.class")                
+        #clean unused files
+        dir_list = os.listdir(os.path.join("."))
+        for dir_name in dir_list:
+            if dir_name != "src":
+                if not os.path.isfile(dir_name):
+                    self.rm_rf(dir_name)
+     
     def getApkName(self, path):
         path_split = path.split("/")
-        apk_name = path_split[len(path_split) - 1]
-        return apk_name
+        if (len(path_split)) > 0:
+            apk_name = path_split[len(path_split) - 1]
+            return apk_name
+        else:
+            path_split = path.split("/")
+            if (len(path_split)) > 0:
+                apk_name = path_split[len(path_split) - 1]
+                return apk_name
+        return path
     
     def getFolderName(self, apk_name):
         folder_name = apk_name.split(".apk")[0]
@@ -218,30 +211,35 @@ class sslscanner(Module):
                 os.unlink(path)
         os.rmdir(d)
     
-class X509TMData:
+class VulnerableData:
     def __init__(self, file_name="", file_content=""):
         self.name = file_name
         self.content = file_content
         self.vulnerable = False
         
     @staticmethod
-    def checkX509TrustManager(file_content=""):
-        lines = file_content.split("\n")
-        for line in lines:                                
-            match = re.match(r'(.*implements X509TrustManager.*)', line)
-            if match != None:
+    def checkVulberablePattern(file_content="", pattern=[]):
+        for element in pattern:
+            if element[0] != VulnerableData.checkPattern(file_content, element[1]):
+                return False
+        return True
+
+    #Returns true if one vulnerable pattern matches
+    @staticmethod
+    def checkVulberablePatterns(file_content=""):
+        for pattern in sslscanner.VULNERABLE_PATTERNS:
+            if VulnerableData.checkVulberablePattern(file_content, pattern):
                 return True
         return False
-
+    
     @staticmethod
-    def checkVulnerableServerTrusted(file_content=""):
+    def checkPattern(file_content="", pattern=""):
         content = file_content.replace("\n", "")
-        match = re.match(r'(.*public void checkServerTrusted.*{.*checkServerTrusted.*})', content)
+        regex = re.compile(pattern)
+        match = regex.match(content)              
         if match != None:
-            #the class is not vulnerable
-            return False
-        #the class is vulnerable
-        return True
+            return True
+        return False     
         
 class SSLData:
     def __init__(self, file_name="", file_content="", patterns=[], vulnerable=False):
@@ -249,6 +247,12 @@ class SSLData:
         self.content = file_content
         self.patterns = patterns
         self.vulnerable = vulnerable
+        
+    @staticmethod
+    def isList(var):
+        if type(var) is list:
+            return True
+        return False
         
     @staticmethod
     def checkSSLReference(file_content="", pattern=""):
@@ -259,11 +263,33 @@ class SSLData:
             if match != None:
                 return True
         return False
+
+    @staticmethod
+    def checkSSLReferenceAndCreateId(file_content="", pattern="", file_name=""):
+        lines = file_content.split("\n")
+        new_file_content = ""
+        num_matches = 0
+        ids = []
+        for line in lines:
+            regex = re.compile('.*(' + pattern + ').*')
+            match = regex.match(line)
+            if match != None:
+                match_str = match.group()
+                ids.append(file_name + pattern + str(num_matches))
+                new_line =  match_str.replace(pattern, "<b id=\"" + file_name + pattern + str(num_matches) + "\" style=\"color:red;\">" + pattern + "</b>")
+                new_file_content += new_line + "\n"
+                num_matches += 1 
+            else:
+                new_file_content += line + "\n"
+        if num_matches > 0:
+            return new_file_content, ids
+        else:
+            return None, ids
         
 class ApkData:
-    def __init__(self, apk_name="", tm_data=[], certificate_files=[], ssl_data=[]):
+    def __init__(self, apk_name="", vuln_data=[], certificate_files=[], ssl_data=[]):
         self.apk_name = apk_name
-        self.tm_data = tm_data
+        self.vuln_data = vuln_data
         self.cert_files = certificate_files
         self.ssl_data = ssl_data
 
@@ -274,8 +300,9 @@ class Report:
     def generateReport(self, dest_folder=os.path.join("ssl", "report"), generate_index=True):
         
         index_summary_links = []
+        index_summary_links.append(Report.MenuLink("Summary", "#summary"))
         index_summary_links.append(Report.MenuLink("Vulnerable Apks", "#vulnApks"))
-        index_summary_links.append(Report.MenuLink("Apks with X509TrustManager", "#X509TMApks"))
+#        index_summary_links.append(Report.MenuLink("Apks with X509TrustManager", "#X509TMApks"))
         index_summary_links.append(Report.MenuLink("Apks with SSL", "#SSLApks"))
         
         #creating the links for index file menu
@@ -300,8 +327,8 @@ class Report:
             #creating the links for package files
             apk_links = []
             apk_links.append(Report.MenuLink("Certificate Files", "#certFiles"))
-            apk_links.append(Report.MenuLink("X509TrustManager Files List", "#X509TMList"))
-            apk_links.append(Report.MenuLink("X509TrustManager Files Content", "#X509TMContent"))
+            apk_links.append(Report.MenuLink("Vulnerable Files List", "#VulnList"))
+            apk_links.append(Report.MenuLink("Vulnerable Files Content", "#VulnContent"))
             apk_links.append(Report.MenuLink("SSL Files List", "#SSLList"))
             apk_links.append(Report.MenuLink("SSL Files Content", "#SSLContent"))
                 
@@ -329,37 +356,51 @@ class Report:
     def makeIndexContent(self, content, title):
         html = "<div id=\"content\">\n"
         html += "<p id=\"title\">" + title + "</p>\n"
+        html += self.makeSummaryHtml() + "\n"
         html += self.makeVulnerableApksHtml() + "\n"
-        html += self.makeX509RefsHtml() + "\n"
+#        html += self.makeX509RefsHtml() + "\n"
         html += self.makeSSLRefsHtml() + "\n"
         html += "</div>"
+        return html
+    
+    def makeSummaryHtml(self):
+        html = "<p id=\"summary\" class=\"section_title\">Summary</p>\n"
+        lines = []
+        lines.append(["TOTAL SCANNED APKS", str(int(sslscanner.TOTAL_SCANNED))])
+        lines.append(["TOTAL SSL APKS", str(int(sslscanner.TOTAL_SSL_REFS))])
+        lines.append(["TOTAL VULNERABLE APKS", str(int(sslscanner.TOTAL_VULNERABLE))])
+        ssl_percentage = 0
+        vulnerable_percentage = 0
+        vulnerable_ssl_percentage = 0
+        if sslscanner.TOTAL_SCANNED > 0:
+            ssl_percentage = int((sslscanner.TOTAL_SSL_REFS / sslscanner.TOTAL_SCANNED) * 100)
+            vulnerable_percentage = int((sslscanner.TOTAL_VULNERABLE / sslscanner.TOTAL_SCANNED) * 100)
+        if sslscanner.TOTAL_SSL_REFS > 0:
+            vulnerable_ssl_percentage = int((sslscanner.TOTAL_VULNERABLE / sslscanner.TOTAL_SSL_REFS) * 100) 
+        lines.append(["SSL APKS PERCENTAGE", str(ssl_percentage) + "%"])
+        lines.append(["VULNERABLE APKS PERCENTAGE", str(vulnerable_percentage) + "%"])
+        lines.append(["VULNERABLE SSL APKS PERCENTAGE", str(vulnerable_ssl_percentage) + "%"])
+        html += self.makeTable(lines) + "\n"
         return html
     
     def makeVulnerableApksHtml(self):
         html = "<p id=\"vulnApks\" class=\"section_title\">Vulnerable Apks</p>\n"
         lines = []
         for apk_data in self.apks_data:
-            found = False
-            for tm_data in apk_data.tm_data:
-                if tm_data.vulnerable:
+            for vuln_data in apk_data.vuln_data:
+                if vuln_data.vulnerable:
                     lines.append([self.linkfyApkName(apk_data.apk_name)])
-                    found = True
                     break;
-            if not found:
-                for ssl_data in apk_data.ssl_data:
-                    if ssl_data.vulnerable:
-                        lines.append([self.linkfyApkName(apk_data.apk_name)])
-                        break;
                                                     
         html += self.makeTable(lines) + "\n"
         return html
 
-    def makeX509RefsHtml(self):
-        lines = []
-        for apk_data in self.apks_data:
-            if len(apk_data.tm_data) > 0:
-                lines.append([self.linkfyApkName(apk_data.apk_name)])
-        return self.makeRefsHtml("X509TMApks", "Apks that implements X509TrustManager", lines)
+#    def makeX509RefsHtml(self):
+#        lines = []
+#        for apk_data in self.apks_data:
+#            if len(apk_data.vuln_data) > 0:
+#                lines.append([self.linkfyApkName(apk_data.apk_name)])
+#        return self.makeRefsHtml("X509TMApks", "Apks that implements X509TrustManager", lines)
 
     def makeSSLRefsHtml(self):
         lines = []
@@ -404,8 +445,8 @@ class Report:
         html = "<div id=\"content\">\n"
         html += "<p id=\"title\">" + title + "</p>\n"
         html += self.makeCertificatesList(apk_data.cert_files) + "\n"
-        html += self.makeX509TMListHtml(apk_data.tm_data) + "\n"
-        html += self.makeFileContentHtml(apk_data.tm_data, "X509TrustManager Files Content", "X509TMContent") + "\n"
+        html += self.makeVulnListHtml(apk_data.vuln_data) + "\n"
+        html += self.makeFileContentHtml(apk_data.vuln_data, "Vulnerable Files Content", "VulnContent") + "\n"
         html += self.makeSSLListHtml(apk_data.ssl_data)
         html += self.makeFileContentHtml(apk_data.ssl_data, "SSL Files Content", "SSLContent") + "\n"
         return html
@@ -418,15 +459,15 @@ class Report:
         html += self.makeTable(lines) + "\n"
         return html        
     
-    def makeX509TMListHtml(self, data):
-        html = "<p id=\"X509TMList\" class=\"section_title\">X509TrustManager Files List</p>\n"
+    def makeVulnListHtml(self, data):
+        html = "<p id=\"VulnList\" class=\"section_title\">Vulnerable Files List</p>\n"
         lines = []
-        for tm_data in data:
-            file_link = "<a href=\"#" + tm_data.name + "\">" + tm_data.name + "</a>"
-            if tm_data.vulnerable:
-                lines.append([file_link, "This class is VULNERABLE to MITM"])
-            else:
-                lines.append([file_link, "This class is NOT VULNERABLE"])                
+        for vuln_data in data:
+            file_link = "<a href=\"#" + vuln_data.name + "\">" + vuln_data.name + "</a>"
+#            if vuln_data.vulnerable:
+            lines.append([file_link, "This class is VULNERABLE to MITM"])
+#            else:
+#                lines.append([file_link, "This class is NOT VULNERABLE"])                
         html += self.makeTable(lines) + "\n"
         return html
     
@@ -453,6 +494,10 @@ class Report:
             html += "<br><br><p id=\"" + element.name + "\"><b>" + element.name + "</b></p><br>\n"
             html_content = element.content.replace("\n", "<br>")
             html_content = html_content.replace(" ", "&nbsp;")
+            #workaround to properly create id on bold text
+            html_content = html_content.replace("<b&nbsp;id=\"", "<b id=\"")
+            html_content = html_content.replace("\"&nbsp;style=\"color:red;\">", "\" style=\"color:red;\">")
+            
             lines.append([html_content])                
             html += self.makeTable(lines) + "\n"
         return html
